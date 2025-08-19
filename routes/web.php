@@ -141,4 +141,4 @@ Route::view('/auth/cover-lockscreen', 'auth.cover-lockscreen');
 Route::view('/auth/cover-password-reset', 'auth.cover-password-reset');
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
