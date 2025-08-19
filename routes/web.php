@@ -24,6 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/petugas', function () {
+    return Inertia::render('Petugas/Dashboard');
+});
+
 Route::view('/', 'index');
 Route::view('/analytics', 'analytics');
 Route::view('/finance', 'finance');
