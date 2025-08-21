@@ -13,11 +13,24 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('faskes_id')->nullable()->constrained('faskes')->onDelete('set null');
+            $table->foreignId('provinsi_id')->nullable()->constrained('provinsi')->onDelete('set null');
+            $table->foreignId('kota_id')->nullable()->constrained('kota')->onDelete('set null');
+            $table->foreignId('kecamatan_id')->nullable()->constrained('kecamatan')->onDelete('set null');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->string('nik')->unique();
+            $table->date('tanggal_lahir');
+            $table->enum('kelamin', ['L', 'P']);
+            $table->string('no_telp')->unique();
+            $table->enum('role', ['Warga', 'Petugas Faskes', 'Admin Faskes', 'Superadmin']);
+            $table->string('profile_pic_url')->nullable();
+            $table->enum('status_user', ['Aktif', 'Nonaktif', 'Meninggal'])->default('Aktif');
+            $table->date('tanggal_meninggal')->nullable();
+            $table->text('alamat')->nullable();
             $table->timestamps();
         });
 
