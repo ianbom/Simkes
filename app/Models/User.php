@@ -45,4 +45,35 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function faskes() {
+        return $this->belongsTo(Faskes::class);
+    }
+    public function riwayatMedis() {
+        return $this->hasOne(RiwayatMedisUser::class);
+    }
+    public function kehamilan() {
+        return $this->hasMany(Kehamilan::class);
+    }
+    public function anak() {
+        return $this->hasManyThrough(Anak::class, Kelahiran::class);
+    }
+    public function notifikasi() {
+        return $this->hasMany(Notifikasi::class);
+    }
+    public function jadwalKetersediaan() {
+        return $this->hasMany(JadwalKetersediaan::class, 'petugas_faskes_id');
+    }
+    public function sesiKonsultasiSebagaiPasien() {
+        return $this->hasMany(SesiKonsultasi::class, 'pasien_user_id');
+    }
+    public function sesiKonsultasiSebagaiPetugas() {
+        return $this->hasMany(SesiKonsultasi::class, 'petugas_faskes_id');
+    }
+    public function kegiatan() {
+        return $this->hasMany(KegiatanFaskes::class, 'user_id_pembuat');
+    }
+    public function langganan() {
+        return $this->hasMany(LanggananFaskes::class);
+    }
 }
