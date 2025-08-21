@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Superadmin\DashboardController as SpmDashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,6 +42,10 @@ Route::prefix('petugas')->group(function () {
     Route::get('/profil', function () {
         return Inertia::render('Petugas/Profile');
     });
+});
+
+Route::prefix('superadmin')->group(function () {
+    Route::get('/dashboard', [SpmDashboardController::class, 'index'])->name('dashboard.index');
 });
 
 Route::view('/', 'index');
