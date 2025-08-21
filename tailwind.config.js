@@ -15,14 +15,29 @@ export default {
         extend: {
             colors: {
           primary: {
-            DEFAULT: "#4361ee",
+            DEFAULT: "#395A7F",
             light: "#eaf1ff",
             "dark-light": "rgba(67,97,238,.15)",
           },
           secondary: {
-            DEFAULT: "#805dca",
+            DEFAULT: "#6E9FC1",
             light: "#ebe4f7",
             "dark-light": "rgb(128 93 202 / 15%)",
+          },
+          third: {
+            DEFAULT: "#A3CAE9",
+            light: "#f8f9fa",
+            "dark-light": "rgba(248,249,250,.15)",
+          },
+          neutral: {
+            DEFAULT: "#E9ECEE",
+            light: "#eaeaec",
+            "dark-light": "rgba(59,63,92,.15)",
+          },
+          darkness: {
+            DEFAULT: "#ACACAC",
+            light: "#f8f9fa",
+            "dark-light": "rgba(248,249,250,.15)",
           },
           success: {
             DEFAULT: "#00ab55",
