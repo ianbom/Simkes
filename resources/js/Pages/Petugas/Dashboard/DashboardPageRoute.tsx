@@ -90,7 +90,7 @@ const mockNotifications = [
     },
 ];
 
-export default function Dashboard({ user }) {
+export default function DashboardPageRoute({ user }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [patients] = useState(mockPatients);
     const [notifications] = useState(mockNotifications);
@@ -143,27 +143,27 @@ export default function Dashboard({ user }) {
             <div className="px-4 py-6 pb-20 lg:px-8 lg:pb-6">
                 {/* Header */}
                 <div className="mb-8">
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="mb-8 flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold font-heading text-foreground">
+                            <h1 className="font-heading text-foreground text-3xl font-bold">
                                 Dashboard Petugas Faskes
                             </h1>
                         </div>
                         <div className="flex items-center gap-2">
                             <Button variant="outline" size="sm">
-                                <Filter className="w-4 h-4 mr-2" />
+                                <Filter className="mr-2 h-4 w-4" />
                                 Filter
                             </Button>
                         </div>
                     </div>
-                    <Card className="transition-shadow border-blue-200 bg-gradient-to-r from-blue-500 to-indigo-900 hover:shadow-lg">
+                    <Card className="border-blue-200 bg-gradient-to-r from-blue-500 to-indigo-900 transition-shadow hover:shadow-lg">
                         <CardContent className="p-6">
-                            <div className="flex items-center mb-4">
+                            <div className="mb-4 flex items-center">
                                 <div className="">
                                     <p className="text-3xl font-bold text-white">
                                         Selamat datang, Petugas Faskes Argya Dwi
                                     </p>
-                                    <p className="mt-1 text-gray-200 text-md font-extralight">
+                                    <p className="text-md mt-1 font-extralight text-gray-200">
                                         Anda punya 8 appointments hari ini dan 3
                                         pesan penting untuk segera
                                         ditindaklanjuti.{' '}
@@ -171,12 +171,12 @@ export default function Dashboard({ user }) {
                                 </div>
                             </div>
                             <div className="flex gap-2">
-                                <button className="flex items-center gap-2 px-4 py-2 font-medium text-white transition-colors duration-200 bg-blue-900 rounded-lg opacity-50 hover:bg-blue-700">
-                                    <Stethoscope className="w-4 h-4 mr-2" />
+                                <button className="flex items-center gap-2 rounded-lg bg-blue-900 px-4 py-2 font-medium text-white opacity-50 transition-colors duration-200 hover:bg-blue-700">
+                                    <Stethoscope className="mr-2 h-4 w-4" />
                                     Mulai Pemeriksaan
                                 </button>
-                                <button className="flex items-center gap-2 px-4 py-2 font-medium transition-colors duration-200 bg-white rounded-lg text-primary hover:bg-green-700">
-                                    <Video className="w-4 h-4 mr-2" />
+                                <button className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 font-medium text-primary transition-colors duration-200 hover:bg-green-700">
+                                    <Video className="mr-2 h-4 w-4" />
                                     Konsultasi
                                 </button>
                             </div>
@@ -185,7 +185,7 @@ export default function Dashboard({ user }) {
                 </div>
 
                 {/* Quick Stats */}
-                <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat, index) => (
                         <Card
                             key={index}
@@ -201,10 +201,10 @@ export default function Dashboard({ user }) {
                                         />
                                     </div>
                                     <div className="ml-4">
-                                        <p className="text-sm font-medium text-muted-foreground">
+                                        <p className="text-muted-foreground text-sm font-medium">
                                             {stat.title}
                                         </p>
-                                        <p className="text-2xl font-bold text-foreground">
+                                        <p className="text-foreground text-2xl font-bold">
                                             {stat.value}
                                         </p>
                                     </div>
@@ -218,7 +218,7 @@ export default function Dashboard({ user }) {
                 <Card className="mb-8">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Search className="w-5 h-5" />
+                            <Search className="h-5 w-5" />
                             Cari Pasien
                         </CardTitle>
                         <CardDescription>
@@ -242,7 +242,7 @@ export default function Dashboard({ user }) {
                                 onClick={handleSearch}
                                 className="bg-gray-200 hover:text-white"
                             >
-                                <Search className="w-4 h-4 mr-2" />
+                                <Search className="mr-2 h-4 w-4" />
                                 Search
                             </Button>
                         </div>
@@ -267,7 +267,7 @@ export default function Dashboard({ user }) {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <Bell className="w-5 h-5" />
+                                    <Bell className="h-5 w-5" />
                                     Clinical Notifications
                                 </CardTitle>
                                 <CardDescription>
@@ -279,35 +279,35 @@ export default function Dashboard({ user }) {
                                     {notifications.map((notification) => (
                                         <div
                                             key={notification.id}
-                                            className="flex gap-3 p-3 transition-colors rounded-lg cursor-pointer bg-muted hover:bg-muted/80"
+                                            className="bg-muted hover:bg-muted/80 flex cursor-pointer gap-3 rounded-lg p-3 transition-colors"
                                         >
-                                            <div className="flex-shrink-0 mt-1">
+                                            <div className="mt-1 flex-shrink-0">
                                                 {notification.type ===
                                                     'urgent' && (
-                                                    <AlertTriangle className="w-5 h-5 text-destructive" />
+                                                    <AlertTriangle className="text-destructive h-5 w-5" />
                                                 )}
                                                 {notification.type ===
                                                     'info' && (
-                                                    <Activity className="w-5 h-5 text-primary" />
+                                                    <Activity className="h-5 w-5 text-primary" />
                                                 )}
                                                 {notification.type ===
                                                     'warning' && (
-                                                    <Clock className="w-5 h-5 text-yellow-600" />
+                                                    <Clock className="h-5 w-5 text-yellow-600" />
                                                 )}
                                             </div>
                                             <div className="flex-1">
                                                 <div className="flex items-center justify-between">
-                                                    <p className="font-medium text-foreground">
+                                                    <p className="text-foreground font-medium">
                                                         {notification.title}
                                                     </p>
-                                                    <span className="text-xs text-muted-foreground">
+                                                    <span className="text-muted-foreground text-xs">
                                                         {notification.time}
                                                     </span>
                                                 </div>
-                                                <p className="mb-1 text-sm text-muted-foreground">
+                                                <p className="text-muted-foreground mb-1 text-sm">
                                                     {notification.patient}
                                                 </p>
-                                                <p className="text-sm text-foreground">
+                                                <p className="text-foreground text-sm">
                                                     {notification.description}
                                                 </p>
                                             </div>

@@ -25,8 +25,23 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/petugas', function () {
-    return Inertia::render('Petugas/Dashboard');
+// Route untuk akses fitur pasien
+Route::prefix('')->group(function () {});
+
+// Route untuk akses fitur petugas
+Route::prefix('petugas')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Petugas/Dashboard');
+    });
+    Route::get('/pemeriksaan', function () {
+        return Inertia::render('Petugas/Checkup');
+    });
+    Route::get('/konsultasi', function () {
+        return Inertia::render('Petugas/Consultation');
+    });
+    Route::get('/profil', function () {
+        return Inertia::render('Petugas/Profile');
+    });
 });
 
 Route::prefix('superadmin')->group(function () {
@@ -146,4 +161,4 @@ Route::view('/auth/cover-lockscreen', 'auth.cover-lockscreen');
 Route::view('/auth/cover-password-reset', 'auth.cover-password-reset');
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
