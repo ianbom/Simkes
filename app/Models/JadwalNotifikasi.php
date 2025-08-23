@@ -8,6 +8,7 @@ class JadwalNotifikasi extends Model
 {
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'jadwal_notifikasi';
 
         public function user() {
         return $this->belongsTo(User::class);

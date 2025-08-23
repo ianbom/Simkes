@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataJanin extends Model
 {
-        protected $guarded = ['id'];
+    protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'data_janin';
 
       public function pemeriksaan() {
         return $this->belongsTo(PemeriksaanANC::class, 'pemeriksaan_anc_id');

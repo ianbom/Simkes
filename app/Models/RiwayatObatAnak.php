@@ -9,6 +9,7 @@ class RiwayatObatAnak extends Model
 
         protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'riwayat_obat_anak';
 
     public function anak() {
         return $this->belongsTo(Anak::class);

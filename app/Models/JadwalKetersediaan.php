@@ -9,6 +9,7 @@ class JadwalKetersediaan extends Model
 
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'jadwal_ketersediaan';
      public function petugas() {
         return $this->belongsTo(User::class, 'petugas_faskes_id');
     }

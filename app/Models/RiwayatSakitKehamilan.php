@@ -8,6 +8,7 @@ class RiwayatSakitKehamilan extends Model
 {
         protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'riwayat_sakit_kehamilan';
       public function kehamilan() {
         return $this->belongsTo(Kehamilan::class);
     }

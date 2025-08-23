@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Kecamatan extends Model
 {
 
-        protected $guarded = ['id'];
+    protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'kecamatan';
     public function kota() {
         return $this->belongsTo(Kota::class);
     }

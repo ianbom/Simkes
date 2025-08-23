@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('tanggal_diagnosis')->nullable();
             $table->text('diagnosis')->nullable();
             $table->text('gejala')->nullable();
-            $table->text('tindangan_pengobatan')->nullable();
+            $table->text('tindakan_pengobatan')->nullable();
             $table->enum('status_penyakit', ['Aktif', 'Sembuh', 'Terkontrol']);
             $table->timestamps();
         });

@@ -9,6 +9,7 @@ class LanggananFaskes extends Model
 
         protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'langganan_faskes';
      public function user() {
         return $this->belongsTo(User::class);
     }

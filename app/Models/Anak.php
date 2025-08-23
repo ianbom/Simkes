@@ -9,6 +9,7 @@ class Anak extends Model
 
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'anak';
 
     public function kelahiran() {
         return $this->belongsTo(Kelahiran::class);

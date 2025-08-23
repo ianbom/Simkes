@@ -22,11 +22,11 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->string('nik')->unique();
-            $table->date('tanggal_lahir');
-            $table->enum('kelamin', ['L', 'P']);
-            $table->string('no_telp')->unique();
-            $table->enum('role', ['Warga', 'Petugas Faskes', 'Admin Faskes', 'Superadmin']);
+            $table->string('nik')->unique()->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->enum('kelamin', ['L', 'P'])->nullable();
+            $table->string('no_telp')->unique()->nullable();
+            $table->enum('role', ['Warga', 'Petugas Faskes', 'Admin Faskes', 'Superadmin'])->default('Warga');
             $table->string('profile_pic_url')->nullable();
             $table->enum('status_user', ['Aktif', 'Nonaktif', 'Meninggal'])->default('Aktif');
             $table->date('tanggal_meninggal')->nullable();

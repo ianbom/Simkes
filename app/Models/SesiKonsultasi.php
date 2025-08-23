@@ -9,6 +9,7 @@ class SesiKonsultasi extends Model
 
         protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'sesi_konsultasi';
 
         public function pasien() {
         return $this->belongsTo(User::class, 'pasien_user_id');

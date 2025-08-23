@@ -9,6 +9,7 @@ class Kelahiran extends Model
 
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'kelahiran';
         public function kehamilan() {
         return $this->belongsTo(Kehamilan::class);
     }

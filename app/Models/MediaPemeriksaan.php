@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class MediaPemeriksaan extends Model
 {
-        protected $guarded = ['id'];
+
+    protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'media_pemeriksaan';
       public function pemeriksaan() {
         return $this->belongsTo(PemeriksaanANC::class);
     }
