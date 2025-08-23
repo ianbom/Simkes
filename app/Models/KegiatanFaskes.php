@@ -8,6 +8,7 @@ class KegiatanFaskes extends Model
 {
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'kegiatan_faskes';
 
      public function faskes() {
         return $this->belongsTo(Faskes::class);

@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Provinsi extends Model
 {
 
-        protected $guarded = ['id'];
+    protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'provinsi';
     public function kota() {
         return $this->hasMany(Kota::class);
     }

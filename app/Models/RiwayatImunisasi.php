@@ -9,6 +9,7 @@ class RiwayatImunisasi extends Model
 
         protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'riwayat_imunisasi';
 
     public function kehamilan() {
         return $this->belongsTo(Kehamilan::class);

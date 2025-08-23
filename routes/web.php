@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\DashboardController as SpmDashboardController;
+use App\Http\Controllers\Superadmin\FaskesController as SpmFaskesController;
+use App\Http\Controllers\Superadmin\ProvinsiController as SpmProvinsiController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -44,8 +46,12 @@ Route::prefix('petugas')->group(function () {
     });
 });
 
-Route::prefix('superadmin')->group(function () {
+Route::prefix('superadmin')->as('superadmin.')->group(function () {
     Route::get('/dashboard', [SpmDashboardController::class, 'index'])->name('dashboard.index');
+    Route::resource('/provinsi', SpmProvinsiController::class);
+    Route::resource('/kota', SpmProvinsiController::class);
+    Route::resource('/kecamatan', SpmProvinsiController::class);
+    Route::resource('/faskes', SpmFaskesController::class);
 });
 
 Route::view('/', 'index');

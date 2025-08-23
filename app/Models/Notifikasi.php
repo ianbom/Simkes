@@ -9,6 +9,8 @@ class Notifikasi extends Model
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
 
+    protected $table = 'notifikasi';
+
      public function user() {
         return $this->belongsTo(User::class);
     }

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('nama');
             $table->enum('tipe_faskes', ['Puskesmas', 'Klinik', 'RSIA', 'RSUD', 'Posyandu']);
             $table->text('alamat')->nullable();
+            $table->foreignId('provinsi_id')->constrained('provinsi')->onDelete('cascade');
+            $table->foreignId('kota_id')->constrained('kota')->onDelete('cascade');
             $table->foreignId('kecamatan_id')->constrained('kecamatan')->onDelete('cascade');
             $table->string('profile_pic_url')->nullable();
             $table->text('deskripsi')->nullable();

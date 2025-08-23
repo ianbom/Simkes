@@ -9,6 +9,7 @@ class Kota extends Model
 
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'kota';
     public function provinsi() {
         return $this->belongsTo(Provinsi::class);
     }

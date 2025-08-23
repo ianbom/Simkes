@@ -8,6 +8,7 @@ class HasilLab extends Model
 {
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
+    protected $table = 'hasil_lab';
 
     public function pemeriksaan() {
         return $this->belongsTo(PemeriksaanANC::class);

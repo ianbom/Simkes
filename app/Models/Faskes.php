@@ -8,8 +8,17 @@ class Faskes extends Model
 {
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
-     public function kecamatan() {
+    protected $table = 'faskes';
+    public function kecamatan() {
         return $this->belongsTo(Kecamatan::class);
+    }
+
+    public function provinsi() {
+        return $this->belongsTo(Provinsi::class);
+    }
+
+    public function kota() {
+        return $this->belongsTo(Kota::class);
     }
 
      public function users() {
