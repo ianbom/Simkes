@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\DashboardController as SpmDashboardController;
 use App\Http\Controllers\Superadmin\FaskesController as SpmFaskesController;
+use App\Http\Controllers\Superadmin\FaskesUserController as SpmFaskesUserController;
 use App\Http\Controllers\Superadmin\ProvinsiController as SpmProvinsiController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,7 @@ Route::prefix('superadmin')->as('superadmin.')->group(function () {
     Route::resource('/kota', SpmProvinsiController::class);
     Route::resource('/kecamatan', SpmProvinsiController::class);
     Route::resource('/faskes', SpmFaskesController::class);
+    Route::resource('/faskes-user', SpmFaskesUserController::class);
 });
 
 Route::view('/', 'index');
