@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Activity, Calendar, FileText, Settings, UserPlus } from 'lucide-react';
 
-export function QuickActions() {
+const QuickActions = () => {
     const actions = [
         {
             title: 'Add Walk-in Patient',
@@ -85,4 +85,5 @@ export function QuickActions() {
             </CardContent>
         </Card>
     );
-}
+};
+export default QuickActions;
