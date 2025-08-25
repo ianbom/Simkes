@@ -72,7 +72,7 @@ const ConstultationPage = () => {
     return (
         <div>
             <div
-                className="relative overflow-hidden py-8"
+                className="relative py-8 overflow-hidden"
                 style={{
                     backgroundImage: "url('assets/images/story-bg2.png')",
                     backgroundSize: 'cover',
@@ -80,7 +80,7 @@ const ConstultationPage = () => {
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="mb-8">
                         <h1 className="mb-2 text-3xl font-bold text-gray-900">
                             Daftar Dokter{' '}
@@ -94,7 +94,7 @@ const ConstultationPage = () => {
                             call dengan tenaga kesehatan terpercaya
                         </p>
                     </div>
-                    <Card className="mb-6 rounded-xl bg-white">
+                    <Card className="mb-6 bg-white rounded-xl">
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle className="flex items-center gap-4 text-lg">
@@ -107,7 +107,7 @@ const ConstultationPage = () => {
                                     </div>
                                 </CardTitle>
                                 <Button variant="outline" size="sm">
-                                    <RefreshCcw className="mr-2 h-4 w-4" />
+                                    <RefreshCcw className="w-4 h-4 mr-2" />
                                     Reset Filter
                                 </Button>
                             </div>
@@ -115,14 +115,14 @@ const ConstultationPage = () => {
                         <CardContent>
                             <div className="grid grid-cols-1 divide-y divide-gray-300 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
                                 <div className="py-4 sm:py-0 sm:pr-6">
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Jenis Faskes
                                     </label>
                                     <Select>
                                         <SelectTrigger className="w-full border-gray-400">
                                             <SelectValue placeholder="Semua Jenis" />
                                         </SelectTrigger>
-                                        <SelectContent className="border border-gray-200 bg-white">
+                                        <SelectContent className="bg-white border border-gray-200">
                                             <SelectItem value="all">
                                                 Semua Jenis
                                             </SelectItem>
@@ -145,14 +145,14 @@ const ConstultationPage = () => {
                                     </Select>
                                 </div>
                                 <div className="py-4 sm:px-6 sm:py-0">
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Faskes{' '}
                                     </label>
                                     <Select>
                                         <SelectTrigger className="w-full border-gray-400">
                                             <SelectValue placeholder="Semua Faskes" />
                                         </SelectTrigger>
-                                        <SelectContent className="border border-gray-200 bg-white">
+                                        <SelectContent className="bg-white border border-gray-200">
                                             <SelectItem value="all">
                                                 Semua Faskes
                                             </SelectItem>
@@ -178,14 +178,14 @@ const ConstultationPage = () => {
                                     </Select>
                                 </div>
                                 <div className="py-4 sm:px-6 sm:py-0">
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Kategori Tenaga Kesehatan{' '}
                                     </label>
                                     <Select>
                                         <SelectTrigger className="w-full border-gray-400">
                                             <SelectValue placeholder="Semua Kategori" />
                                         </SelectTrigger>
-                                        <SelectContent className="border border-gray-200 bg-white">
+                                        <SelectContent className="bg-white border border-gray-200">
                                             <SelectItem value="all">
                                                 Semua Kategori
                                             </SelectItem>
@@ -211,7 +211,7 @@ const ConstultationPage = () => {
                                     </Select>
                                 </div>
                                 <div className="py-4 sm:py-0 sm:pl-6">
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Pencarian Dokter
                                     </label>
                                     <Input
@@ -225,19 +225,19 @@ const ConstultationPage = () => {
                     </Card>
                 </div>
             </div>
-            <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div className="relative px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
                     {doctors.map((doctor) => (
                         <Card
                             key={doctor.id}
-                            className="rounded-xl border border-gray-200 bg-white p-4 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                            className="p-4 transition-all duration-300 bg-white border border-gray-200 shadow-md rounded-xl hover:-translate-y-1 hover:shadow-lg"
                         >
                             <div className="flex items-center gap-4">
-                                <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-full border">
+                                <div className="flex-shrink-0 w-16 h-16 overflow-hidden border rounded-full">
                                     <img
                                         src={doctor.image}
                                         alt={doctor.name}
-                                        className="h-full w-full object-cover"
+                                        className="object-cover w-full h-full"
                                     />
                                 </div>
                                 <div>
@@ -250,7 +250,7 @@ const ConstultationPage = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-3 text-sm text-gray-600">
-                                <span className="flex items-center gap-1 rounded-full bg-sky-50 px-2 text-sky-600">
+                                <span className="flex items-center gap-1 px-2 rounded-full bg-sky-50 text-sky-600">
                                     ⭐ {doctor.rating}
                                 </span>
                                 <span className="flex items-center gap-1">
@@ -264,7 +264,7 @@ const ConstultationPage = () => {
                                         / Jam
                                     </span>
                                 </p>
-                                <Button className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700">
+                                <Button className="px-4 py-2 text-sm font-semibold text-white rounded-lg bg-sky-600 hover:bg-sky-700">
                                     Atur Konsultasi
                                 </Button>
                             </div>
