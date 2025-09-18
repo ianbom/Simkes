@@ -26,11 +26,11 @@ interface PatientQueueCardProps {
     onViewDetails: (patientId: string) => void;
 }
 
-export function PatientQueueCard({
+const PatientQueueCard = ({
     patients,
     onStartExamination,
     onViewDetails,
-}: PatientQueueCardProps) {
+}: PatientQueueCardProps) => {
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'completed':
@@ -194,7 +194,6 @@ export function PatientQueueCard({
                                     )}
                                 </div>
                             </div>
-
                             {/* Bagian kanan (aksi) */}
                             <div className="flex flex-wrap items-center gap-2">
                                 <Badge
@@ -232,4 +231,5 @@ export function PatientQueueCard({
             </CardContent>
         </Card>
     );
-}
+};
+export default PatientQueueCard;
