@@ -39,7 +39,7 @@ const mockConsultation = {
     sessionEndTime: null as Date | null,
 };
 
-export default function ConsultationRoom() {
+export default function ConsultationPageRoute() {
     const [consultation, setConsultation] = useState(mockConsultation);
     const [isCallActive, setIsCallActive] = useState(false);
     const [showSummaryForm, setShowSummaryForm] = useState(false);

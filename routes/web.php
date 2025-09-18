@@ -29,18 +29,43 @@ Route::middleware('auth')->group(function () {
 });
 
 // Route untuk akses fitur pasien
-Route::prefix('')->group(function () {});
+Route::prefix('')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Pasien/Dashboard/DashboardPageRoute');
+    });
+    Route::get('/pemeriksaan', function () {
+        return Inertia::render('Pasien/Pemeriksaan/CheckupPageRoute');
+    });
+    Route::get('/konsultasi', function () {
+        return Inertia::render('Pasien/Konsultasi/ConsultationPageRoute');
+    });
+    Route::get('/profil', function () {
+        return Inertia::render('Pasien/Profile');
+    });
 
+    Route::get('/panduan/ibu-hamil', function () {
+        return Inertia::render('Pasien/Panduan/PregnancyGuidePageRoute');
+    });
+    Route::get('/panduan/balita', function () {
+        return Inertia::render('Pasien/Panduan/ToddlerGuidePageRoute');
+    });
+    Route::get('/bank-obat', function () {
+        return Inertia::render('Pasien/BankObat/MedicinePageRoute');
+    });
+    Route::get('/bank-obat/{id}', function () {
+        return Inertia::render('Pasien/BankObat/MedicineDetailPageRoute');
+    });
+});
 // Route untuk akses fitur petugas
 Route::prefix('petugas')->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('Petugas/Dashboard');
+        return Inertia::render('Petugas/Dashboard/DashboardPageRoute');
     });
     Route::get('/pemeriksaan', function () {
-        return Inertia::render('Petugas/Checkup');
+        return Inertia::render('Petugas/Pemeriksaan/CheckupPageRoute');
     });
     Route::get('/konsultasi', function () {
-        return Inertia::render('Petugas/Consultation');
+        return Inertia::render('Petugas/Konsultasi/ConsultationPageRoute');
     });
     Route::get('/profil', function () {
         return Inertia::render('Petugas/Profile');

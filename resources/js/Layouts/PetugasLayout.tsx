@@ -1,7 +1,12 @@
 import { Header } from '@/Components/core/Header';
 import { Navigation } from '@/Components/partials/Navigation';
-import { useState } from 'react';
-export default function PetugasLayout({ children, user }) {
+import { User } from '@/types/user/interface';
+import { ReactNode, useState } from 'react';
+interface Props {
+    children: ReactNode;
+    user: User;
+}
+export default function PetugasLayout({ children, user }: Props) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     return (
         <div className="bg-background min-h-screen">
