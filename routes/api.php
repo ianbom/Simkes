@@ -9,5 +9,5 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/pemeriksaan', [PemeriksaanAncController::class, 'store']);
-Route::post('/bom', [PemeriksaanAnakController::class, 'store']);
+Route::post('/pemeriksaan-hamil', [PemeriksaanAncController::class, 'store']);
+Route::post('/pemeriksaan-anak', [PemeriksaanAnakController::class, 'store']);

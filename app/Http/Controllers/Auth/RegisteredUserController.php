@@ -29,23 +29,40 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+{
+    $request->validate([
+        'provinsi_id' => 'required|exists:provinsi,id',
+        'kota_id' => 'required|exists:kota,id',
+        'kecamatan_id' => 'required|exists:kecamatan,id',
+        'faskes_id' => 'nullable|exists:faskes,id',
+        'name' => 'required|string|max:255',
+        'nik' => 'required|string|size:16|unique:users,nik',
+        'tanggal_lahir' => 'required|date',
+        'kelamin' => 'required|in:L,P',
+        'no_telp' => 'required|string|unique:users,no_telp',
+        'alamat' => 'required|string',
+        'email' => 'required|string|lowercase|email|max:255|unique:users,email',
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $user = User::create([
+        'provinsi_id' => $request->provinsi_id,
+        'kota_id' => $request->kota_id,
+        'kecamatan_id' => $request->kecamatan_id,
+        'faskes_id' => $request->faskes_id,
+        'name' => $request->name,
+        'nik' => $request->nik,
+        'tanggal_lahir' => $request->tanggal_lahir,
+        'kelamin' => $request->kelamin,
+        'no_telp' => $request->no_telp,
+        'alamat' => $request->alamat,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
 
-        event(new Registered($user));
+    event(new Registered($user));
+    Auth::login($user);
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
-    }
+    return redirect('/dashboard');
+}
 }
