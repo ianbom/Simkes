@@ -14,6 +14,7 @@ return new class extends Migration
          Schema::create('anak', function (Blueprint $table) {
             $table->id();
             $table->foreignId('kelahiran_id')->nullable()->constrained('kelahiran')->cascadeOnDelete();
+            $table->foreignId('orang_tua_id')->constrained('users')->cascadeOnDelete();
             $table->string('nama')->nullable();
             $table->enum('kelamin', ['L', 'P']);
             $table->enum('status_hidup', ['Hidup', 'Meninggal']);

@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
+use App\Http\Controllers\Pasien\RiwayatMedisUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\DashboardController as SpmDashboardController;
 use App\Http\Controllers\Superadmin\FaskesController as SpmFaskesController;
+use App\Http\Controllers\Superadmin\FaskesUserController as SpmFaskesUserController;
 use App\Http\Controllers\Superadmin\ProvinsiController as SpmProvinsiController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -28,10 +31,21 @@ Route::middleware('auth')->group(function () {
 });
 
 // Route untuk akses fitur pasien
-Route::prefix('')->group(function () {
+Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Pasien/Dashboard/DashboardPageRoute');
     });
+
+
+
+    Route::get('/create/anak', function () {
+        return Inertia::render('Pasien/Anak/CreateAnakPageRoute');
+    });
+    Route::post('/create/anak', [PsnAnakController::class, 'store'])->name('anak.store');
+
+    Route::get('/create/riwayat-medis', [RiwayatMedisUserController::class, 'create'])->name('riwayatMedis.create');
+    Route::post('/create/riwayat-medis', [RiwayatMedisUserController::class, 'store'])->name('riwayatMedis.store');
+
     Route::get('/pemeriksaan', function () {
         return Inertia::render('Pasien/Pemeriksaan/CheckupPageRoute');
     });
@@ -77,6 +91,7 @@ Route::prefix('superadmin')->as('superadmin.')->group(function () {
     Route::resource('/kota', SpmProvinsiController::class);
     Route::resource('/kecamatan', SpmProvinsiController::class);
     Route::resource('/faskes', SpmFaskesController::class);
+    Route::resource('/faskes-user', SpmFaskesUserController::class);
 });
 
 Route::view('/', 'index');
