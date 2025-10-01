@@ -21,6 +21,7 @@ return new class extends Migration
             $table->dateTime('waktu_mulai_dijadwalkan');
             $table->integer('durasi_menit')->default(15);
             $table->string('link_video_conference')->unique();
+            $table->string('room_name')->unique();
             $table->enum('status_sesi', ['Dipesan', 'Dikonfirmasi', 'Berlangsung', 'Selesai', 'Batal', 'Tidak Hadir'])->default('Dipesan');
             $table->text('ringkasan_konsultasi')->nullable();
             $table->text('rekomendasi_petugas')->nullable();
