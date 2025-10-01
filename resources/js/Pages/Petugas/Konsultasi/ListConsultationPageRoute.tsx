@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/Components/ui/badge';
 import { Search, Video, Calendar, Clock } from 'lucide-react';
 import { useState, useMemo } from 'react';
+import { Link } from '@inertiajs/react';
 
 interface Anak {
     id: number;
@@ -42,6 +43,8 @@ interface ListConsultationPageRouteProps {
     user: any;
     consulQueue: Consul[];
 }
+
+
 
 export default function ListConsultationPageRoute({
     user,
@@ -199,10 +202,8 @@ export default function ListConsultationPageRoute({
                                         <div className="flex items-center gap-2">
                                             {getStatusBadge(c.status_sesi)}
                                             {c.link_video_conference && (
-                                                <a
-                                                    href={`https://${c.link_video_conference}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
+                                                <Link
+                                                    href={route('petugas.joinMeet', c.id)} // route Laravel
                                                 >
                                                     <Button
                                                         size="sm"
@@ -211,7 +212,7 @@ export default function ListConsultationPageRoute({
                                                         <Video className="h-4 w-4 mr-1" />
                                                         Join
                                                     </Button>
-                                                </a>
+                                                </Link>
                                             )}
                                         </div>
                                     </div>

@@ -37,6 +37,18 @@ class OnlineConsultationController extends Controller
     ]);
 }
 
+    public function listSchedulePetugas(){
+
+        $schedule = $this->onlineConsultationService->listSchedulePetugas();
+
+        return Inertia::render('Petugas/JadwalKetersediaan/ListJadwalKetersediaanPageRoute', [
+            'schedule' => $schedule
+        ]);
+
+
+    }
+
+
 
 
 }

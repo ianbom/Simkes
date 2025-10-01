@@ -82,6 +82,9 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
 
     Route::get('/list-konsultasi', [PtgOnlineConsultationController::class, 'index'])->name('consultation.index');
     Route::get('/join-meet/{id}', [PtgOnlineConsultationController::class, 'joinMeet'])->name('joinMeet');
+    Route::get('/jadwal-ketersediaan', [PtgOnlineConsultationController::class, 'listSchedulePetugas'])->name('schedule');
+
+
     Route::get('/konsultasi', function () {
         return Inertia::render('Petugas/Konsultasi/ConsultationPageRoute');
     });
