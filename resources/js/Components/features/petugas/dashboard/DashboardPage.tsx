@@ -1,6 +1,6 @@
 import CardHero from '@/Components/partials/petugas/dashboard/CardHero';
+import OnlinePatientQueueCard from '@/Components/partials/petugas/dashboard/OnlinePatientQueueCard';
 import PatientQueueCard from '@/Components/partials/petugas/dashboard/PatientQueueCard';
-import QuickActions from '@/Components/partials/petugas/dashboard/QuickActions';
 import QuickStats from '@/Components/partials/petugas/dashboard/QuickStats';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,91 +11,98 @@ import {
     CardTitle,
 } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
-import { Activity, AlertTriangle, Bell, Clock, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useState } from 'react';
 
-const mockPatients = [
-    {
-        id: '1',
-        name: 'Sarah Johnson',
-        time: '09:00 AM',
-        type: 'ANC',
-        status: 'waiting' as const,
-        phone: '+1234567890',
-        isPregnant: true,
-        notes: 'First trimester checkup',
-    },
-    {
-        id: '2',
-        name: 'Michael Chen',
-        time: '09:30 AM',
-        type: 'Child Checkup',
-        status: 'in-progress' as const,
-        phone: '+1234567891',
-        notes: '2-year-old routine vaccination',
-    },
-    {
-        id: '3',
-        name: 'Emma Davis',
-        time: '10:00 AM',
-        type: 'General',
-        status: 'waiting' as const,
-        phone: '+1234567892',
-        notes: 'Follow-up for hypertension',
-    },
-    {
-        id: '4',
-        name: 'James Wilson',
-        time: '10:30 AM',
-        type: 'Follow-up',
-        status: 'completed' as const,
-        phone: '+1234567893',
-    },
-];
+interface PregnantCheckup {
+    id: number;
+    jenis_pemeriksaan: string;
+    tanggal_checkup: string;
+    keluhan?: string;
+}
 
-const mockNotifications = [
-    {
-        id: '1',
-        type: 'urgent' as const,
-        title: 'Abnormal Lab Results',
-        patient: 'Maria Rodriguez',
-        time: '2 hours ago',
-        description: 'High blood pressure reading requires immediate attention',
-    },
-    {
-        id: '2',
-        type: 'info' as const,
-        title: 'Prescription Refill',
-        patient: 'John Smith',
-        time: '4 hours ago',
-        description: 'Diabetes medication refill approved',
-    },
-    {
-        id: '3',
-        type: 'warning' as const,
-        title: 'Missed Appointment',
-        patient: 'Lisa Brown',
-        time: '1 day ago',
-        description: 'Follow-up appointment needs rescheduling',
-    },
-];
+interface ChildCheckup {
+    id: number;
+    jenis_kunjungan: string;
+    tanggal_pemeriksaan: string;
+    berat_badan_kg?: string;
+    tinggi_badan_cm?: string;
+}
 
-const DashboardPetugasPage = () => {
+interface DashboardPetugasPageProps {
+    lastestPregnantPatients: PregnantCheckup[];
+    lastestChildPatients: ChildCheckup[];
+    consulQueue : any[]
+}
+
+const DashboardPetugasPage = ({
+    lastestPregnantPatients,
+    lastestChildPatients,
+    consulQueue
+}: DashboardPetugasPageProps) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [patients] = useState(mockPatients);
-    const [notifications] = useState(mockNotifications);
 
-    const handleStartExamination = (patientId: string) => {
+    const handleStartExamination = (patientId: string | number) => {
         console.log('Starting examination for patient:', patientId);
     };
 
-    const handleViewDetails = (patientId: string) => {
+    const handleViewDetails = (patientId: string | number) => {
         console.log('Viewing details for patient:', patientId);
     };
 
     const handleSearch = () => {
         console.log('Searching for:', searchQuery);
     };
+
+    const pregnantPatients = lastestPregnantPatients.map((p) => ({
+        id: `pregnant-${p.id}`,
+        name: `Ibu ${p.id}`,
+        time: p.tanggal_checkup,
+        type: `ANC - ${p.jenis_pemeriksaan}`,
+        status: 'waiting' as const,
+        notes: p.keluhan ?? '',
+        isPregnant: true,
+    }));
+
+    const childPatients = lastestChildPatients.map((c) => ({
+        id: `child-${c.id}`,
+        name: `Anak ${c.id}`,
+        time: c.tanggal_pemeriksaan,
+        type: `Kunjungan - ${c.jenis_kunjungan}`,
+        status: 'waiting' as const,
+        notes: `BB: ${c.berat_badan_kg}kg | TB: ${c.tinggi_badan_cm}cm`,
+        isPregnant: false,
+    }));
+
+    // 🔹 Gabungkan jadi satu array
+    const allPatients = [...pregnantPatients, ...childPatients];
+
+     const onlinePatients = consulQueue.map((c) => {
+    let name = c.pasien?.name ?? "Pasien";
+    let type = "Konsultasi Umum";
+
+    // Jika ada data anak
+    if (c.anak) {
+      name = c.anak.nama ?? name;
+      type = "Konsultasi Anak";
+    }
+
+    // Jika ada data kehamilan
+    if (c.kehamilan) {
+      type = "Konsultasi Ibu Hamil";
+    }
+
+    return {
+      id: String(c.id),
+      name,
+      time: c.waktu_mulai_dijadwalkan,
+      type,
+      status: c.status_sesi === "Dikonfirmasi" ? ("waiting" as const) : ("in-progress" as const),
+      phone: c.pasien?.no_telp,
+      notes: `Durasi: ${c.durasi_menit} menit | Link: ${c.link_video_conference}`,
+      isPregnant: !!c.kehamilan,
+    };
+  });
 
     return (
         <div className="px-4 py-6 pb-20 lg:px-8 lg:pb-6">
@@ -107,17 +114,13 @@ const DashboardPetugasPage = () => {
                             Dashboard Petugas Faskes
                         </h1>
                     </div>
-                    {/* <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                            <Filter className="w-4 h-4 mr-2" />
-                            Filter
-                        </Button>
-                    </div> */}
                 </div>
                 <CardHero />
             </div>
+
             {/* Quick Stats */}
             <QuickStats />
+
             {/* Patient Search */}
             <Card className="mb-8">
                 <CardHeader>
@@ -126,14 +129,14 @@ const DashboardPetugasPage = () => {
                         Cari Pasien
                     </CardTitle>
                     <CardDescription>
-                        Search for walk-in patients or scheduled appointments
+                        Cari pasien walk-in atau pasien dengan janji temu
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <Input
-                                placeholder="Search by name, ID, or phone number..."
+                                placeholder="Cari berdasarkan nama, ID, atau no telp..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full"
@@ -144,75 +147,28 @@ const DashboardPetugasPage = () => {
                             className="bg-gray-200 hover:text-white"
                         >
                             <Search className="mr-2 h-4 w-4" />
-                            Search
+                            Cari
                         </Button>
                     </div>
                 </CardContent>
             </Card>
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                {/* Patient Queue */}
-                <div className="lg:col-span-2">
-                    <PatientQueueCard
-                        patients={patients}
-                        onStartExamination={handleStartExamination}
-                        onViewDetails={handleViewDetails}
-                    />
-                </div>
-                {/* Right sidebar with notifications and quick actions */}
-                <div className="space-y-6">
-                    <QuickActions />
-                    {/* Clinical Notifications */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Bell className="h-5 w-5" />
-                                Clinical Notifications
-                            </CardTitle>
-                            <CardDescription>
-                                Important alerts and lab results
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {notifications.map((notification) => (
-                                    <div
-                                        key={notification.id}
-                                        className="bg-muted hover:bg-muted/80 flex cursor-pointer gap-3 rounded-lg p-3 transition-colors"
-                                    >
-                                        <div className="mt-1 flex-shrink-0">
-                                            {notification.type === 'urgent' && (
-                                                <AlertTriangle className="text-destructive h-5 w-5" />
-                                            )}
-                                            {notification.type === 'info' && (
-                                                <Activity className="h-5 w-5 text-primary" />
-                                            )}
-                                            {notification.type ===
-                                                'warning' && (
-                                                <Clock className="h-5 w-5 text-yellow-600" />
-                                            )}
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between">
-                                                <p className="text-foreground font-medium">
-                                                    {notification.title}
-                                                </p>
-                                                <span className="text-muted-foreground text-xs">
-                                                    {notification.time}
-                                                </span>
-                                            </div>
-                                            <p className="text-muted-foreground mb-1 text-sm">
-                                                {notification.patient}
-                                            </p>
-                                            <p className="text-foreground text-sm">
-                                                {notification.description}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
+
+            {/* Patient Queue (Ibu & Anak gabung) */}
+
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                {/* Ibu Hamil */}
+                 <PatientQueueCard
+                patients={allPatients}
+                onStartExamination={handleStartExamination}
+                onViewDetails={handleViewDetails}
+            />
+
+                {/* Anak */}
+                 <OnlinePatientQueueCard
+                  patients={onlinePatients}
+                  onStartExamination={(id) => console.log("Start Online", id)}
+                  onViewDetails={(id) => console.log("Detail Online", id)}
+                />
             </div>
         </div>
     );

@@ -10,6 +10,7 @@ class PemeriksaanAnc extends Model
     protected $primaryKey = 'id';
     protected $table = 'pemeriksaan_anc';
 
+   
     public function kehamilan() {
         return $this->belongsTo(Kehamilan::class);
     }

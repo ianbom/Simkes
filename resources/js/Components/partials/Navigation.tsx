@@ -23,8 +23,8 @@ const navigation = [
         href: '/petugas/pemeriksaan',
         icon: Stethoscope,
     },
-    { name: 'Konsultasi Online', href: '/consultation', icon: Video },
-    { name: 'Jadwal Pemeriksaan', href: '/schedule', icon: Calendar },
+    { name: 'Konsultasi Online', href: '/petugas/list-konsultasi', icon: Video },
+    { name: 'Jadwal Pemeriksaan', href: '/petugas/jadwal-ketersediaan', icon: Calendar },
     { name: 'Riwayat Pasien', href: '/history', icon: FileText },
 ];
 

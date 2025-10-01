@@ -27,7 +27,7 @@ interface PatientQueueCardProps {
     onViewDetails: (patientId: string) => void;
 }
 
-const PatientQueueCard = ({
+const OnlinePatientQueueCard = ({
     patients,
     onStartExamination,
     onViewDetails,
@@ -60,7 +60,7 @@ const PatientQueueCard = ({
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Calendar className="h-5 w-5" />
-                    Riwayat Checkup Pasien
+                    Antrian Konsultasi Online
                 </CardTitle>
                 <CardDescription>
                     Daftar pasien yang hadir hari ini ({patients.length})
@@ -168,4 +168,4 @@ const PatientQueueCard = ({
         </Card>
     );
 };
-export default PatientQueueCard;
+export default OnlinePatientQueueCard;

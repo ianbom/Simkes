@@ -1,0 +1,227 @@
+import PetugasLayout from '@/Layouts/PetugasLayout';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/Components/ui/card';
+import { Input } from '@/Components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/Components/ui/badge';
+import { Search, Video, Calendar, Clock } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Link } from '@inertiajs/react';
+
+interface Anak {
+    id: number;
+    nama: string;
+}
+
+interface Pasien {
+    id: number;
+    name: string;
+    no_telp?: string;
+}
+
+interface Kehamilan {
+    id: number;
+}
+
+interface Consul {
+    id: number;
+    waktu_mulai_dijadwalkan: string;
+    durasi_menit: number;
+    link_video_conference: string;
+    status_sesi: string;
+    anak: Anak | null;
+    pasien: Pasien;
+    kehamilan: Kehamilan | null;
+}
+
+interface ListConsultationPageRouteProps {
+    user: any;
+    consulQueue: Consul[];
+}
+
+
+
+export default function ListConsultationPageRoute({
+    user,
+    consulQueue,
+}: ListConsultationPageRouteProps) {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState<string>('all');
+
+    const filteredConsultations = useMemo(() => {
+        return consulQueue.filter((c) => {
+            // 🔎 Search by pasien/anak
+            const name =
+                c.anak?.nama?.toLowerCase() ||
+                c.pasien?.name?.toLowerCase() ||
+                '';
+            const matchesSearch = name.includes(searchQuery.toLowerCase());
+
+            // 🔎 Filter by status
+            const matchesStatus =
+                statusFilter === 'all' ||
+                c.status_sesi.toLowerCase() === statusFilter.toLowerCase();
+
+            return matchesSearch && matchesStatus;
+        });
+    }, [consulQueue, searchQuery, statusFilter]);
+
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case 'Dikonfirmasi':
+                return (
+                    <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                        {status}
+                    </Badge>
+                );
+            case 'Berlangsung':
+                return (
+                    <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                        {status}
+                    </Badge>
+                );
+            case 'Selesai':
+                return (
+                    <Badge className="bg-green-100 text-green-800 border-green-200">
+                        {status}
+                    </Badge>
+                );
+            case 'Batal':
+            case 'Tidak Hadir':
+                return (
+                    <Badge className="bg-red-100 text-red-800 border-red-200">
+                        {status}
+                    </Badge>
+                );
+            default:
+                return (
+                    <Badge className="bg-gray-100 text-gray-800 border-gray-200">
+                        {status}
+                    </Badge>
+                );
+        }
+    };
+
+    return (
+        <PetugasLayout user={user}>
+            <div className="px-4 py-6 lg:px-8">
+                <h1 className="font-heading text-2xl font-bold mb-6">
+                    Daftar Konsultasi Online
+                </h1>
+
+                {/* Filter & Search */}
+                <Card className="mb-6">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Search className="h-5 w-5" />
+                            Cari & Filter
+                        </CardTitle>
+                        <CardDescription>
+                            Cari berdasarkan nama pasien atau filter status
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                            <Input
+                                placeholder="Cari nama pasien..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="flex-1"
+                            />
+
+                            <select
+                                value={statusFilter}
+                                onChange={(e) =>
+                                    setStatusFilter(e.target.value)
+                                }
+                                className="border rounded-md px-3 py-2 text-sm"
+                            >
+                                <option value="all">Semua Status</option>
+                                <option value="Dipesan">Dipesan</option>
+                                <option value="Dikonfirmasi">
+                                    Dikonfirmasi
+                                </option>
+                                <option value="Berlangsung">Berlangsung</option>
+                                <option value="Selesai">Selesai</option>
+                                <option value="Batal">Batal</option>
+                                <option value="Tidak Hadir">Tidak Hadir</option>
+                            </select>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* List Konsultasi */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
+                            Antrian ({filteredConsultations.length})
+                        </CardTitle>
+                        <CardDescription>
+                            Daftar konsultasi pasien
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            {filteredConsultations.map((c) => {
+                                const name =
+                                    c.anak?.nama || c.pasien?.name || 'Pasien';
+
+                                return (
+                                    <div
+                                        key={c.id}
+                                        className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"
+                                    >
+                                        {/* Left: Data Pasien */}
+                                        <div>
+                                            <p className="font-semibold text-foreground">
+                                                {name}
+                                            </p>
+                                            <div className="mt-1 text-sm text-muted-foreground flex flex-wrap gap-3">
+                                                <span className="flex items-center gap-1">
+                                                    <Calendar className="h-3 w-3" />
+                                                    {
+                                                        c.waktu_mulai_dijadwalkan
+                                                    }
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Clock className="h-3 w-3" />
+                                                    {c.durasi_menit} menit
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-blue-600 mt-1">
+                                                {c.link_video_conference}
+                                            </p>
+                                        </div>
+
+                                        {/* Right: Status & Action */}
+                                        <div className="flex items-center gap-2">
+                                            {getStatusBadge(c.status_sesi)}
+                                            {c.link_video_conference && (
+                                                <Link
+                                                    href={route('petugas.joinMeet', c.id)} // route Laravel
+                                                >
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-green-500 text-white hover:bg-green-600"
+                                                    >
+                                                        <Video className="h-4 w-4 mr-1" />
+                                                        Join
+                                                    </Button>
+                                                </Link>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </PetugasLayout>
+    );
+}

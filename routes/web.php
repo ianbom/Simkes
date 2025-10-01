@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
 use App\Http\Controllers\Pasien\RiwayatMedisUserController;
+use App\Http\Controllers\Petugas\DashboardController as PtgDashboardController;
+use App\Http\Controllers\Petugas\OnlineConsultationController as PtgOnlineConsultationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\DashboardController as SpmDashboardController;
 use App\Http\Controllers\Superadmin\FaskesController as SpmFaskesController;
@@ -70,13 +72,19 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     });
 });
 // Route untuk akses fitur petugas
-Route::prefix('petugas')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Petugas/Dashboard/DashboardPageRoute');
-    });
+Route::prefix('petugas')->as('petugas.')->group(function () {
+
+    Route::get('/dashboard', [PtgDashboardController::class, 'index'])->name('dashboard.index');
+
     Route::get('/pemeriksaan', function () {
         return Inertia::render('Petugas/Pemeriksaan/CheckupPageRoute');
     });
+
+    Route::get('/list-konsultasi', [PtgOnlineConsultationController::class, 'index'])->name('consultation.index');
+    Route::get('/join-meet/{id}', [PtgOnlineConsultationController::class, 'joinMeet'])->name('joinMeet');
+    Route::get('/jadwal-ketersediaan', [PtgOnlineConsultationController::class, 'listSchedulePetugas'])->name('schedule');
+
+
     Route::get('/konsultasi', function () {
         return Inertia::render('Petugas/Konsultasi/ConsultationPageRoute');
     });
