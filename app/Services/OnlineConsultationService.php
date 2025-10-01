@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\SesiKonsultasi;
+
 class OnlineConsultationService
 {
     /**
@@ -10,5 +12,10 @@ class OnlineConsultationService
     public function __construct()
     {
         //
+    }
+
+    public function getSesiKonsultasiById($id){
+        $sesiKonsultasi = SesiKonsultasi::with('petugas', 'pasien', 'anak', 'kehamilan', 'jadwal')->findOrFail($id);
+        return $sesiKonsultasi;
     }
 }
