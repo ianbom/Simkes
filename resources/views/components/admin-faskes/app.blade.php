@@ -4,7 +4,7 @@
 <head>
     <meta charset='utf-8' />
     <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-    <title>{{ $title ?? 'Superadmin' }}</title>
+    <title>{{ $title ?? 'Admin Faskes' }}</title>
 
     <meta name='viewport' content='width=device-width, initial-scale=1' />
     <link rel="icon" type="image/svg" href="/assets/images/favicon.svg" />
@@ -96,17 +96,17 @@
     <div class="main-container text-black dark:text-white-dark min-h-screen" :class="[$store.app.navbar]">
 
 
-        <x-superadmin.sidebar/>
+        <x-admin-faskes.sidebar/>
 
         <div class="main-content flex flex-col min-h-screen">
 
-            <x-superadmin.header/>
+            <x-admin-faskes.header/>
             <div class="dvanimation p-6 animate__animated" :class="[$store.app.animation]">
                 {{ $slot }}
             </div>
 
 
-            <x-superadmin.footer/>
+            <x-admin-faskes.footer/>
         </div>
     </div>
     <script src="/assets/js/alpine-collaspe.min.js"></script>
