@@ -29,8 +29,10 @@ class FaskesUserController extends Controller
         try {
             $data = $request->validated();
             $data['password'] = Hash::make($data['password']);
+
             User::create($data);
             DB::commit();
+            // dd($data);
             return redirect()->route('superadmin.faskes-user.index')->with('success', 'Pengguna berhasil dibuat');
         } catch (\Throwable $th) {
             DB::rollBack();

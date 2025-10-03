@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminFaskes\DashboardController as AdmDashboardController;
+use App\Http\Controllers\AdminFaskes\PetugasController as AdmPetugasController;
 use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
 use App\Http\Controllers\Pasien\RiwayatMedisUserController;
 use App\Http\Controllers\Petugas\DashboardController as PtgDashboardController;
@@ -37,9 +39,6 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Pasien/Dashboard/DashboardPageRoute');
     });
-
-
-
     Route::get('/create/anak', function () {
         return Inertia::render('Pasien/Anak/CreateAnakPageRoute');
     });
@@ -91,6 +90,11 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
     Route::get('/profil', function () {
         return Inertia::render('Petugas/Profile');
     });
+});
+
+Route::prefix('admin-faskes')->as('admin.')->group(function () {
+    Route::get('dashboard', [AdmDashboardController::class, 'index'])->name('dashboard.index');
+    Route::resource('petugas', AdmPetugasController::class);
 });
 
 Route::prefix('superadmin')->as('superadmin.')->group(function () {
