@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
-import { Bell, ChevronDown, LogOut, Menu, Settings, User } from 'lucide-react';
+import { Bell, ChevronDown, LogOut, Menu, User } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 export function Header({ onMenuClick, user }) {
@@ -128,14 +128,45 @@ export function Header({ onMenuClick, user }) {
                                         <User className="h-4 w-4" />
                                         Profil Saya
                                     </Link>
-
                                     <Link
-                                        href="/settings"
+                                        href="/profile"
                                         className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                                         onClick={() => setIsProfileOpen(false)}
                                     >
-                                        <Settings className="h-4 w-4" />
-                                        Pengaturan
+                                        <User className="h-4 w-4" />
+                                        Riwayat Checkup Rutin
+                                    </Link>
+                                    <Link
+                                        href="/profile"
+                                        className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                        onClick={() => setIsProfileOpen(false)}
+                                    >
+                                        <User className="h-4 w-4" />
+                                        Riwayat Checkup Sakit{' '}
+                                    </Link>
+                                    <Link
+                                        href="/profile"
+                                        className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                        onClick={() => setIsProfileOpen(false)}
+                                    >
+                                        <User className="h-4 w-4" />
+                                        Riwayat Konsultasi Online{' '}
+                                    </Link>
+                                    <Link
+                                        href="/profile"
+                                        className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                        onClick={() => setIsProfileOpen(false)}
+                                    >
+                                        <User className="h-4 w-4" />
+                                        Perkembangan Anak
+                                    </Link>
+                                    <Link
+                                        href="/profile"
+                                        className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                        onClick={() => setIsProfileOpen(false)}
+                                    >
+                                        <User className="h-4 w-4" />
+                                        Perkembangan Kehamilan
                                     </Link>
                                 </div>
 
