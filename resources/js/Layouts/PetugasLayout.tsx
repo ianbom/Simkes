@@ -9,7 +9,7 @@ interface Props {
 export default function PetugasLayout({ children, user }: Props) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     return (
-        <div className="bg-background min-h-screen">
+        <div className="min-h-screen bg-gradient-to-br from-sky-50 to-white">
             <Header onMenuClick={() => setIsMobileMenuOpen(true)} user={user} />
             <Navigation
                 isMobileMenuOpen={isMobileMenuOpen}

@@ -50,6 +50,7 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/pemeriksaan', function () {
         return Inertia::render('Pasien/Pemeriksaan/CheckupPageRoute');
     });
+
     Route::get('/konsultasi', function () {
         return Inertia::render('Pasien/Konsultasi/ConsultationPageRoute');
     });
@@ -78,6 +79,13 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
     Route::get('/pemeriksaan', function () {
         return Inertia::render('Petugas/Pemeriksaan/CheckupPageRoute');
     });
+    Route::get('/checkup-anak/{id}', function () {
+        return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute');
+    });
+    Route::get('/checkup-kehamilan/{id}', function () {
+        return Inertia::render('Petugas/Pemeriksaan/Kehamilan/PregnancyCheckupPageRoute');
+    });
+
 
     Route::get('/list-konsultasi', [PtgOnlineConsultationController::class, 'index'])->name('consultation.index');
     Route::get('/join-meet/{id}', [PtgOnlineConsultationController::class, 'joinMeet'])->name('joinMeet');
