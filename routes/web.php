@@ -70,6 +70,12 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/bank-obat/{id}', function () {
         return Inertia::render('Pasien/BankObat/MedicineDetailPageRoute');
     });
+    Route::get('/grafik/perkembangan-anak/{id}', function () {
+        return Inertia::render('Pasien/Grafik/ChildGraphPageRoute');
+    });
+    Route::get('/grafik/perkembangan-janin/{id}', function () {
+        return Inertia::render('Pasien/Grafik/PregnancyGraphPageRoute');
+    });
 });
 // Route untuk akses fitur petugas
 Route::prefix('petugas')->as('petugas.')->group(function () {
