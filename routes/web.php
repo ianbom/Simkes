@@ -55,8 +55,24 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/konsultasi', function () {
         return Inertia::render('Pasien/Konsultasi/ConsultationPageRoute');
     });
+    Route::get('/konsultasi/{id}', function () {
+        return Inertia::render('Pasien/Konsultasi/ConsultationDetailPageRoute');
+    });
     Route::get('/profil', function () {
-        return Inertia::render('Pasien/Profile');
+        return Inertia::render('Pasien/Profil/ProfilePageRoute');
+
+    });
+    Route::get('/riwayat/checkup-rutin', function () {
+        return Inertia::render('Pasien/Profile/ProfilePageRoute');
+
+    });
+    Route::get('/riwayat/checkup-sakit', action: function () {
+        return Inertia::render('Pasien/Profile/ProfilePageRoute');
+
+    });
+    Route::get('/riwayat/konsultasi', action: function () {
+        return Inertia::render('Pasien/Profile/ProfilePageRoute');
+
     });
 
     Route::get('/panduan/ibu-hamil', function () {
