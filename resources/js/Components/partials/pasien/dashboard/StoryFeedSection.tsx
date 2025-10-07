@@ -3,21 +3,21 @@ const reviews = [
         name: 'Siti, Ibu Balita',
         text: 'SIMKESIA membantu saya memantau kesehatan bayi dengan grafik tumbuh kembang yang mudah dipahami.',
         rating: 5,
-        image: 'assets/images/profile-25.jpeg',
+        image: '/assets/images/profile-25.jpeg',
         bgStyle: 'white',
     },
     {
         name: 'Ayu, Ibu Hamil 7 Bulan',
         text: 'Konsul online dengan dokter kandungan lewat SIMKESIA sangat membantu, tidak perlu antre di rumah sakit.',
         rating: 5,
-        image: 'assets/images/profile-15.jpeg',
+        image: '/assets/images/profile-15.jpeg',
         bgStyle: 'white',
     },
     {
         name: 'Dewi, Ibu Baru',
         text: 'Aplikasi ini lengkap sekali, dari panduan, bank obat, sampai info faskes terdekat. Sangat praktis!',
         rating: 4,
-        image: 'assets/images/profile-22.jpeg',
+        image: '/assets/images/profile-22.jpeg',
         bgStyle: 'white',
     },
 ];
@@ -25,7 +25,7 @@ const reviews = [
 const StoryFeedSection = () => {
     return (
         <section
-            className="relative overflow-hidden py-20"
+            className="relative py-20 overflow-hidden"
             style={{
                 backgroundImage: "url('assets/images/story-bg2.png')",
                 backgroundSize: 'cover',
@@ -37,15 +37,15 @@ const StoryFeedSection = () => {
             <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-sky-200/30 blur-3xl"></div>
             <div className="absolute left-40 top-20 h-[300px] w-[300px] rounded-full bg-sky-100/40 blur-2xl"></div>
             <div className="absolute bottom-0 right-0 h-[350px] w-[350px] rounded-full bg-pink-200/20 blur-3xl"></div>
-            <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="mb-20 text-center">
                     <h2 className="mb-4 text-4xl font-bold text-gray-900 lg:text-5xl">
                         Cerita Bunda Bersama{' '}
-                        <span className="bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
+                        <span className="text-transparent bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text">
                             SIMKESIA
                         </span>
                     </h2>
-                    <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-sky-400 to-blue-500"></div>
+                    <div className="w-24 h-1 mx-auto rounded-full bg-gradient-to-r from-sky-400 to-blue-500"></div>
                 </div>
                 {/* <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
                     {reviews.map((review, i) => (
@@ -138,7 +138,7 @@ const StoryFeedSection = () => {
                     {reviews.map((review, i) => (
                         <div
                             key={i}
-                            className="group relative transform transition-all duration-300 hover:-translate-y-2"
+                            className="relative transition-all duration-300 transform group hover:-translate-y-2"
                         >
                             <div
                                 className={`relative flex flex-col rounded-3xl p-8 shadow-xl transition-all duration-300 ${
@@ -147,17 +147,17 @@ const StoryFeedSection = () => {
                                         : 'border border-white/30 bg-white/20 text-gray-800 backdrop-blur-md'
                                 } hover:shadow-2xl hover:shadow-sky-500/20`}
                             >
-                                <div className="absolute -top-14 left-8 flex h-28 w-28 transform items-center justify-center overflow-hidden rounded-full border-4 border-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+                                <div className="absolute flex items-center justify-center overflow-hidden transition-transform duration-300 transform border-4 border-white rounded-full shadow-lg -top-14 left-8 h-28 w-28 group-hover:scale-110">
                                     <img
                                         src={review.image}
                                         alt={review.name}
                                         width={112}
                                         height={112}
-                                        className="h-full w-full object-cover"
+                                        className="object-cover w-full h-full"
                                     />
                                 </div>
                                 <div className="mt-12">
-                                    <div className="mb-6 flex">
+                                    <div className="flex mb-6">
                                         {Array.from({ length: 5 }).map(
                                             (_, idx) => (
                                                 <span
