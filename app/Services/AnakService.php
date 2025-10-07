@@ -19,11 +19,10 @@ class AnakService
     public function createAnak(CreateAnakRequest $request): Anak
     {
         $data = $request->validated();
-        $userId = Auth::id();
-        
+
         return Anak::create([
             'kelahiran_id'      => $data['kelahiran_id'] ?? null,
-            'orang_tua_id'     => $userId,
+            'orang_tua_id'     => $data['orang_tua_id'],
             'nama'              => $data['nama'] ?? null,
             'kelamin'           => $data['kelamin'],
             'status_hidup'      => $data['status_hidup'],

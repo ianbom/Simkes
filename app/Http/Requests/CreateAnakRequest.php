@@ -16,6 +16,7 @@ class CreateAnakRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'orang_tua_id'       => 'nullable',
             'kelahiran_id'       => 'nullable|exists:kelahiran,id',
             'nama'               => 'nullable|string|max:255',
             'kelamin'            => 'required|in:L,P',

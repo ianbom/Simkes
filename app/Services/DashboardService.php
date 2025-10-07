@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\PemeriksaanAnak;
 use App\Models\PemeriksaanAnc;
 use App\Models\SesiKonsultasi;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardService
@@ -33,5 +34,10 @@ class DashboardService
         $userId = Auth::id();
         $consulQueue = SesiKonsultasi::with('anak', 'kehamilan', 'pasien', 'petugas', 'jadwal')->where('petugas_faskes_id', $userId)->get();
         return $consulQueue;
+    }
+
+    public function getPatientByNik($nik){
+        $patient = User::where('nik', $nik)->first();
+        return $patient;
     }
 }
