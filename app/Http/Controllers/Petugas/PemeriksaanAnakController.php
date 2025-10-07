@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Petugas;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePemeriksaanAnakRequest;
+use App\Models\Anak;
 use App\Services\PemeriksaanAnakService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 use Throwable;
 
 class PemeriksaanAnakController extends Controller
@@ -38,4 +40,17 @@ class PemeriksaanAnakController extends Controller
             ]);
         }
     }
+
+    public function createPemeriksaan($id){
+    $child = Anak::find($id);
+
+    // return response()->json(['child' => $child]);
+
+
+       return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute',[
+            'child' => $child
+        ]);
+    }
+
+
 }

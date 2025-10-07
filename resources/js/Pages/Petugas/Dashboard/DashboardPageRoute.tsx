@@ -5,7 +5,10 @@ export default function DashboardPageRoute({
     user,
     lastestPregnantPatients,
     lastestChildPatients,
-    consulQueue
+    consulQueue,
+    childPatient,
+    patientPregnant,
+    patient
 }) {
     return (
         <PetugasLayout user={user}>
@@ -13,6 +16,9 @@ export default function DashboardPageRoute({
                 lastestPregnantPatients={lastestPregnantPatients}
                 lastestChildPatients={lastestChildPatients}
                 consulQueue={consulQueue}
+                childPatient={childPatient}
+                patientPregnant={patientPregnant}
+                patient={patient}
             />
         </PetugasLayout>
     );

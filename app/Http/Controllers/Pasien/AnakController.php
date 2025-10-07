@@ -22,10 +22,8 @@ class AnakController extends Controller
         try {
             $anak = $this->anakService->createAnak($request);
 
-        return response()->json([
-            'message' => "Data anak {$anak->nama} berhasil ditambahkan.",
-            'data' => $anak
-        ], 201);
+            return redirect()->back();
+
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Terjadi kesalahan saat menambahkan data anak.',

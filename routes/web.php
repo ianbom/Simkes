@@ -6,6 +6,7 @@ use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
 use App\Http\Controllers\Pasien\RiwayatMedisUserController;
 use App\Http\Controllers\Petugas\DashboardController as PtgDashboardController;
 use App\Http\Controllers\Petugas\OnlineConsultationController as PtgOnlineConsultationController;
+use App\Http\Controllers\Petugas\PemeriksaanAnakController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\DashboardController as SpmDashboardController;
 use App\Http\Controllers\Superadmin\FaskesController as SpmFaskesController;
@@ -88,6 +89,9 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
     Route::get('/checkup-anak/{id}', function () {
         return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute');
     });
+
+    Route::get('/checkup-anak/{id}', [PemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
+
     Route::get('/checkup-kehamilan/{id}', function () {
         return Inertia::render('Petugas/Pemeriksaan/Kehamilan/PregnancyCheckupPageRoute');
     });
