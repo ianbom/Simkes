@@ -5,14 +5,13 @@ import {
 } from '@/Components/ui/dropdown-menu';
 import { User } from '@/types/user/interface';
 import {
-    FileText,
-    Heart,
-    Lightbulb,
+    Baby,
+    HeartPulse,
     LogOut,
-    ShoppingBag,
-    Star,
-    Target,
+    SquareActivity,
+    Stethoscope,
     User as UserIcon,
+    Video,
 } from 'lucide-react';
 
 interface Props {
@@ -23,7 +22,6 @@ interface Props {
 
 export function getProfileMenuContent({
     user,
-    onProfileClick,
     onLogoutClick,
 }: Props): React.ReactNode {
     return (
@@ -33,17 +31,13 @@ export function getProfileMenuContent({
                     {user?.name || 'Guest'}
                 </p>
                 <p className="mt-0.5 text-xs text-gray-500">{user?.email}</p>
-
-                <div className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">
-                    <Star className="h-4 w-4 text-yellow-500" />
-                </div>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuLabel className="px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-gray-500">
                 Profil
             </DropdownMenuLabel>
             <DropdownMenuItem
-                onClick={onProfileClick}
+                onClick={() => (location.href = `/pasien/profil`)}
                 className="flex cursor-pointer items-center gap-2"
             >
                 <UserIcon className="h-4 w-4" />
@@ -53,39 +47,52 @@ export function getProfileMenuContent({
                 RIWAYAT
             </DropdownMenuLabel>
             <DropdownMenuItem
-                onClick={() => (location.href = `/my-report`)}
+                onClick={() =>
+                    (location.href = `/pasien/history/checkup-kehamilan`)
+                }
                 className="flex cursor-pointer items-center gap-2"
             >
-                <FileText className="h-4 w-4" />
-                <span>Laporan Saya</span>
+                <SquareActivity className="h-4 w-4" />
+                <span>Checkup Kehamilan</span>
             </DropdownMenuItem>
             <DropdownMenuItem
-                onClick={() => (location.href = `/my-mission`)}
+                onClick={() =>
+                    (location.href = `/pasien/history/checkup-balita`)
+                }
                 className="flex cursor-pointer items-center gap-2"
             >
-                <Target className="h-4 w-4" />
-                <span>Misi yang Diikuti</span>
+                <Stethoscope className="h-4 w-4" />
+                <span>Checkup Balita</span>
             </DropdownMenuItem>
             <DropdownMenuItem
-                onClick={() => (location.href = `/my-donations`)}
+                onClick={() =>
+                    (location.href = `/pasien/history/konsultasi-online`)
+                }
                 className="flex cursor-pointer items-center gap-2"
             >
-                <Heart className="h-4 w-4" />
-                <span>Donasi Saya</span>
+                <Video className="h-4 w-4" />
+                <span>Konsultasi Online</span>
+            </DropdownMenuItem>
+            <DropdownMenuLabel className="px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-gray-500">
+                Perkembangan
+            </DropdownMenuLabel>
+            <DropdownMenuItem
+                onClick={() =>
+                    (location.href = `/pasien/grafik/perkembangan-janin/{id}`)
+                }
+                className="flex cursor-pointer items-center gap-2"
+            >
+                <HeartPulse className="h-4 w-4" />
+                <span>Perkembangan Janin</span>
             </DropdownMenuItem>
             <DropdownMenuItem
-                onClick={() => (location.href = `/my-merchandise`)}
+                onClick={() =>
+                    (location.href = `/pasien/grafik/perkembangan-anak/{id}`)
+                }
                 className="flex cursor-pointer items-center gap-2"
             >
-                <ShoppingBag className="h-4 w-4" />
-                <span>Merchandise Saya</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-                onClick={() => (location.href = `/my-quiz-attempt`)}
-                className="flex cursor-pointer items-center gap-2"
-            >
-                <Lightbulb className="h-4 w-4" />
-                <span>Kuis yang Dikerjakan</span>
+                <Baby className="h-4 w-4" />
+                <span>Perkembangan Balita</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
