@@ -6,7 +6,7 @@ import {
     SelectValue,
 } from '@/Components/ui/select';
 import { Weight } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
     Area,
     AreaChart,
@@ -16,9 +16,11 @@ import {
     Tooltip,
     XAxis,
     YAxis,
+    Scatter,
+    ScatterChart,
 } from 'recharts';
 
-// Generate data untuk Berat Badan (Weight)
+// Generate data untuk Berat Badan (Weight) - Data WHO/CDC
 const generateWeightPercentileData = () => {
     const months = Array.from({ length: 61 }, (_, i) => i);
     return months.map((month) => ({
@@ -57,117 +59,147 @@ const generateHeadCircumferenceData = () => {
     }));
 };
 
-const childData = {
-    name: 'Senjani Thalita',
-    birthDate: '18 Juni 2023',
-    gender: 'female',
-    weight: [
-        { month: 0, value: 3.2 },
-        { month: 2, value: 5.1 },
-        { month: 4, value: 6.3 },
-        { month: 6, value: 7.2 },
-        { month: 9, value: 8.1 },
-        { month: 12, value: 8.9 },
-        { month: 15, value: 9.5 },
-        { month: 18, value: 10.2 },
-        { month: 22, value: 8.5 },
-    ],
-    height: [
-        { month: 0, value: 49 },
-        { month: 2, value: 57 },
-        { month: 4, value: 62 },
-        { month: 6, value: 66 },
-        { month: 9, value: 70 },
-        { month: 12, value: 74 },
-        { month: 15, value: 77 },
-        { month: 18, value: 80 },
-        { month: 22, value: 75 },
-    ],
-    headCircumference: [
-        { month: 0, value: 34 },
-        { month: 2, value: 38 },
-        { month: 4, value: 40.5 },
-        { month: 6, value: 42 },
-        { month: 9, value: 43.5 },
-        { month: 12, value: 45 },
-        { month: 15, value: 46 },
-        { month: 18, value: 47 },
-        { month: 22, value: 45.5 },
-    ],
-};
-
-const chartConfigs = {
-    weight: {
-        title: 'Grafik Berat Badan per Usia',
-        yAxisLabel: 'Berat Badan (Kg)',
-        unit: 'Kg',
-        yDomain: [2, 28],
-        data: generateWeightPercentileData(),
-        measurements: childData.weight,
-        status: {
-            value: 8.5,
-            zScore: -5,
-            category: 'stunting berat',
-            color: 'red',
-        },
-    },
-    height: {
-        title: 'Grafik Tinggi Badan per Usia',
-        yAxisLabel: 'Tinggi Badan (cm)',
-        unit: 'cm',
-        yDomain: [40, 120],
-        data: generateHeightPercentileData(),
-        measurements: childData.height,
-        status: {
-            value: 75,
-            zScore: -3,
-            category: 'pendek (stunted)',
-            color: 'orange',
-        },
-    },
-    headCircumference: {
-        title: 'Grafik Lingkar Kepala per Usia',
-        yAxisLabel: 'Lingkar Kepala (cm)',
-        unit: 'cm',
-        yDomain: [30, 55],
-        data: generateHeadCircumferenceData(),
-        measurements: childData.headCircumference,
-        status: {
-            value: 45.5,
-            zScore: -2,
-            category: 'di bawah normal',
-            color: 'yellow',
-        },
-    },
-};
-
-const ChildGraphPage = () => {
+const ChildGraphPage = ({ child, growth }) => {
     const [activeTab, setActiveTab] = useState('weight');
 
+    const childMeasurements = useMemo(() => {
+        if (!growth || growth.length === 0) {
+            return { weight: [], height: [], headCircumference: [] };
+        }
+
+        return {
+            weight: growth.map(g => ({
+                month: g.usia_saat_periksa_bulan,
+                value: parseFloat(g.berat_badan_kg),
+                date: g.tanggal_pemeriksaan
+            })).sort((a, b) => a.month - b.month),
+            height: growth.map(g => ({
+                month: g.usia_saat_periksa_bulan,
+                value: parseFloat(g.tinggi_badan_cm),
+                date: g.tanggal_pemeriksaan
+            })).sort((a, b) => a.month - b.month),
+            headCircumference: growth.map(g => ({
+                month: g.usia_saat_periksa_bulan,
+                value: parseFloat(g.lingkar_kepala_cm),
+                date: g.tanggal_pemeriksaan
+            })).sort((a, b) => a.month - b.month)
+        };
+    }, [growth]);
+
+    // Fungsi untuk menghitung Z-Score sederhana
+    const calculateZScore = (value, percentileData, month) => {
+        const dataPoint = percentileData.find(d => d.month === month);
+        if (!dataPoint) return 0;
+
+        const median = dataPoint.p50;
+        const sd = (dataPoint.p85 - dataPoint.p50) / 1.036; // Approximate SD
+        return ((value - median) / sd).toFixed(2);
+    };
+
+    // Fungsi untuk menentukan kategori status
+    const getCategory = (zScore, type) => {
+        const z = parseFloat(zScore);
+        if (type === 'weight') {
+            if (z < -3) return { text: 'stunting berat', color: 'red' };
+            if (z < -2) return { text: 'gizi kurang', color: 'orange' };
+            if (z < -1) return { text: 'berisiko gizi kurang', color: 'yellow' };
+            if (z <= 1) return { text: 'normal', color: 'green' };
+            if (z <= 2) return { text: 'berisiko gizi lebih', color: 'yellow' };
+            return { text: 'gizi lebih', color: 'orange' };
+        } else if (type === 'height') {
+            if (z < -3) return { text: 'sangat pendek (severely stunted)', color: 'red' };
+            if (z < -2) return { text: 'pendek (stunted)', color: 'orange' };
+            if (z < -1) return { text: 'berisiko pendek', color: 'yellow' };
+            return { text: 'normal', color: 'green' };
+        } else {
+            if (z < -2) return { text: 'di bawah normal', color: 'orange' };
+            if (z < -1) return { text: 'berisiko', color: 'yellow' };
+            return { text: 'normal', color: 'green' };
+        }
+    };
+
+    // Konfigurasi chart
+    const chartConfigs = useMemo(() => {
+        const latestWeight = childMeasurements.weight[childMeasurements.weight.length - 1];
+        const latestHeight = childMeasurements.height[childMeasurements.height.length - 1];
+        const latestHead = childMeasurements.headCircumference[childMeasurements.headCircumference.length - 1];
+
+        const weightPercentile = generateWeightPercentileData();
+        const heightPercentile = generateHeightPercentileData();
+        const headPercentile = generateHeadCircumferenceData();
+
+        const weightZScore = latestWeight ? calculateZScore(latestWeight.value, weightPercentile, latestWeight.month) : 0;
+        const heightZScore = latestHeight ? calculateZScore(latestHeight.value, heightPercentile, latestHeight.month) : 0;
+        const headZScore = latestHead ? calculateZScore(latestHead.value, headPercentile, latestHead.month) : 0;
+
+        return {
+            weight: {
+                title: 'Grafik Berat Badan per Usia',
+                yAxisLabel: 'Berat Badan (Kg)',
+                unit: 'Kg',
+                yDomain: [2, 28],
+                data: weightPercentile,
+                measurements: childMeasurements.weight,
+                status: {
+                    value: latestWeight?.value || 0,
+                    zScore: weightZScore,
+                    category: getCategory(weightZScore, 'weight').text,
+                    color: getCategory(weightZScore, 'weight').color,
+                },
+            },
+            height: {
+                title: 'Grafik Tinggi Badan per Usia',
+                yAxisLabel: 'Tinggi Badan (cm)',
+                unit: 'cm',
+                yDomain: [40, 120],
+                data: heightPercentile,
+                measurements: childMeasurements.height,
+                status: {
+                    value: latestHeight?.value || 0,
+                    zScore: heightZScore,
+                    category: getCategory(heightZScore, 'height').text,
+                    color: getCategory(heightZScore, 'height').color,
+                },
+            },
+            headCircumference: {
+                title: 'Grafik Lingkar Kepala per Usia',
+                yAxisLabel: 'Lingkar Kepala (cm)',
+                unit: 'cm',
+                yDomain: [30, 55],
+                data: headPercentile,
+                measurements: childMeasurements.headCircumference,
+                status: {
+                    value: latestHead?.value || 0,
+                    zScore: headZScore,
+                    category: getCategory(headZScore, 'headCircumference').text,
+                    color: getCategory(headZScore, 'headCircumference').color,
+                },
+            },
+        };
+    }, [childMeasurements]);
+
     const currentConfig = chartConfigs[activeTab];
-    const currentData =
-        currentConfig.measurements[currentConfig.measurements.length - 1];
 
     const CustomTooltip = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
-            return (
-                <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-lg">
-                    <p className="mb-1 text-sm font-semibold text-gray-800">
-                        Usia : {data.month} Bulan
-                    </p>
-                    <p className="text-sm text-gray-700">
-                        {currentConfig.yAxisLabel} : {currentData.value}{' '}
-                        {currentConfig.unit}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                        Z-Score : {currentConfig.status.zScore}
-                    </p>
-                    <p className="text-sm font-semibold text-blue-600">
-                        Kategori : {currentConfig.status.category}
-                    </p>
-                </div>
-            );
+            const measurement = currentConfig.measurements.find(m => m.month === data.month);
+
+            if (measurement) {
+                return (
+                    <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-lg">
+                        <p className="mb-1 text-sm font-semibold text-gray-800">
+                            Usia: {data.month} Bulan
+                        </p>
+                        <p className="text-sm text-gray-700">
+                            {currentConfig.yAxisLabel}: {measurement.value} {currentConfig.unit}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                            Tanggal: {measurement.date}
+                        </p>
+                    </div>
+                );
+            }
         }
         return null;
     };
@@ -195,6 +227,13 @@ const ChildGraphPage = () => {
                 heading: 'text-yellow-800',
                 icon: 'bg-yellow-500',
             },
+            green: {
+                bg: 'bg-green-50',
+                border: 'border-green-500',
+                text: 'text-green-700',
+                heading: 'text-green-800',
+                icon: 'bg-green-500',
+            },
         };
         return colors[color] || colors.red;
     };
@@ -214,22 +253,17 @@ const ChildGraphPage = () => {
                         {/* Info Anak */}
                         <div className="rounded-xl border border-purple-100 bg-white p-4 shadow-sm lg:col-span-2">
                             <div className="flex h-full items-center gap-4">
-                                {/* Avatar */}
                                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-200">
-                                    <img
-                                        src="/assets/images/profile-8.jpeg"
-                                        alt="Profile Anak"
-                                        className="h-14 w-14 rounded-full object-contain"
-                                    />
+                                    <span className="text-2xl font-bold text-purple-600">
+                                        {child?.nama_lengkap?.charAt(0) || 'A'}
+                                    </span>
                                 </div>
-
-                                {/* Info Anak */}
                                 <div className="flex flex-col justify-center">
                                     <h3 className="font-semibold text-gray-800">
-                                        {childData.name}
+                                        {child?.nama_lengkap || 'Nama Anak'}
                                     </h3>
                                     <p className="text-sm text-blue-500">
-                                        {childData.birthDate}
+                                        {child?.tanggal_lahir || 'Tanggal Lahir'}
                                     </p>
                                 </div>
                             </div>
@@ -247,26 +281,16 @@ const ChildGraphPage = () => {
                                 onClick={() => setActiveTab('height')}
                             >
                                 <div className="flex flex-col items-center">
-                                    <div
-                                        className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full ${
-                                            activeTab === 'height'
-                                                ? 'bg-white'
-                                                : 'bg-sky-50'
-                                        }`}
-                                    >
-                                        <img
-                                            src="/assets/images/tinggibayi.png"
-                                            alt="Tinggi Badan Icon"
-                                            className="h-10 w-10 object-contain"
-                                        />
+                                    <div className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full ${
+                                            activeTab === 'height' ? 'bg-white' : 'bg-sky-50'
+                                        }`}>
+                                        <svg className="h-10 w-10 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                                        </svg>
                                     </div>
-                                    <span
-                                        className={`text-sm font-medium ${
-                                            activeTab === 'height'
-                                                ? 'font-semibold text-white'
-                                                : 'text-cyan-600'
-                                        }`}
-                                    >
+                                    <span className={`text-sm font-medium ${
+                                            activeTab === 'height' ? 'font-semibold text-white' : 'text-cyan-600'
+                                        }`}>
                                         Tinggi Badan
                                     </span>
                                 </div>
@@ -282,28 +306,16 @@ const ChildGraphPage = () => {
                                 onClick={() => setActiveTab('weight')}
                             >
                                 <div className="flex flex-col items-center">
-                                    <div
-                                        className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full ${
-                                            activeTab === 'weight'
-                                                ? 'bg-white'
-                                                : 'bg-sky-50'
-                                        }`}
-                                    >
-                                        <Weight
-                                            className={`h-8 w-8 ${
-                                                activeTab === 'weight'
-                                                    ? 'text-sky-600'
-                                                    : 'text-sky-600'
-                                            }`}
-                                        />
+                                    <div className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full ${
+                                            activeTab === 'weight' ? 'bg-white' : 'bg-sky-50'
+                                        }`}>
+                                        <Weight className={`h-8 w-8 ${
+                                                activeTab === 'weight' ? 'text-sky-600' : 'text-sky-600'
+                                            }`}/>
                                     </div>
-                                    <span
-                                        className={`text-sm font-medium ${
-                                            activeTab === 'weight'
-                                                ? 'font-semibold text-white'
-                                                : 'text-blue-600'
-                                        }`}
-                                    >
+                                    <span className={`text-sm font-medium ${
+                                            activeTab === 'weight' ? 'font-semibold text-white' : 'text-blue-600'
+                                        }`}>
                                         Berat Badan
                                     </span>
                                 </div>
@@ -316,31 +328,19 @@ const ChildGraphPage = () => {
                                         ? 'bg-sky-700'
                                         : 'border-2 border-sky-200 bg-sky-50 hover:bg-sky-100'
                                 }`}
-                                onClick={() =>
-                                    setActiveTab('headCircumference')
-                                }
+                                onClick={() => setActiveTab('headCircumference')}
                             >
                                 <div className="flex flex-col items-center">
-                                    <div
-                                        className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full ${
-                                            activeTab === 'height'
-                                                ? 'bg-white'
-                                                : 'bg-sky-50'
-                                        }`}
-                                    >
-                                        <img
-                                            src="/assets/images/lingkarbayi.png"
-                                            alt="Tinggi Badan Icon"
-                                            className="h-10 w-10 object-contain"
-                                        />
+                                    <div className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full ${
+                                            activeTab === 'headCircumference' ? 'bg-white' : 'bg-sky-50'
+                                        }`}>
+                                        <svg className="h-10 w-10 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3c4.97 0 9 4.03 9 9s-4.03 9-9 9-9-4.03-9-9 4.03-9 9-9z" />
+                                        </svg>
                                     </div>
-                                    <span
-                                        className={`text-sm font-medium ${
-                                            activeTab === 'headCircumference'
-                                                ? 'font-semibold text-white'
-                                                : 'text-teal-600'
-                                        }`}
-                                    >
+                                    <span className={`text-sm font-medium ${
+                                            activeTab === 'headCircumference' ? 'font-semibold text-white' : 'text-teal-600'
+                                        }`}>
                                         Lingkar Kepala
                                     </span>
                                 </div>
@@ -351,24 +351,10 @@ const ChildGraphPage = () => {
 
                 {/* Chart Section */}
                 <div className="rounded-2xl bg-white p-8 shadow-sm">
-                    <div className="mb-6 flex items-center justify-between">
+                    <div className="mb-6">
                         <h2 className="text-xl font-semibold text-gray-800">
                             {currentConfig.title}
                         </h2>
-                        <Select>
-                            <SelectTrigger id="rentang_usia">
-                                <SelectValue placeholder="Pilih Rentang Usia" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white">
-                                <SelectItem value="awal">0-6 Bulan</SelectItem>
-                                <SelectItem value="tengah">
-                                    6-12 Bulan
-                                </SelectItem>
-                                <SelectItem value="akhir">
-                                    12-18 Bulan
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
                     </div>
 
                     <ResponsiveContainer width="100%" height={450}>
@@ -377,253 +363,124 @@ const ChildGraphPage = () => {
                             margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
                         >
                             <defs>
-                                <linearGradient
-                                    id="colorP3"
-                                    x1="0"
-                                    y1="0"
-                                    x2="0"
-                                    y2="1"
-                                >
-                                    <stop
-                                        offset="5%"
-                                        stopColor="#ef4444"
-                                        stopOpacity={0.3}
-                                    />
-                                    <stop
-                                        offset="95%"
-                                        stopColor="#ef4444"
-                                        stopOpacity={0.1}
-                                    />
+                                <linearGradient id="colorP3" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0.1} />
                                 </linearGradient>
-                                <linearGradient
-                                    id="colorP15"
-                                    x1="0"
-                                    y1="0"
-                                    x2="0"
-                                    y2="1"
-                                >
-                                    <stop
-                                        offset="5%"
-                                        stopColor="#f97316"
-                                        stopOpacity={0.3}
-                                    />
-                                    <stop
-                                        offset="95%"
-                                        stopColor="#f97316"
-                                        stopOpacity={0.1}
-                                    />
+                                <linearGradient id="colorP15" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="#f97316" stopOpacity={0.1} />
                                 </linearGradient>
-                                <linearGradient
-                                    id="colorP50"
-                                    x1="0"
-                                    y1="0"
-                                    x2="0"
-                                    y2="1"
-                                >
-                                    <stop
-                                        offset="5%"
-                                        stopColor="#eab308"
-                                        stopOpacity={0.3}
-                                    />
-                                    <stop
-                                        offset="95%"
-                                        stopColor="#eab308"
-                                        stopOpacity={0.1}
-                                    />
+                                <linearGradient id="colorP50" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#eab308" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="#eab308" stopOpacity={0.1} />
                                 </linearGradient>
-                                <linearGradient
-                                    id="colorP85"
-                                    x1="0"
-                                    y1="0"
-                                    x2="0"
-                                    y2="1"
-                                >
-                                    <stop
-                                        offset="5%"
-                                        stopColor="#84cc16"
-                                        stopOpacity={0.3}
-                                    />
-                                    <stop
-                                        offset="95%"
-                                        stopColor="#84cc16"
-                                        stopOpacity={0.1}
-                                    />
+                                <linearGradient id="colorP85" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#84cc16" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="#84cc16" stopOpacity={0.1} />
                                 </linearGradient>
-                                <linearGradient
-                                    id="colorP97"
-                                    x1="0"
-                                    y1="0"
-                                    x2="0"
-                                    y2="1"
-                                >
-                                    <stop
-                                        offset="5%"
-                                        stopColor="#fbbf24"
-                                        stopOpacity={0.3}
-                                    />
-                                    <stop
-                                        offset="95%"
-                                        stopColor="#fbbf24"
-                                        stopOpacity={0.1}
-                                    />
+                                <linearGradient id="colorP97" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#fbbf24" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="#fbbf24" stopOpacity={0.1} />
                                 </linearGradient>
                             </defs>
 
-                            <CartesianGrid
-                                strokeDasharray="3 3"
-                                stroke="#e5e7eb"
-                            />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 
                             <XAxis
                                 dataKey="month"
-                                label={{
-                                    value: 'Usia (bulan)',
-                                    position: 'insideBottom',
-                                    offset: -20,
-                                }}
+                                label={{ value: 'Usia (bulan)', position: 'insideBottom', offset: -20 }}
                                 tick={{ fontSize: 12 }}
                                 domain={[0, 60]}
                             />
 
                             <YAxis
-                                label={{
-                                    value: currentConfig.yAxisLabel,
-                                    angle: -90,
-                                    position: 'insideLeft',
-                                }}
+                                label={{ value: currentConfig.yAxisLabel, angle: -90, position: 'insideLeft' }}
                                 tick={{ fontSize: 12 }}
                                 domain={currentConfig.yDomain}
                             />
 
                             <Tooltip content={<CustomTooltip />} />
 
-                            {/* Percentile Areas */}
-                            <Area
-                                type="monotone"
-                                dataKey="p97"
-                                stroke="#fbbf24"
-                                fill="url(#colorP97)"
-                                strokeWidth={2}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="p85"
-                                stroke="#84cc16"
-                                fill="url(#colorP85)"
-                                strokeWidth={2}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="p50"
-                                stroke="#eab308"
-                                fill="url(#colorP50)"
-                                strokeWidth={2}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="p15"
-                                stroke="#f97316"
-                                fill="url(#colorP15)"
-                                strokeWidth={2}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="p3"
-                                stroke="#ef4444"
-                                fill="url(#colorP3)"
-                                strokeWidth={2}
-                            />
+                            <Area type="monotone" dataKey="p97" stroke="#fbbf24" fill="url(#colorP97)" strokeWidth={2} />
+                            <Area type="monotone" dataKey="p85" stroke="#84cc16" fill="url(#colorP85)" strokeWidth={2} />
+                            <Area type="monotone" dataKey="p50" stroke="#eab308" fill="url(#colorP50)" strokeWidth={2} />
+                            <Area type="monotone" dataKey="p15" stroke="#f97316" fill="url(#colorP15)" strokeWidth={2} />
+                            <Area type="monotone" dataKey="p3" stroke="#ef4444" fill="url(#colorP3)" strokeWidth={2} />
 
-                            {/* Child's data point */}
-                            <ReferenceDot
-                                x={currentData.month}
-                                y={currentData.value}
-                                r={8}
-                                fill="#3b82f6"
-                                stroke="#fff"
-                                strokeWidth={3}
-                            />
+                            {/* Plot semua data point anak */}
+                            {currentConfig.measurements.map((point, idx) => (
+                                <ReferenceDot
+                                    key={idx}
+                                    x={point.month}
+                                    y={point.value}
+                                    r={6}
+                                    fill="#3b82f6"
+                                    stroke="#fff"
+                                    strokeWidth={2}
+                                />
+                            ))}
                         </AreaChart>
                     </ResponsiveContainer>
 
                     {/* Legend */}
                     <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
                         <div className="flex items-center gap-2">
-                            <div
-                                className="h-4 w-4 rounded"
-                                style={{ backgroundColor: '#ef4444' }}
-                            ></div>
+                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#ef4444' }}></div>
                             <span className="text-gray-600">P3</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div
-                                className="h-4 w-4 rounded"
-                                style={{ backgroundColor: '#f97316' }}
-                            ></div>
+                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#f97316' }}></div>
                             <span className="text-gray-600">P15</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div
-                                className="h-4 w-4 rounded"
-                                style={{ backgroundColor: '#eab308' }}
-                            ></div>
+                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#eab308' }}></div>
                             <span className="text-gray-600">P50</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div
-                                className="h-4 w-4 rounded"
-                                style={{ backgroundColor: '#84cc16' }}
-                            ></div>
+                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#84cc16' }}></div>
                             <span className="text-gray-600">P85</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div
-                                className="h-4 w-4 rounded"
-                                style={{ backgroundColor: '#fbbf24' }}
-                            ></div>
+                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#fbbf24' }}></div>
                             <span className="text-gray-600">P97</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="h-3 w-3 rounded-full border-2 border-white bg-blue-500"></div>
-                            <span className="text-gray-600">Data Anak</span>
+                            <span className="text-gray-600">Data Anak ({currentConfig.measurements.length} pengukuran)</span>
                         </div>
                     </div>
 
                     {/* Status Info */}
-                    <div
-                        className={`mt-6 rounded-r-lg border-l-4 p-4 ${statusColors.bg} ${statusColors.border}`}
-                    >
-                        <div className="flex items-start gap-3">
-                            <div
-                                className={`mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full ${statusColors.icon}`}
-                            >
-                                <span className="text-xs font-bold text-white">
-                                    !
-                                </span>
-                            </div>
-                            <div>
-                                <h4
-                                    className={`mb-1 font-semibold ${statusColors.heading}`}
-                                >
-                                    Status Pertumbuhan
-                                </h4>
-                                <p className={`text-sm ${statusColors.text}`}>
-                                    {activeTab === 'weight' &&
-                                        `Berat badan anak berada di bawah kurva P3 dengan Z-Score ${currentConfig.status.zScore}, menandakan `}
-                                    {activeTab === 'height' &&
-                                        `Tinggi badan anak berada di bawah kurva P3 dengan Z-Score ${currentConfig.status.zScore}, menandakan `}
-                                    {activeTab === 'headCircumference' &&
-                                        `Lingkar kepala anak berada di bawah kurva P15 dengan Z-Score ${currentConfig.status.zScore}, menandakan `}
-                                    <span className="font-semibold">
-                                        {' '}
-                                        {currentConfig.status.category}
-                                    </span>
-                                    . Diperlukan konsultasi dengan ahli gizi dan
-                                    dokter anak untuk penanganan lebih lanjut.
-                                </p>
+                    {currentConfig.measurements.length > 0 && (
+                        <div className={`mt-6 rounded-r-lg border-l-4 p-4 ${statusColors.bg} ${statusColors.border}`}>
+                            <div className="flex items-start gap-3">
+                                <div className={`mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full ${statusColors.icon}`}>
+                                    <span className="text-xs font-bold text-white">!</span>
+                                </div>
+                                <div>
+                                    <h4 className={`mb-1 font-semibold ${statusColors.heading}`}>
+                                        Status Pertumbuhan
+                                    </h4>
+                                    <p className={`text-sm ${statusColors.text}`}>
+                                        {activeTab === 'weight' && `Berat badan anak saat ini ${currentConfig.status.value} kg dengan Z-Score ${currentConfig.status.zScore}, menandakan `}
+                                        {activeTab === 'height' && `Tinggi badan anak saat ini ${currentConfig.status.value} cm dengan Z-Score ${currentConfig.status.zScore}, menandakan `}
+                                        {activeTab === 'headCircumference' && `Lingkar kepala anak saat ini ${currentConfig.status.value} cm dengan Z-Score ${currentConfig.status.zScore}, menandakan `}
+                                        <span className="font-semibold">{currentConfig.status.category}</span>.
+                                        {currentConfig.status.color === 'red' || currentConfig.status.color === 'orange'
+                                            ? ' Diperlukan konsultasi dengan ahli gizi dan dokter anak untuk penanganan lebih lanjut.'
+                                            : ' Pertumbuhan anak dalam kondisi baik.'}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
+
+                    {currentConfig.measurements.length === 0 && (
+                        <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-center">
+                            <p className="text-gray-600">Belum ada data pemeriksaan untuk ditampilkan</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
