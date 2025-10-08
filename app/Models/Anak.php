@@ -11,23 +11,32 @@ class Anak extends Model
     protected $primaryKey = 'id';
     protected $table = 'anak';
 
-    public function kelahiran() {
+    public function kelahiran()
+    {
         return $this->belongsTo(Kelahiran::class);
     }
-    public function pemeriksaan() {
+    public function pemeriksaan()
+    {
         return $this->hasMany(PemeriksaanAnak::class);
     }
-    public function imunisasi() {
+    public function imunisasi()
+    {
         return $this->hasMany(RiwayatImunisasiAnak::class);
     }
-    public function riwayatObat() {
+    public function riwayatObat()
+    {
         return $this->hasMany(RiwayatObatAnak::class);
     }
-    public function riwayatSakit() {
+    public function riwayatSakit()
+    {
         return $this->hasMany(RiwayatSakitAnak::class);
     }
 
-    public function orangTua(){
-        return $this->hasOne(User::class, 'id', 'orang_tua_id');
+    // public function orangTua(){
+    //     return $this->hasOne(User::class, 'id', 'orang_tua_id');
+    // }
+    public function orangTua()
+    {
+        return $this->belongsTo(User::class, 'orang_tua_id', 'id');
     }
 }

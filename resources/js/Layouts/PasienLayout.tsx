@@ -1,13 +1,13 @@
 import Footer from '@/Components/core/Footer';
 import Navbar from '@/Components/core/Navbar';
-import NotificationSidebar from '@/Components/core/NotificationSidebar';
 import { PageProps } from '@/types';
 import { User } from '@/types/user/interface';
 import { getProfileMenuContent } from '@/utils/profileMenuContent';
 import { showToast } from '@/utils/toast';
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { ReactNode, useEffect, useState } from 'react';
 import { Toaster } from 'sonner';
+
 interface Props {
     children: ReactNode;
     currentPage: string;
@@ -22,8 +22,7 @@ export default function PasienLayout({ children, currentPage }: Props) {
         {
             id: 'pasien.homepage',
             label: 'Beranda',
-            key: 'pasien.homepage',
-            href: '/pasien/homepage',
+            key: '/pasien/dashboard',
             showOnMobile: true,
             showOnDesktop: true,
             hasDropdown: false,
@@ -56,7 +55,7 @@ export default function PasienLayout({ children, currentPage }: Props) {
         {
             id: 'pasien-bank-obat',
             label: 'Bank Obat',
-            key: 'bank-obat',
+            key: '/pasien/bank-obat',
             showOnMobile: true,
             showOnDesktop: true,
             hasDropdown: false,
@@ -72,19 +71,19 @@ export default function PasienLayout({ children, currentPage }: Props) {
                 {
                     id: 'panduan-ibu-hamil',
                     label: 'Panduan Ibu Hamil',
-                    key: 'panduan-ibu-hamil',
+                    key: '/pasien/panduan/ibu-hamil',
                 },
                 {
                     id: 'panduan-balita',
                     label: 'Panduan Balita',
-                    key: 'panduan-balita',
+                    key: '/pasien/panduan/balita',
                 },
             ],
         },
         {
             id: 'konsultasi-online',
             label: 'Konsultasi Online',
-            key: 'konsultasi-online',
+            key: '/pasien/konsultasi',
             showOnMobile: true,
             showOnDesktop: true,
             hasDropdown: false,
@@ -95,7 +94,7 @@ export default function PasienLayout({ children, currentPage }: Props) {
         showToast.handleFlash(flash);
     }, [flash]);
     const handleNavigate = (page: string) => {
-        // Inertia.visit(`/${page}`);
+        router.visit(page);
     };
     const handleProfileClick = () => {
         // Inertia.visit(route('profile.show'));
@@ -105,7 +104,7 @@ export default function PasienLayout({ children, currentPage }: Props) {
     };
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="bg-background min-h-screen">
             <Navbar
                 user={user}
                 navItems={navItems}
@@ -119,10 +118,6 @@ export default function PasienLayout({ children, currentPage }: Props) {
                 })}
             />
             <main className="pt-16">{children}</main>
-            <NotificationSidebar
-                isOpen={isNotificationOpen}
-                onClose={() => setIsNotificationOpen(false)}
-            />
             <Toaster position="top-right" richColors closeButton />
             <Footer />
         </div>

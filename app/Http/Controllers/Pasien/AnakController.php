@@ -7,6 +7,8 @@ use App\Http\Requests\CreateAnakRequest;
 use App\Services\AnakService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use App\Models\PemeriksaanAnak;
 
 class AnakController extends Controller
 {
@@ -23,7 +25,6 @@ class AnakController extends Controller
             $anak = $this->anakService->createAnak($request);
 
             return redirect()->back();
-
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Terjadi kesalahan saat menambahkan data anak.',
@@ -36,6 +37,24 @@ class AnakController extends Controller
         //     ->route('anak.index')
         //     ->with('success', "Data anak {$anak->nama} berhasil ditambahkan.");
     }
+    public function childCheckupHistory()
+    {
+        $user = Auth::user();
 
+        $checkupHistory = PemeriksaanAnak::with([
+            'anak.kelahiran', // Tambahkan ini untuk data kelahiran
+            'anak.orangTua',
+            'petugas.faskes', // Tambahkan ini jika petugas punya relasi faskes
+            'skrining',
+        ])
+            ->whereHas('anak', function ($query) use ($user) {
+                $query->where('orang_tua_id', $user->id);
+            })
+            ->latest('tanggal_pemeriksaan') // Urutkan berdasarkan tanggal pemeriksaan
+            ->paginate(10);
 
+        return Inertia::render('Pasien/Riwayat/ChildCheckupHistoryPageRoute', [
+            'checkupHistory' => $checkupHistory,
+        ]);
+    }
 }

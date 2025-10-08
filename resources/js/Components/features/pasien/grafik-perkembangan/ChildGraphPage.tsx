@@ -292,8 +292,8 @@ const ChildGraphPage = () => {
                                         <Weight
                                             className={`h-8 w-8 ${
                                                 activeTab === 'weight'
-                                                    ? 'text-sky-600'
-                                                    : 'text-sky-600'
+                                                    ? 'text-sky-400'
+                                                    : 'text-sky-400'
                                             }`}
                                         />
                                     </div>

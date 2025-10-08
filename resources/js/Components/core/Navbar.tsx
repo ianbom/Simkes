@@ -1,10 +1,7 @@
-import { PageProps } from '@/types';
 import { DropdownItem, NavItems, NavUser } from '@/types/navbar/interface';
 import { User } from '@/types/user/interface';
-import { usePage } from '@inertiajs/react';
-import { Bell, ChevronDown, Medal, Menu, ShoppingBag, X } from 'lucide-react';
+import { ChevronDown, Medal, Menu, ShoppingBag, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Badge } from '../ui/badge';
 import ProfileMenuDropdown from './ProfileMenuDropdown';
 
 interface EnhancedNavItems extends NavItems {
@@ -25,7 +22,6 @@ const Navbar = ({
     navItems,
     onNavigate,
     currentPage,
-    onNotificationClick,
     profileMenuContent,
     user,
 }: NavbarProps) => {
@@ -34,8 +30,8 @@ const Navbar = ({
     const [mobileOpenDropdown, setMobileOpenDropdown] = useState<string | null>(
         null,
     );
-    const { notifications } = usePage<PageProps>().props;
-    const unreadCount = notifications?.unread_count || 0;
+    // const { notifications } = usePage<PageProps>().props;
+    // const unreadCount = notifications?.unread_count || 0;
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -250,18 +246,18 @@ const Navbar = ({
                                         </button>
                                     ) : null;
                                 })}
-                            <button
+                            {/* <button
                                 onClick={onNotificationClick}
-                                className="relative rounded-lg p-2 text-gray-500 transition-colors hover:bg-sky-50 hover:text-sky-600"
+                                className="relative p-2 text-gray-500 transition-colors rounded-lg hover:bg-sky-50 hover:text-sky-600"
                                 title="Notifikasi"
                             >
                                 <Bell size={20} />
                                 {unreadCount > 0 && (
-                                    <Badge className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center bg-red-500 p-0 text-xs text-white">
+                                    <Badge className="absolute flex items-center justify-center w-5 h-5 p-0 text-xs text-white bg-red-500 -right-1 -top-1">
                                         {unreadCount > 99 ? '99+' : unreadCount}
                                     </Badge>
                                 )}
-                            </button>
+                            </button> */}
                             <ProfileMenuDropdown
                                 user={user as User}
                                 menuItems={profileMenuContent}

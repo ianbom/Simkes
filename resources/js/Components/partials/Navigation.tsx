@@ -6,34 +6,36 @@ import {
     FileText,
     LayoutDashboard,
     Menu,
-    Stethoscope,
     Video,
     X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const toggleNavigation = [
-    { name: 'Jadwal Pemeriksaan', href: '/schedule', icon: Calendar },
     { name: 'Riwayat Pasien', href: '/history', icon: FileText },
 ];
 const navigation = [
     { name: 'Dashboard', href: '/petugas/dashboard', icon: LayoutDashboard },
+
     {
-        name: 'Pemeriksaan Offline',
-        href: '/petugas/pemeriksaan',
-        icon: Stethoscope,
+        name: 'Konsultasi Online',
+        href: '/petugas/list-konsultasi',
+        icon: Video,
     },
-    { name: 'Konsultasi Online', href: '/petugas/list-konsultasi', icon: Video },
-    { name: 'Jadwal Pemeriksaan', href: '/petugas/jadwal-ketersediaan', icon: Calendar },
+    {
+        name: 'Jadwal Pemeriksaan',
+        href: '/petugas/jadwal-ketersediaan',
+        icon: Calendar,
+    },
     { name: 'Riwayat Pasien', href: '/history', icon: FileText },
 ];
 
 const bottomNavigation = [
     { name: 'Dashboard', href: '/petugas/dashboard', icon: LayoutDashboard },
     {
-        name: 'Pemeriksaan Offline',
-        href: '/petugas/pemeriksaan',
-        icon: Stethoscope,
+        name: 'Jadwal Pemeriksaan',
+        href: '/petugas/jadwal-ketersediaan',
+        icon: Calendar,
     },
     { name: 'Konsultasi Online', href: '/consultation', icon: Video },
 ];

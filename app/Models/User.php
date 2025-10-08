@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $guarded = [
-      'id'
+        'id'
     ];
 
     /**
@@ -44,34 +44,47 @@ class User extends Authenticatable
         ];
     }
 
-    public function faskes() {
+    public function faskes()
+    {
         return $this->belongsTo(Faskes::class);
     }
-    public function riwayatMedis() {
+    public function riwayatMedis()
+    {
         return $this->hasOne(RiwayatMedisUser::class);
     }
-    public function kehamilan() {
+    public function kehamilan()
+    {
         return $this->hasMany(Kehamilan::class);
     }
-    public function anak() {
-        return $this->hasManyThrough(Anak::class, Kelahiran::class);
+    // public function anak() {
+    //     return $this->hasManyThrough(Anak::class, Kelahiran::class);
+    // }
+    public function anak()
+    {
+        return $this->hasMany(Anak::class, 'orang_tua_id', 'id');
     }
-    public function notifikasi() {
+    public function notifikasi()
+    {
         return $this->hasMany(Notifikasi::class);
     }
-    public function jadwalKetersediaan() {
+    public function jadwalKetersediaan()
+    {
         return $this->hasMany(JadwalKetersediaan::class, 'petugas_faskes_id');
     }
-    public function sesiKonsultasiSebagaiPasien() {
+    public function sesiKonsultasiSebagaiPasien()
+    {
         return $this->hasMany(SesiKonsultasi::class, 'pasien_user_id');
     }
-    public function sesiKonsultasiSebagaiPetugas() {
+    public function sesiKonsultasiSebagaiPetugas()
+    {
         return $this->hasMany(SesiKonsultasi::class, 'petugas_faskes_id');
     }
-    public function kegiatan() {
+    public function kegiatan()
+    {
         return $this->hasMany(KegiatanFaskes::class, 'user_id_pembuat');
     }
-    public function langganan() {
+    public function langganan()
+    {
         return $this->hasMany(LanggananFaskes::class);
     }
 }
