@@ -1,9 +1,10 @@
 import ConsultationHistoryPage from '@/Components/features/pasien/riwayat/ConsultationHistoryPage';
 import PasienLayout from '@/Layouts/PasienLayout';
-export default function PregnancyGuidePageRoute({ user }) {
+
+export default function ConsultationHistoryPageRoute({ user, consultations }) {
     return (
         <PasienLayout currentPage="dashboard" user={user}>
-            <ConsultationHistoryPage />
+            <ConsultationHistoryPage consultations={consultations}/>
         </PasienLayout>
     );
 }

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/Components/ui/button';
 import {
     Card,
     CardContent,
@@ -6,9 +6,9 @@ import {
     CardTitle,
 } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import { useState, FormEvent } from 'react';
+import { FormEvent } from 'react';
 import { useForm } from '@inertiajs/react';
 
 interface Props {

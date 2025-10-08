@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Anak;
 use App\Models\PemeriksaanAnak;
 use App\Models\RiwayatImunisasiAnak;
 use App\Models\RiwayatObatAnak;
 use App\Models\RiwayatSakitAnak;
 use App\Models\SkriningPerkembangan;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,8 +24,7 @@ class PemeriksaanAnakService
         //
     }
 
-        private function checkExistingPemeriksaan(array $data): void
-    {
+    private function checkExistingPemeriksaan(array $data): void{
         $existing = PemeriksaanAnak::where('anak_id', $data['anak_id'])
             ->where('tanggal_pemeriksaan', $data['tanggal_pemeriksaan'])
             ->where('jenis_kunjungan', $data['jenis_kunjungan'])
@@ -63,14 +64,18 @@ class PemeriksaanAnakService
 
 
 
-   private function createMainPemeriksaan(array $data): PemeriksaanAnak
-{
+private function createMainPemeriksaan(array $data): PemeriksaanAnak{
+    $anak = Anak::findOrFail($data['anak_id']);
+    $tanggalPemeriksaan = Carbon::parse($data['tanggal_pemeriksaan'] ?? now());
+    $usiaDalamBulan = Carbon::parse($anak->tanggal_lahir)->diffInMonths($tanggalPemeriksaan);
+
+    // Buat record pemeriksaan anak
     return PemeriksaanAnak::create([
         'anak_id' => $data['anak_id'],
-        'petugas_faskes_id' => Auth::id(), // ambil otomatis dari user login
+        'petugas_faskes_id' => Auth::id(),
         'jenis_kunjungan' => $data['jenis_kunjungan'],
-        'tanggal_pemeriksaan' => $data['tanggal_pemeriksaan'],
-        'usia_saat_periksa_bulan' => $data['usia_saat_periksa_bulan'] ?? null,
+        'tanggal_pemeriksaan' => $tanggalPemeriksaan->format('Y-m-d'),
+        'usia_saat_periksa_bulan' => $usiaDalamBulan,
 
         // Data Antropometri
         'berat_badan_kg' => $data['berat_badan_kg'] ?? null,

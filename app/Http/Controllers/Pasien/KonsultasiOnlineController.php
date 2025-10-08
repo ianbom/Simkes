@@ -22,7 +22,7 @@ class KonsultasiOnlineController extends Controller
     }
 
    public function bookConsult(CreateSesiKonsultasiRequest $request, $id)
-{
+    {
 
     try {
        $data = $request->validated();
@@ -30,6 +30,7 @@ class KonsultasiOnlineController extends Controller
     $jadwal->update(['status_ketersediaan' => 'Penuh']);
 
     $data['petugas_faskes_id'] = $jadwal->petugas_faskes_id;
+    $data['jadwal_id'] = $id;
     $data['waktu_mulai_dijadwalkan'] = $jadwal->tanggal . ' ' . $jadwal->jam_mulai;
     $data['durasi'] = 60;
     $data['room_name'] = 'room-' . Str::random(10);
@@ -45,4 +46,20 @@ class KonsultasiOnlineController extends Controller
     }
 
 }
+
+    public function consultHistory(){
+        $consultations = SesiKonsultasi::with('petugas.faskes', 'jadwal')->where('pasien_user_id', Auth::id())->get();
+        return Inertia::render('Pasien/Riwayat/ConsultationHistoryPageRoute', [
+            'consultations' => $consultations
+        ]);
+    }
+
+    public function joinMeet($id){
+        $consultation = SesiKonsultasi::with('petugas.faskes', 'jadwal', 'pasien')->findOrFail($id);
+        // return response()->json($consultation);
+        return Inertia::render('Pasien/Konsultasi/ConsultationDetailPageRoute',[
+            'consultation' => $consultation
+        ]);
+    }
+
 }

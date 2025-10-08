@@ -1,171 +1,199 @@
-import VideoConferenceCard from '@/Components/partials/pasien/konsultasi/VideoCard';
-import { Search } from 'lucide-react';
-import { useState } from 'react';
+import { VideoCallInterface } from "@/Components/video-call-interface";
+import { Head } from "@inertiajs/react";
+import { Video, Clock, User, MapPin, Calendar, Phone } from "lucide-react";
+ // pastikan path sesuai struktur kamu
 
-interface Doctor {
-    id: number;
-    name: string;
-    specialty: string;
-    image: string;
-    status: 'online' | 'offline';
+interface Faskes {
+  id: number;
+  nama: string;
+  tipe_faskes: string;
+  alamat: string;
+  profile_pic_url: string | null;
 }
 
-export default function ConsultPage() {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+interface Petugas {
+  id: number;
+  name: string;
+  email: string;
+  no_telp: string | null;
+  faskes: Faskes;
+}
 
-    // Dummy doctors data
-    const doctors: Doctor[] = [
-        {
-            id: 1,
-            name: 'Dokter Nila Arzani',
-            specialty: 'Spesialis Anak (Sp.A)',
-            image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400',
-            status: 'online',
-        },
-        {
-            id: 2,
-            name: 'Dokter Lusafia',
-            specialty: 'Dokter Umum',
-            image: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400',
-            status: 'offline',
-        },
-    ];
+interface Pasien {
+  id: number;
+  name: string;
+  email: string;
+}
 
-    const filteredDoctors = doctors.filter((doctor) =>
-        doctor.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
+interface Consultation {
+  id: number;
+  waktu_mulai_dijadwalkan: string;
+  durasi_menit: number;
+  link_video_conference: string;
+  status_sesi: string;
+  room_name: string;
+  petugas: Petugas;
+  pasien: Pasien;
+}
 
-    const handleStartCall = (doctor: Doctor) => {
-        setSelectedDoctor(doctor);
-    };
+interface Props {
+  consultation: Consultation;
+}
 
-    return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="container mx-auto px-4">
-                <div className="grid h-[calc(100vh-8rem)] grid-cols-1 gap-6 lg:grid-cols-12">
-                    {/* Sidebar - Doctor List */}
-                    <div className="overflow-y-auto rounded-2xl bg-white p-6 shadow-lg lg:col-span-3">
-                        {/* Search Bar */}
-                        <div className="relative mb-6">
-                            <input
-                                type="text"
-                                placeholder="Cari Dokter"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-4 focus:border-transparent focus:ring-2 focus:ring-blue-500"
-                            />
-                            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
-                        </div>
+export default function ConsultationDetailPageRoute({ consultation }: Props) {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("id-ID", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
-                        {/* Section Title */}
-                        <h2 className="mb-4 text-lg font-bold text-gray-800">
-                            Konsultasi Online
-                        </h2>
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
-                        {/* Doctor List */}
-                        <div className="space-y-3">
-                            {filteredDoctors.map((doctor) => (
-                                <div
-                                    key={doctor.id}
-                                    onClick={() => handleStartCall(doctor)}
-                                    className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-100 p-3 transition-colors hover:bg-gray-50"
-                                >
-                                    {/* Doctor Avatar */}
-                                    <div className="relative flex-shrink-0">
-                                        <img
-                                            src={doctor.image}
-                                            alt={doctor.name}
-                                            className="h-12 w-12 rounded-full object-cover"
-                                        />
-                                        {/* Status Indicator */}
-                                        <div
-                                            className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
-                                                doctor.status === 'online'
-                                                    ? 'bg-green-500'
-                                                    : 'bg-gray-400'
-                                            }`}
-                                        ></div>
-                                    </div>
+  return (
+    <>
+      <Head title="Video Konsultasi" />
 
-                                    {/* Doctor Info */}
-                                    <div className="min-w-0 flex-1">
-                                        <h3 className="truncate text-sm font-semibold text-gray-800">
-                                            {doctor.name}
-                                        </h3>
-                                        <p className="truncate text-xs text-blue-500">
-                                            {doctor.specialty}
-                                        </p>
-                                    </div>
-
-                                    {/* Status Badge */}
-                                    <div>
-                                        <span
-                                            className={`rounded-full px-2 py-1 text-xs ${
-                                                doctor.status === 'online'
-                                                    ? 'bg-green-100 text-green-700'
-                                                    : 'bg-gray-100 text-gray-600'
-                                            }`}
-                                        >
-                                            {doctor.status === 'online'
-                                                ? 'Online'
-                                                : 'Offline'}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Empty State */}
-                        {filteredDoctors.length === 0 && (
-                            <div className="py-8 text-center">
-                                <p className="text-gray-500">
-                                    Dokter tidak ditemukan
-                                </p>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Main Content - Video Conference */}
-                    <div className="overflow-hidden rounded-2xl bg-white shadow-lg lg:col-span-9">
-                        {selectedDoctor ? (
-                            <VideoConferenceCard
-                                doctorName={selectedDoctor.name}
-                                doctorImage={selectedDoctor.image}
-                                patientImage="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400"
-                                isCallActive={true}
-                            />
-                        ) : (
-                            <div className="flex h-full items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-50">
-                                <div className="text-center">
-                                    <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-blue-100">
-                                        <svg
-                                            className="h-12 w-12 text-blue-500"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                                            />
-                                        </svg>
-                                    </div>
-                                    <h3 className="mb-2 text-xl font-semibold text-gray-800">
-                                        Pilih Dokter untuk Memulai Konsultasi
-                                    </h3>
-                                    <p className="text-gray-500">
-                                        Klik dokter yang tersedia di sidebar
-                                        untuk memulai video call
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header Info */}
+        <div className="bg-white shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-4">
+                <div className="bg-blue-100 p-3 rounded-full">
+                  <Video className="w-6 h-6 text-blue-600" />
                 </div>
+                <div>
+                  <h1 className="text-xl font-semibold text-gray-900">
+                    Video Konsultasi
+                  </h1>
+                  <p className="text-sm text-gray-500">
+                    dengan {consultation.petugas.name}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-6 text-sm">
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Calendar className="w-4 h-4" />
+                  <span>
+                    {formatDate(consultation.waktu_mulai_dijadwalkan)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Clock className="w-4 h-4" />
+                  <span>
+                    {formatTime(consultation.waktu_mulai_dijadwalkan)} (
+                    {consultation.durasi_menit} menit)
+                  </span>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    );
+
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* 🔹 Ganti bagian video dengan VideoCallInterface */}
+            <div className="lg:col-span-2">
+              <VideoCallInterface
+                consultation={{
+                  id: consultation.id.toString(),
+                  patient: {
+                    name: consultation.pasien.name,
+                    photo: undefined,
+                  },
+                  status: consultation.status_sesi,
+                }}
+                roomName={consultation.room_name}
+                user={{
+                  id: consultation.pasien.id,
+                  name: consultation.pasien.name,
+                  email: consultation.pasien.email,
+                }}
+              />
+            </div>
+
+            {/* Sidebar Info */}
+            <div className="space-y-6">
+              {/* Petugas Info */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <User className="w-5 h-5 text-blue-600" />
+                  Informasi Petugas
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-gray-500">Nama Petugas</p>
+                    <p className="font-medium text-gray-900">
+                      {consultation.petugas.name}
+                    </p>
+                  </div>
+                  {consultation.petugas.no_telp && (
+                    <div>
+                      <p className="text-sm text-gray-500">No. Telepon</p>
+                      <p className="font-medium text-gray-900 flex items-center gap-2">
+                        <Phone className="w-4 h-4" />
+                        {consultation.petugas.no_telp}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Faskes Info */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                  Fasilitas Kesehatan
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-gray-500">Nama Faskes</p>
+                    <p className="font-medium text-gray-900">
+                      {consultation.petugas.faskes.nama}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Tipe</p>
+                    <p className="font-medium text-gray-900">
+                      {consultation.petugas.faskes.tipe_faskes}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Alamat</p>
+                    <p className="text-gray-900">
+                      {consultation.petugas.faskes.alamat}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Status */}
+              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-blue-900">
+                    Status Sesi
+                  </span>
+                  <span className="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                    {consultation.status_sesi}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
