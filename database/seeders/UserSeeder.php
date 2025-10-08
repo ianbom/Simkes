@@ -6,13 +6,12 @@ use App\Models\Anak;
 use App\Models\Kehamilan;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-  public function run(): void
+    public function run(): void
     {
         $roles = [
             'Warga',
@@ -30,37 +29,34 @@ class UserSeeder extends Seeder
 
         $users = [];
 
-        // === 1️⃣ Generate user ===
+        // === 1️⃣ Generate user acak ===
         for ($i = 1; $i <= 10; $i++) {
             $role = $roles[array_rand($roles)];
             $hasFaskes = in_array($role, ['Petugas Faskes', 'Admin Faskes']);
             $isWarga = $role === 'Warga';
-
-            // Gender acak, tapi untuk kehamilan hanya wanita
             $gender = fake()->randomElement(['L', 'P']);
 
             $emailPrefix = strtolower(str_replace(' ', '', $role));
             $email = "{$emailPrefix}{$roleCounters[$role]}@gmail.com";
 
             $user = User::create([
-                'faskes_id'        => $hasFaskes ? 1 : null,
-                'provinsi_id'      => rand(1, 2),
-                'kota_id'          => rand(1, 2),
-                'kecamatan_id'     => rand(1, 2),
-                'name'             => fake()->name($gender === 'L' ? 'male' : 'female'),
-                'email'            => $email,
-                'email_verified_at'=> now(),
-                'password'         => Hash::make('password'),
-                'nik'              => fake()->unique()->numerify('32760##########'),
-                'tanggal_lahir'    => fake()->date('Y-m-d', '2005-12-31'),
-                'kelamin'          => $gender,
-                'no_telp'          => fake()->unique()->numerify('08##########'),
-                'role'             => $role,
-                'profile_pic_url'  => null,
-                'status_user'      => 'Aktif',
-                'tanggal_meninggal'=> null,
-                'alamat'           => fake()->address(),
-
+                'faskes_id'         => $hasFaskes ? 1 : null,
+                'provinsi_id'       => rand(1, 2),
+                'kota_id'           => rand(1, 2),
+                'kecamatan_id'      => rand(1, 2),
+                'name'              => fake()->name($gender === 'L' ? 'male' : 'female'),
+                'email'             => $email,
+                'email_verified_at' => now(),
+                'password'          => Hash::make('password'),
+                'nik'               => fake()->unique()->numerify('32760##########'),
+                'tanggal_lahir'     => fake()->date('Y-m-d', '2005-12-31'),
+                'kelamin'           => $gender,
+                'no_telp'           => fake()->unique()->numerify('08##########'),
+                'role'              => $role,
+                'profile_pic_url'   => null,
+                'status_user'       => 'Aktif',
+                'tanggal_meninggal' => null,
+                'alamat'            => fake()->address(),
             ]);
 
             $users[] = $user;
@@ -83,9 +79,12 @@ class UserSeeder extends Seeder
 
         $users[] = $superadmin;
 
+        // === 3️⃣ Generate anak & kehamilan ===
         foreach ($users as $user) {
+            // 👶 Anak hanya untuk warga (baik pria maupun wanita)
             if ($user->role === 'Warga') {
                 $jumlahAnak = rand(1, 3);
+
                 for ($i = 1; $i <= $jumlahAnak; $i++) {
                     Anak::create([
                         'orang_tua_id'       => $user->id,
@@ -103,19 +102,27 @@ class UserSeeder extends Seeder
                     ]);
                 }
 
-                // --- Kehamilan (khusus perempuan)
+                // 🤰 Kehamilan hanya untuk warga perempuan
                 if ($user->kelamin === 'P') {
-                    Kehamilan::create([
-                        'user_id'           => $user->id,
-                        'kehamilan_ke'      => rand(1, 4),
-                        'hpht'              => Carbon::now()->subMonths(rand(1, 6))->format('Y-m-d'),
-                        'hpl'               => Carbon::now()->addMonths(rand(1, 3))->format('Y-m-d'),
-                        'tinggi_badan_awal' => fake()->randomFloat(1, 145, 175),
-                        'jumlah_janin'      => fake()->randomElement([1, 1, 2]), // mayoritas tunggal
-                        'status'            => fake()->randomElement(['Aktif', 'Selesai', 'Keguguran']),
-                    ]);
+                    $jumlahKehamilan = rand(1, 3);
+                    for ($k = 1; $k <= $jumlahKehamilan; $k++) {
+                        $hpht = Carbon::now()->subMonths(rand(1, 9));
+                        $hpl = (clone $hpht)->addMonths(9);
+
+                        Kehamilan::create([
+                            'user_id'           => $user->id,
+                            'kehamilan_ke'      => $k,
+                            'hpht'              => $hpht->format('Y-m-d'),
+                            'hpl'               => $hpl->format('Y-m-d'),
+                            'tinggi_badan_awal' => fake()->randomFloat(1, 145, 175),
+                            'jumlah_janin'      => fake()->randomElement([1, 1, 2]), // mayoritas tunggal
+                            'status'            => fake()->randomElement(['Aktif', 'Selesai', 'Keguguran']),
+                        ]);
+                    }
                 }
             }
         }
+
+        $this->command->info('✅ UserSeeder berhasil: user, anak, dan kehamilan dibuat.');
     }
 }

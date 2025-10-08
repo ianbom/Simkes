@@ -91,9 +91,9 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/history/konsultasi-online', [KonsultasiOnlineController::class, 'consultHistory'])->name('consult.history');
     Route::get('/history/konsultasi-online/room/{id}', [KonsultasiOnlineController::class, 'joinMeet'])->name('consult.joinMeet');
 
-    Route::get('/grafik/perkembangan-anak/{id}', function () {
-        return Inertia::render('Pasien/Grafik/ChildGraphPageRoute');
-    });
+
+
+    Route::get('/grafik/perkembangan-anak/{id}', [PsnAnakController::class, 'viewPerkembanganAnak'])->name('view.perkembanganAnak');
     Route::get('/grafik/perkembangan-janin/{id}', function () {
         return Inertia::render('Pasien/Grafik/PregnancyGraphPageRoute');
     });
