@@ -9,6 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/Components/ui/select';
+import { Link } from '@inertiajs/react';
 import {
     Activity,
     Calendar,
@@ -20,17 +21,45 @@ import {
     SlidersHorizontal,
     Video,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+
+interface Faskes {
+    id: number;
+    nama: string;
+    tipe_faskes: string;
+    alamat: string;
+}
+
+interface Petugas {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    faskes?: Faskes;
+}
+
+interface ConsultationData {
+    id: number;
+    waktu_mulai_dijadwalkan: string;
+    durasi_menit: number;
+    status_sesi: string;
+    ringkasan_konsultasi: string | null;
+    rekomendasi_petugas: string | null;
+    link_video_conference: string;
+    created_at: string;
+    updated_at: string;
+    petugas: Petugas;
+}
 
 interface ConsultationRecord {
     id: number;
     date: string;
     time: string;
-    duration: number; // dalam menit
+    duration: number;
     doctor: string;
     specialty: string;
     consultation_type: 'video' | 'chat';
-    status: 'completed' | 'cancelled' | 'no-show';
+    status: 'completed' | 'cancelled' | 'no-show' | 'scheduled';
     complaint: string;
     diagnosis: string;
     prescription?: string;
@@ -41,139 +70,71 @@ interface ConsultationRecord {
     updated_at: string;
 }
 
-const ConsultationHistoryPage = () => {
+interface Props {
+    consultations: ConsultationData[];
+}
+
+const ConsultationHistoryPage = ({ consultations }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
-    const [expandedItems, setExpandedItems] = useState(new Set());
+    const [expandedItems, setExpandedItems] = useState(new Set<number>());
 
-    const consultationRecords: ConsultationRecord[] = [
-        {
-            id: 1,
-            date: '2024-10-05',
-            time: '14:30',
-            duration: 25,
-            doctor: 'dr. Sarah Wijaya, Sp.OG',
-            specialty: 'Spesialis Kandungan',
-            consultation_type: 'video',
-            status: 'completed',
-            complaint: 'Konsultasi rutin kehamilan trimester 2',
-            diagnosis: 'Kehamilan Normal',
-            prescription: 'Vitamin Ibu Hamil (Folavit), Kalsium Lactate 3x1',
-            notes: 'Kondisi ibu dan janin baik. Disarankan untuk tetap menjaga pola makan sehat dan istirahat cukup. Konsultasi kembali jika ada keluhan.',
-            fee: 150000,
-            payment_status: 'paid',
-            rating: 5,
-            updated_at: '2024-10-05 15:00:00',
-        },
-        {
-            id: 2,
-            date: '2024-09-28',
-            time: '10:15',
-            duration: 20,
-            doctor: 'dr. Budi Santoso, Sp.A',
-            specialty: 'Spesialis Anak',
-            consultation_type: 'video',
-            status: 'completed',
-            complaint: 'Anak demam tinggi 3 hari, batuk dan pilek',
-            diagnosis: 'ISPA (Infeksi Saluran Pernapasan Atas)',
-            prescription:
-                'Paracetamol sirup 3x5ml (bila demam), Ambroxol sirup 3x5ml, Vitamin C 1x1',
-            notes: 'Diberikan resep obat penurun panas dan obat batuk. Banyak minum air putih, kompres hangat jika demam. Kontrol kembali jika tidak membaik dalam 3 hari.',
-            fee: 120000,
-            payment_status: 'paid',
-            rating: 5,
-            updated_at: '2024-09-28 10:40:00',
-        },
-        {
-            id: 3,
-            date: '2024-09-20',
-            time: '16:00',
-            duration: 15,
-            doctor: 'dr. Ahmad Ridwan, Sp.PD',
-            specialty: 'Spesialis Penyakit Dalam',
-            consultation_type: 'chat',
-            status: 'completed',
-            complaint: 'Sakit kepala, pusing, tekanan darah tinggi',
-            diagnosis: 'Hipertensi Grade 1',
-            prescription:
-                'Amlodipine 5mg 1x1 (pagi), Paracetamol 500mg (bila sakit kepala)',
-            notes: 'Disarankan untuk mengurangi konsumsi garam, olahraga ringan teratur, dan cek tekanan darah rutin. Kontrol 2 minggu lagi.',
-            fee: 100000,
-            payment_status: 'paid',
-            rating: 4,
-            updated_at: '2024-09-20 16:20:00',
-        },
-        {
-            id: 4,
-            date: '2024-09-15',
-            time: '09:00',
-            duration: 0,
-            doctor: 'dr. Lisa Kartika, Sp.KK',
-            specialty: 'Spesialis Kulit & Kelamin',
-            consultation_type: 'video',
-            status: 'cancelled',
-            complaint: 'Gatal-gatal dan ruam di kulit',
-            diagnosis: '-',
-            notes: 'Konsultasi dibatalkan oleh pasien 2 jam sebelum jadwal.',
-            fee: 125000,
-            payment_status: 'refunded',
-            updated_at: '2024-09-15 07:00:00',
-        },
-        {
-            id: 5,
-            date: '2024-09-10',
-            time: '11:30',
-            duration: 30,
-            doctor: 'dr. Maya Sari, Sp.A',
-            specialty: 'Spesialis Anak',
-            consultation_type: 'video',
-            status: 'completed',
-            complaint: 'Konsultasi tumbuh kembang anak 18 bulan',
-            diagnosis: 'Tumbuh Kembang Normal',
-            prescription: '-',
-            notes: 'Perkembangan anak sesuai milestone. Disarankan untuk stimulasi bicara lebih sering, ajak bermain interaktif. Berikan makanan bergizi seimbang.',
-            fee: 120000,
-            payment_status: 'paid',
-            rating: 5,
-            updated_at: '2024-09-10 12:05:00',
-        },
-        {
-            id: 6,
-            date: '2024-09-05',
-            time: '15:45',
-            duration: 0,
-            doctor: 'dr. Rina Wijayanti, Sp.JP',
-            specialty: 'Spesialis Jantung',
-            consultation_type: 'video',
-            status: 'no-show',
-            complaint: 'Nyeri dada dan sesak napas',
-            diagnosis: '-',
-            notes: 'Pasien tidak hadir pada jadwal konsultasi yang telah ditentukan.',
-            fee: 200000,
-            payment_status: 'refunded',
-            updated_at: '2024-09-05 16:00:00',
-        },
-    ];
+    // Transform data dari API ke format yang dibutuhkan
+    const consultationRecords: ConsultationRecord[] = useMemo(() => {
+        return consultations.map((consultation) => {
+            const dateTime = new Date(consultation.waktu_mulai_dijadwalkan);
 
-    const filteredRecords = consultationRecords.filter((record) => {
-        const matchesStatus =
-            statusFilter === 'all' ? true : record.status === statusFilter;
-        const matchesType =
-            typeFilter === 'all'
-                ? true
-                : record.consultation_type === typeFilter;
-        const matchesSearch = (
-            record.doctor +
-            record.specialty +
-            record.diagnosis +
-            record.complaint
-        )
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
+            // Map status dari API ke status internal
+            let status: 'completed' | 'cancelled' | 'no-show' | 'scheduled' = 'scheduled';
+            if (consultation.status_sesi === 'Selesai') status = 'completed';
+            else if (consultation.status_sesi === 'Dibatalkan') status = 'cancelled';
+            else if (consultation.status_sesi === 'Tidak Hadir') status = 'no-show';
 
-        return matchesStatus && matchesType && matchesSearch;
-    });
+            return {
+                id: consultation.id,
+                date: consultation.waktu_mulai_dijadwalkan,
+                time: dateTime.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }),
+                duration: consultation.durasi_menit,
+                doctor: consultation.petugas?.name || 'Dokter Tidak Diketahui',
+                specialty: consultation.petugas?.faskes?.tipe_faskes || 'Umum',
+                consultation_type: 'video',
+                status: status,
+                complaint: 'Konsultasi Kesehatan',
+                diagnosis: consultation.ringkasan_konsultasi || '-',
+                prescription: undefined,
+                notes: consultation.rekomendasi_petugas || 'Tidak ada catatan tambahan',
+
+                payment_status: 'paid',
+                rating: status === 'completed' ? 5 : undefined,
+                updated_at: consultation.updated_at
+            };
+        });
+    }, [consultations]);
+
+    const filteredRecords = useMemo(() => {
+        return consultationRecords.filter((record) => {
+            const matchesStatus =
+                statusFilter === 'all' ? true : record.status === statusFilter;
+            const matchesType =
+                typeFilter === 'all'
+                    ? true
+                    : record.consultation_type === typeFilter;
+            const matchesSearch = (
+                record.doctor +
+                record.specialty +
+                record.diagnosis +
+                record.complaint
+            )
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+
+            return matchesStatus && matchesType && matchesSearch;
+        });
+    }, [consultationRecords, statusFilter, typeFilter, searchQuery]);
 
     const resetFilters = () => {
         setSearchQuery('');
@@ -202,6 +163,8 @@ const ConsultationHistoryPage = () => {
                 return 'bg-red-100 text-red-700 hover:bg-red-100';
             case 'no-show':
                 return 'bg-gray-100 text-gray-700 hover:bg-gray-100';
+            case 'scheduled':
+                return 'bg-blue-100 text-blue-700 hover:bg-blue-100';
             default:
                 return 'bg-blue-100 text-blue-700 hover:bg-blue-100';
         }
@@ -215,6 +178,8 @@ const ConsultationHistoryPage = () => {
                 return 'Dibatalkan';
             case 'no-show':
                 return 'Tidak Hadir';
+            case 'scheduled':
+                return 'Dijadwalkan';
             default:
                 return status;
         }
@@ -378,6 +343,9 @@ const ConsultationHistoryPage = () => {
                                         <SelectItem value="completed">
                                             Selesai
                                         </SelectItem>
+                                        <SelectItem value="scheduled">
+                                            Dijadwalkan
+                                        </SelectItem>
                                         <SelectItem value="cancelled">
                                             Dibatalkan
                                         </SelectItem>
@@ -486,13 +454,6 @@ const ConsultationHistoryPage = () => {
                                                     </span>
                                                 </div>
                                             )}
-                                            <div className="flex items-center gap-1">
-                                                <DollarSign className="h-4 w-4 text-gray-400" />
-                                                <span>
-                                                    Rp{' '}
-                                                    {record.fee.toLocaleString()}
-                                                </span>
-                                            </div>
                                             <Badge
                                                 className={getPaymentBadge(
                                                     record.payment_status,
@@ -513,6 +474,12 @@ const ConsultationHistoryPage = () => {
                                     </div>
 
                                     <div className="flex flex-col gap-2 sm:items-end">
+                                       <Link href={route('pasien.consult.joinMeet', record.id)}>
+                                          <Button variant="default" className="text-white" size="sm">
+                                            Join Meet
+                                          </Button>
+                                       </Link>
+
                                         <Button
                                             variant="outline"
                                             size="sm"

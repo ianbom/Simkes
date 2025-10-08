@@ -24,6 +24,6 @@ class SesiKonsultasi extends Model
         return $this->belongsTo(Kehamilan::class);
     }
     public function jadwal() {
-        return $this->belongsTo(JadwalKetersediaan::class, 'jadwal_id');
+        return $this->belongsTo(JadwalKetersediaan::class, 'jadwal_id', 'id');
     }
 }

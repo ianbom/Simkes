@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Petugas;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePemeriksaanAncRequest;
+use App\Models\Kehamilan;
 use App\Services\PemeriksaanAncService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 use Throwable;
 
 class PemeriksaanAncController extends Controller
@@ -26,11 +28,7 @@ class PemeriksaanAncController extends Controller
                 $request->validated()
             );
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Data pemeriksaan ANC berhasil dibuat',
-                'data' => $result['data']
-            ], 201);
+           return redirect()->back();
 
         } catch (Throwable $e) {
             Log::error($e->getMessage());
@@ -39,5 +37,13 @@ class PemeriksaanAncController extends Controller
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    public function createPemeriksaanKehamilan($id){
+        $pregnant = Kehamilan::with('user')->findOrFail($id);
+        // return response()->json($pregnant);
+        return Inertia::render('Petugas/Pemeriksaan/Kehamilan/PregnancyCheckupPageRoute', [
+            'pregnant' => $pregnant,
+        ]);
     }
 }

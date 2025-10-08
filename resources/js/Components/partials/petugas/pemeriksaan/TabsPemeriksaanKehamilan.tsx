@@ -7,6 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/Components/ui/card';
+
 import {
     Select,
     SelectContent,
@@ -14,25 +15,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/Components/ui/select';
-import { TabsContent } from '@/Components/ui/tabs';
+import {  TabsContent } from '@/Components/ui/tabs';
 import {
     Activity,
-    Clock,
     FileText,
-    History,
+
     Stethoscope,
-    TrendingUp,
-    Upload,
-    X,
+
 } from 'lucide-react';
 import { useState } from 'react';
-import FormPemeriksaanRutinAnak from './FormPemeriksaanRutinAnak';
-import FormPemeriksaanSakitAnak from './FormPemeriksaanSakitAnak';
+import FormPemeriksaanRutinKehamilan from './FormPemeriksaanRutinKehamilan';
+import FormPemeriksaanSakitKehamilan from './FormPemeriksaanSakitKehamilan';
 
 const mockPatient = {
     id: '1217979',
-    name: 'Sarah Johnson',
-    age: 3,
+    name: 'Hamil Sarah Johnson',
+    age: 32,
+    isPregnant: true,
     kelamin: 'P',
     patientId: 'P-2024-001',
     phone: '+1234567890',
@@ -45,16 +44,17 @@ const mockPatient = {
     photo: '/assets/images/profile-8.jpeg',
     appointmentType: 'ANC',
     appointmentTime: '09:00 AM',
+    pregnancyWeek: '12',
     chiefComplaint: 'Routine prenatal checkup',
 };
 
-export default function TabsPemeriksaanAnak({child}) {
 
-    const [patient] = useState(mockPatient);
-    const [checkupType, setCheckupType] = useState('routine');
+export default function  TabsPemeriksaanKehamilan({pregnant}){
+     const [patient] = useState(mockPatient);
+        const [checkupType, setCheckupType] = useState('routine');
 
-    return (
-         <TabsContent value="checkup" className="mt-6 bg-white">
+    return(
+        <TabsContent value="checkup" className="mt-6 bg-white">
                         <Card>
                             <CardHeader>
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -121,9 +121,9 @@ export default function TabsPemeriksaanAnak({child}) {
                                         </div>
                                     )}
                                     {checkupType === 'routine' ? (
-                                        <FormPemeriksaanRutinAnak child={child}/>
+                                       <FormPemeriksaanRutinKehamilan pregnant={pregnant}/>
                                     ) : (
-                                        <FormPemeriksaanSakitAnak child={child}/>
+                                      <FormPemeriksaanSakitKehamilan pregnant={pregnant}/>
                                     )}
 
                                     {/* Action Buttons */}
@@ -138,4 +138,6 @@ export default function TabsPemeriksaanAnak({child}) {
                         </Card>
                     </TabsContent>
     )
+
+
 }

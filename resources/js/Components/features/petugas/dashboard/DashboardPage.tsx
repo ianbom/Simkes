@@ -228,8 +228,9 @@ export default function DashboardPetugasPage({
 
                                     return (
                                         <div
+                                            onClick={() => router.get(route('petugas.create.pemeriksaanAnc', { id: p.id }))}
                                             key={p.id}
-                                            className="border border-gray-300 p-5 rounded-lg mb-4 bg-gray-50 hover:bg-gray-100 transition"
+                                            className="cursor-pointer border border-gray-300 p-5 rounded-lg mb-4 bg-gray-50 hover:bg-gray-100 transition"
                                         >
                                             <p><span className="font-medium">ID: </span>{p.id}</p>
                                             <p><span className="font-medium">Kehamilan ke: </span>{p.kehamilan_ke ?? "-"}</p>

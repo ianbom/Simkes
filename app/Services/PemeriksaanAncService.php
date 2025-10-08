@@ -10,6 +10,7 @@ use App\Models\ResepObatCheckup;
 use App\Models\RiwayatImunisasi;
 use App\Models\RiwayatSakitKehamilan;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -23,19 +24,13 @@ class PemeriksaanAncService
         //
     }
 
-     public function createPemeriksaanAnc(array $data): array
-    {
+  public function createPemeriksaanAnc(array $data): array {
         DB::beginTransaction();
-
         try {
-            // 1. Check existing pemeriksaan
-            // $this->checkExistingPemeriksaan($data);
-
-            // 2. Create main pemeriksaan ANC
             $pemeriksaanAnc = $this->createMainPemeriksaan($data);
-            Log::info('jalan createMainPemeriksaan');
+            Log::info('✅ createMainPemeriksaan berhasil', ['id' => $pemeriksaanAnc->id]);
 
-            // 3. Create related data
+            // 2. Buat data riwayat sakit kehamilan (jika ada)
             $this->createRelatedData($data, $pemeriksaanAnc);
 
             DB::commit();
@@ -45,44 +40,26 @@ class PemeriksaanAncService
                 'data' => [
                     'pemeriksaan_anc_id' => $pemeriksaanAnc->id,
                     'tanggal_checkup' => $pemeriksaanAnc->tanggal_checkup,
-                    'jenis_pemeriksaan' => $pemeriksaanAnc->jenis_pemeriksaan
-                ]
+                    'jenis_pemeriksaan' => $pemeriksaanAnc->jenis_pemeriksaan,
+                ],
             ];
 
         } catch (Exception $e) {
-            DB::rollback();
+            DB::rollBack();
+            Log::error('❌ createPemeriksaanAnc gagal', ['error' => $e->getMessage()]);
             throw $e;
         }
     }
 
-    // private function checkExistingPemeriksaan(array $data): void
-    // {
-    //     $existing = PemeriksaanAnc::where('kehamilan_id', $data['kehamilan_id'])
-    //         ->where('tanggal_checkup', $data['tanggal_checkup'])
-    //         ->where('jenis_pemeriksaan', $data['jenis_pemeriksaan'])
-    //         ->exists();
-
-    //     if ($existing) {
-    //         throw new Exception(
-    //             'Pemeriksaan ANC untuk kehamilan ini pada tanggal dan jenis yang sama sudah ada',
-    //             409
-    //         );
-    //     }
-    // }
-
-    private function createMainPemeriksaan(array $data): PemeriksaanAnc
-    {
-
-        return
-
-        PemeriksaanAnc::create([
-            'kehamilan_id' => $data['kehamilan_id'],
-            'petugas_faskes_id' => $data['petugas_faskes_id'],
-            'jenis_pemeriksaan' => $data['jenis_pemeriksaan'],
-            'tanggal_checkup' => $data['tanggal_checkup'],
-            'berat_badan' => $data['berat_badan'],
-            'tekanan_darah_sistolik' => $data['tekanan_darah_sistolik'],
-            'tekanan_darah_diastolik' => $data['tekanan_darah_diastolik'],
+    private function createMainPemeriksaan(array $data): PemeriksaanAnc {
+        return PemeriksaanAnc::create([
+            'kehamilan_id' => $data['kehamilan_id'] ?? null,
+            'petugas_faskes_id' => $data['petugas_faskes_id'] ?? Auth::id(),
+            'jenis_pemeriksaan' => $data['jenis_pemeriksaan'] ?? null,
+            'tanggal_checkup' => $data['tanggal_checkup'] ?? now(),
+            'berat_badan' => $data['berat_badan'] ?? null,
+            'tekanan_darah_sistolik' => $data['tekanan_darah_sistolik'] ?? null,
+            'tekanan_darah_diastolik' => $data['tekanan_darah_diastolik'] ?? null,
             'lila' => $data['lila'] ?? null,
             'tinggi_fundus' => $data['tinggi_fundus'] ?? null,
             'status_bengkak_kaki' => $data['status_bengkak_kaki'] ?? null,
@@ -94,58 +71,29 @@ class PemeriksaanAncService
             'deteksi_resiko' => $data['deteksi_resiko'] ?? null,
             'saran_kunjungan_berikutnya' => $data['saran_kunjungan_berikutnya'] ?? null,
         ]);
-
-
     }
 
-    private function createRelatedData(array $data, PemeriksaanAnc $pemeriksaanAnc): void
-    {
-        // Create riwayat sakit if exists
-        if (!empty($data['riwayat_sakit'])) {
-            $this->createRiwayatSakit($data, $pemeriksaanAnc->id);
-        }
 
-        // Create data janin if exists
-        if (!empty($data['data_janin'])) {
-            $this->createDataJanin($data['data_janin'], $pemeriksaanAnc->id);
-        }
-
-        // Create media pemeriksaan if exists
-        if (!empty($data['media_pemeriksaan'])) {
-            $this->createMediaPemeriksaan($data['media_pemeriksaan'], $pemeriksaanAnc->id);
-        }
-
-        // Create hasil lab if exists
-        if (!empty($data['hasil_lab'])) {
-            $this->createHasilLab($data['hasil_lab'], $pemeriksaanAnc->id);
-        }
-
-        // Create riwayat imunisasi if exists
-        if (!empty($data['riwayat_imunisasi'])) {
-            $this->createRiwayatImunisasi($data['riwayat_imunisasi'], $pemeriksaanAnc->id, $data['kehamilan_id']);
-        }
-
-        // Create resep obat if exists
-        if (!empty($data['resep_obat'])) {
-            $this->createResepObat($data['resep_obat'], $pemeriksaanAnc->id);
+    private function createRelatedData(array $data, PemeriksaanAnc $pemeriksaanAnc): void {
+        if (!empty($data['riwayat_sakit_kehamilan'])) {
+            $this->createRiwayatSakitKehamilan($data['riwayat_sakit_kehamilan'], $pemeriksaanAnc);
         }
     }
+    private function createRiwayatSakitKehamilan(array $riwayatSakit, PemeriksaanAnc $pemeriksaanAnc): void {
 
-      private function createRiwayatSakit(array $data, int $pemeriksaanAncId): void
-    {
-        $riwayatSakit = $data['riwayat_sakit'];
-
-        if (!empty($riwayatSakit['diagnosis']) || !empty($riwayatSakit['gejala'])) {
-            RiwayatSakitKehamilan::create([
-                'kehamilan_id' => $data['kehamilan_id'],
-                'pemeriksaan_anc_id' => $pemeriksaanAncId,
-                'tanggal_diagnosis' => $riwayatSakit['tanggal_diagnosis'] ?? $data['tanggal_checkup'],
-                'diagnosis' => $riwayatSakit['diagnosis'] ?? null,
-                'gejala' => $riwayatSakit['gejala'] ?? null,
-                'tindakan_pengobatan' => $riwayatSakit['tindakan_pengobatan'] ?? null,
-                'status_penyakit' => $riwayatSakit['status_penyakit'] ?? 'Aktif',
-            ]);
+        if (empty($riwayatSakit['diagnosis']) && empty($riwayatSakit['gejala'])) {
+            return;
         }
+
+        RiwayatSakitKehamilan::create([
+            'kehamilan_id' => $riwayatSakit['kehamilan_id'] ?? $pemeriksaanAnc->kehamilan_id,
+            'pemeriksaan_anc_id' => $pemeriksaanAnc->id,
+            'tanggal_diagnosis' => $riwayatSakit['tanggal_diagnosis'] ?? $pemeriksaanAnc->tanggal_checkup,
+            'diagnosis' => $riwayatSakit['diagnosis'] ?? null,
+            'gejala' => $riwayatSakit['gejala'] ?? null,
+            'tindakan_pengobatan' => $riwayatSakit['tindakan_pengobatan'] ?? null,
+            'status_penyakit' => $riwayatSakit['status_penyakit'] ?? 'Aktif',
+        ]);
     }
 
     private function createDataJanin(array $dataJaninArray, int $pemeriksaanAncId): void
@@ -245,4 +193,29 @@ class PemeriksaanAncService
 
         ResepObatCheckup::insert($resepObatData);
     }
+
+     // Create data janin if exists
+        // if (!empty($data['data_janin'])) {
+        //     $this->createDataJanin($data['data_janin'], $pemeriksaanAnc->id);
+        // }
+
+        // // Create media pemeriksaan if exists
+        // if (!empty($data['media_pemeriksaan'])) {
+        //     $this->createMediaPemeriksaan($data['media_pemeriksaan'], $pemeriksaanAnc->id);
+        // }
+
+        // // Create hasil lab if exists
+        // if (!empty($data['hasil_lab'])) {
+        //     $this->createHasilLab($data['hasil_lab'], $pemeriksaanAnc->id);
+        // }
+
+        // // Create riwayat imunisasi if exists
+        // if (!empty($data['riwayat_imunisasi'])) {
+        //     $this->createRiwayatImunisasi($data['riwayat_imunisasi'], $pemeriksaanAnc->id, $data['kehamilan_id']);
+        // }
+
+        // // Create resep obat if exists
+        // if (!empty($data['resep_obat'])) {
+        //     $this->createResepObat($data['resep_obat'], $pemeriksaanAnc->id);
+        // }
 }

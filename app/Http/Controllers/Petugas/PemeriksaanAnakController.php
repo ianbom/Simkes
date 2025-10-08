@@ -27,7 +27,7 @@ class PemeriksaanAnakController extends Controller
                 $request->validated()
             );
 
-            return redirect()->back();
+            return redirect()->back()->with('success', 'Data berhasil disimpan');
 
         } catch (Throwable $e) {
             return response()->json([
