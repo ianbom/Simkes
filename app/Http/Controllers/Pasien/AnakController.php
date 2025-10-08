@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Pasien;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateAnakRequest;
+use App\Models\Anak;
+use App\Models\PemeriksaanAnak;
 use App\Services\AnakService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Models\PemeriksaanAnak;
+
 
 class AnakController extends Controller
 {
@@ -37,6 +39,18 @@ class AnakController extends Controller
         //     ->route('anak.index')
         //     ->with('success', "Data anak {$anak->nama} berhasil ditambahkan.");
     }
+      public function viewPerkembanganAnak($id){
+        $child = Anak::findOrFail($id);
+        $growth = PemeriksaanAnak::where('anak_id', $child->id)->get();
+
+        // return response()->json($growth);
+
+        return Inertia::render('Pasien/Grafik/ChildGraphPageRoute', [
+            'child' => $child,
+            'growth' => $growth
+        ]);
+
+    }
     public function childCheckupHistory()
     {
         $user = Auth::user();
@@ -57,4 +71,6 @@ class AnakController extends Controller
             'checkupHistory' => $checkupHistory,
         ]);
     }
+
+
 }

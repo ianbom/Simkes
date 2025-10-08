@@ -19,7 +19,9 @@ class DatabaseSeeder extends Seeder
         LokasiSeeder::class,
         ObatMasterSeeder::class,
         FaskesSeeder::class,
-        UserSeeder::class
+        UserSeeder::class,
+        PemeriksaanAnakSeeder::class,
+        PemeriksaanAncSeeder::class,
        ]);
     }
 }
