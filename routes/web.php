@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
 // Route untuk akses fitur pasien
 Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('Pasien/Dashboard/DashboardPageRoute');
+        return Inertia::render('Pasien/Dashboard/DashboardPageRoute')->name('homepage');
     });
     Route::get('/create/anak', function () {
         return Inertia::render('Pasien/Anak/CreateAnakPageRoute');
@@ -60,19 +60,15 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     });
     Route::get('/profil', function () {
         return Inertia::render('Pasien/Profil/ProfilePageRoute');
-
     });
     Route::get('/riwayat/checkup-rutin', function () {
         return Inertia::render('Pasien/Profile/ProfilePageRoute');
-
     });
     Route::get('/riwayat/checkup-sakit', action: function () {
         return Inertia::render('Pasien/Profile/ProfilePageRoute');
-
     });
     Route::get('/riwayat/konsultasi', action: function () {
         return Inertia::render('Pasien/Profile/ProfilePageRoute');
-
     });
 
     Route::get('/panduan/ibu-hamil', function () {
@@ -86,6 +82,15 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     });
     Route::get('/bank-obat/{id}', function () {
         return Inertia::render('Pasien/BankObat/MedicineDetailPageRoute');
+    });
+    Route::get('/history/checkup-kehamilan', function () {
+        return Inertia::render('Pasien/Riwayat/PregnancyCheckupHistoryPageRoute');
+    });
+    Route::get('/history/checkup-balita', function () {
+        return Inertia::render('Pasien/Riwayat/ChildCheckupHistoryPageRoute');
+    });
+    Route::get('/history/konsultasi-online', function () {
+        return Inertia::render('Pasien/Riwayat/ConsultationHistoryPageRoute');
     });
     Route::get('/grafik/perkembangan-anak/{id}', function () {
         return Inertia::render('Pasien/Grafik/ChildGraphPageRoute');
