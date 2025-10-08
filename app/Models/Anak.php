@@ -26,4 +26,8 @@ class Anak extends Model
     public function riwayatSakit() {
         return $this->hasMany(RiwayatSakitAnak::class);
     }
+
+    public function orangTua(){
+        return $this->hasOne(User::class, 'id', 'orang_tua_id');
+    }
 }

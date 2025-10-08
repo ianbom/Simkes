@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminFaskes\DashboardController as AdmDashboardController;
 use App\Http\Controllers\AdminFaskes\PetugasController as AdmPetugasController;
 use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
+use App\Http\Controllers\Pasien\KonsultasiOnlineController;
 use App\Http\Controllers\Pasien\RiwayatMedisUserController;
 use App\Http\Controllers\Petugas\DashboardController as PtgDashboardController;
 use App\Http\Controllers\Petugas\OnlineConsultationController as PtgOnlineConsultationController;
@@ -52,27 +53,10 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
         return Inertia::render('Pasien/Pemeriksaan/CheckupPageRoute');
     });
 
-    Route::get('/konsultasi', function () {
-        return Inertia::render('Pasien/Konsultasi/ConsultationPageRoute');
-    });
-    Route::get('/konsultasi/{id}', function () {
-        return Inertia::render('Pasien/Konsultasi/ConsultationDetailPageRoute');
-    });
+    Route::get('konsultasi', [KonsultasiOnlineController::class, 'index'])->name('consultation.index');
+    Route::post('konsultasi-bookConsult/{id}', [KonsultasiOnlineController::class, 'bookConsult'])->name('consultation.bookConsult');
     Route::get('/profil', function () {
-        return Inertia::render('Pasien/Profil/ProfilePageRoute');
-
-    });
-    Route::get('/riwayat/checkup-rutin', function () {
-        return Inertia::render('Pasien/Profile/ProfilePageRoute');
-
-    });
-    Route::get('/riwayat/checkup-sakit', action: function () {
-        return Inertia::render('Pasien/Profile/ProfilePageRoute');
-
-    });
-    Route::get('/riwayat/konsultasi', action: function () {
-        return Inertia::render('Pasien/Profile/ProfilePageRoute');
-
+        return Inertia::render('Pasien/Profile');
     });
 
     Route::get('/panduan/ibu-hamil', function () {
@@ -96,17 +80,15 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
 });
 // Route untuk akses fitur petugas
 Route::prefix('petugas')->as('petugas.')->group(function () {
-
     Route::get('/dashboard', [PtgDashboardController::class, 'index'])->name('dashboard.index');
-
     Route::get('/pemeriksaan', function () {
         return Inertia::render('Petugas/Pemeriksaan/CheckupPageRoute');
     });
     Route::get('/checkup-anak/{id}', function () {
         return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute');
     });
-
     Route::get('/checkup-anak/{id}', [PemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
+    Route::post('/store-checkup', [PemeriksaanAnakController::class, 'store'])->name('store.pemeriksaanAnak');
 
     Route::get('/checkup-kehamilan/{id}', function () {
         return Inertia::render('Petugas/Pemeriksaan/Kehamilan/PregnancyCheckupPageRoute');
