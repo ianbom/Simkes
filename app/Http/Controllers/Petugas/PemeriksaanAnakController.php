@@ -27,11 +27,7 @@ class PemeriksaanAnakController extends Controller
                 $request->validated()
             );
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Data pemeriksaan anak berhasil dibuat',
-                'data' => $result['data']
-            ], 201);
+            return redirect()->back();
 
         } catch (Throwable $e) {
             return response()->json([
@@ -42,9 +38,7 @@ class PemeriksaanAnakController extends Controller
     }
 
     public function createPemeriksaan($id){
-    $child = Anak::find($id);
-
-    // return response()->json(['child' => $child]);
+    $child = Anak::with('orangTua')->findOrFail($id);
 
 
        return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute',[

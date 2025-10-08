@@ -8,6 +8,7 @@ use App\Models\RiwayatObatAnak;
 use App\Models\RiwayatSakitAnak;
 use App\Models\SkriningPerkembangan;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -21,23 +22,29 @@ class PemeriksaanAnakService
         //
     }
 
-     public function createPemeriksaanAnak(array $data): array
+        private function checkExistingPemeriksaan(array $data): void
+    {
+        $existing = PemeriksaanAnak::where('anak_id', $data['anak_id'])
+            ->where('tanggal_pemeriksaan', $data['tanggal_pemeriksaan'])
+            ->where('jenis_kunjungan', $data['jenis_kunjungan'])
+            ->exists();
+
+        if ($existing) {
+            throw new Exception(
+                'Pemeriksaan anak untuk tanggal dan jenis kunjungan yang sama sudah ada',
+                409
+            );
+        }
+    }
+
+    public function createPemeriksaanAnak(array $data): array
     {
         DB::beginTransaction();
 
         try {
-            // 1. Check existing pemeriksaan
-            // $this->checkExistingPemeriksaan($data);
-
-            // 2. Create main pemeriksaan anak (hanya satu data)
             $pemeriksaanAnak = $this->createMainPemeriksaan($data);
-            Log::info('anjay bs');
-
-            // 3. Create related data (bisa multiple)
             $this->createRelatedData($data, $pemeriksaanAnak);
-
             DB::commit();
-
             return [
                 'success' => true,
                 'data' => [
@@ -54,72 +61,61 @@ class PemeriksaanAnakService
         }
     }
 
-    private function checkExistingPemeriksaan(array $data): void
-    {
-        $existing = PemeriksaanAnak::where('anak_id', $data['anak_id'])
-            ->where('tanggal_pemeriksaan', $data['tanggal_pemeriksaan'])
-            ->where('jenis_kunjungan', $data['jenis_kunjungan'])
-            ->exists();
 
-        if ($existing) {
-            throw new Exception(
-                'Pemeriksaan anak untuk tanggal dan jenis kunjungan yang sama sudah ada',
-                409
-            );
-        }
+
+   private function createMainPemeriksaan(array $data): PemeriksaanAnak
+{
+    return PemeriksaanAnak::create([
+        'anak_id' => $data['anak_id'],
+        'petugas_faskes_id' => Auth::id(), // ambil otomatis dari user login
+        'jenis_kunjungan' => $data['jenis_kunjungan'],
+        'tanggal_pemeriksaan' => $data['tanggal_pemeriksaan'],
+        'usia_saat_periksa_bulan' => $data['usia_saat_periksa_bulan'] ?? null,
+
+        // Data Antropometri
+        'berat_badan_kg' => $data['berat_badan_kg'] ?? null,
+        'tinggi_badan_cm' => $data['tinggi_badan_cm'] ?? null,
+        'lingkar_kepala_cm' => $data['lingkar_kepala_cm'] ?? null,
+        'cara_ukur_tinggi' => $data['cara_ukur_tinggi'] ?? null,
+
+        // Data Tanda Vital
+        'suhu_tubuh_celsius' => $data['suhu_tubuh_celsius'] ?? null,
+        'frekuensi_napas_per_menit' => $data['frekuensi_napas_per_menit'] ?? null,
+        'frekuensi_jantung_per_menit' => $data['frekuensi_jantung_per_menit'] ?? null,
+        'saturasi_oksigen_persen' => $data['saturasi_oksigen_persen'] ?? null,
+
+        // Data Perkembangan
+        'perkembangan_motorik' => $data['perkembangan_motorik'] ?? null,
+        'perkembangan_kognitif' => $data['perkembangan_kognitif'] ?? null,
+        'perkembangan_emosional' => $data['perkembangan_emosional'] ?? null,
+        'catatan_pemeriksaan' => $data['catatan_pemeriksaan'] ?? null,
+    ]);
+}
+
+private function createRelatedData(array $data, PemeriksaanAnak $pemeriksaanAnak): void
+{
+    // ✅ Hanya buat satu riwayat sakit
+    if (!empty($data['riwayat_sakit']) && is_array($data['riwayat_sakit'])) {
+        $this->createRiwayatSakit($data['riwayat_sakit'], $pemeriksaanAnak->id, $data['anak_id']);
+    }
+}
+
+private function createRiwayatSakit(array $sakit, int $pemeriksaanAnakId, int $anakId)
+{
+    if (empty($sakit['diagnosis']) && empty($sakit['tanggal_sakit'])) {
+        return;
     }
 
-     private function createMainPemeriksaan(array $data): PemeriksaanAnak
-    {
-        return PemeriksaanAnak::create([
-            'anak_id' => $data['anak_id'],
-            'petugas_faskes_id' => $data['petugas_faskes_id'],
-            'jenis_kunjungan' => $data['jenis_kunjungan'],
-            'tanggal_pemeriksaan' => $data['tanggal_pemeriksaan'],
-            'usia_saat_periksa_bulan' => $data['usia_saat_periksa_bulan'],
-
-            // Data Antropometri
-            'berat_badan_kg' => $data['berat_badan_kg'] ?? null,
-            'tinggi_badan_cm' => $data['tinggi_badan_cm'] ?? null,
-            'lingkar_kepala_cm' => $data['lingkar_kepala_cm'] ?? null,
-            'cara_ukur_tinggi' => $data['cara_ukur_tinggi'] ?? null,
-
-            // Data Tanda Vital
-            'suhu_tubuh_celsius' => $data['suhu_tubuh_celsius'] ?? null,
-            'frekuensi_napas_per_menit' => $data['frekuensi_napas_per_menit'] ?? null,
-            'frekuensi_jantung_per_menit' => $data['frekuensi_jantung_per_menit'] ?? null,
-            'saturasi_oksigen_persen' => $data['saturasi_oksigen_persen'] ?? null,
-
-            // Data Perkembangan
-            'perkembangan_motorik' => $data['perkembangan_motorik'] ?? null,
-            'perkembangan_kognitif' => $data['perkembangan_kognitif'] ?? null,
-            'perkembangan_emosional' => $data['perkembangan_emosional'] ?? null,
-            'catatan_pemeriksaan' => $data['catatan_pemeriksaan'] ?? null,
-        ]);
-    }
-
-    private function createRelatedData(array $data, PemeriksaanAnak $pemeriksaanAnak): void
-    {
-        // Create skrining perkembangan if exists
-        if (!empty($data['skrining_perkembangan'])) {
-            $this->createSkriningPerkembangan($data['skrining_perkembangan'], $pemeriksaanAnak->id);
-        }
-
-        // Create riwayat imunisasi if exists
-        if (!empty($data['riwayat_imunisasi'])) {
-            $this->createRiwayatImunisasi($data['riwayat_imunisasi'], $pemeriksaanAnak->id, $data['anak_id']);
-        }
-
-        // Create riwayat obat if exists
-        if (!empty($data['riwayat_obat'])) {
-            $this->createRiwayatObat($data['riwayat_obat'], $pemeriksaanAnak->id, $data['anak_id']);
-        }
-
-        // Create riwayat sakit if exists
-        if (!empty($data['riwayat_sakit'])) {
-            $this->createRiwayatSakit($data['riwayat_sakit'], $pemeriksaanAnak->id, $data['anak_id']);
-        }
-    }
+    RiwayatSakitAnak::create([
+        'anak_id' => $anakId,
+        'pemeriksaan_anak_id' => $pemeriksaanAnakId,
+        'tanggal_sakit' => $sakit['tanggal_sakit'] ?? null,
+        'diagnosis' => $sakit['diagnosis'] ?? null,
+        'gejala' => $sakit['gejala'] ?? null,
+        'tindakan_pengobatan' => $sakit['tindakan_pengobatan'] ?? null,
+        'catatan' => $sakit['catatan'] ?? null,
+    ]);
+}
 
     private function createSkriningPerkembangan(array $skriningArray, int $pemeriksaanAnakId): void
     {
@@ -173,24 +169,7 @@ class PemeriksaanAnakService
         RiwayatObatAnak::insert($obatData);
     }
 
-    private function createRiwayatSakit(array $sakitArray, int $pemeriksaanAnakId, int $anakId): void
-    {
-        $sakitData = collect($sakitArray)->map(function ($sakit) use ($pemeriksaanAnakId, $anakId) {
-            return [
-                'anak_id' => $anakId,
-                'pemeriksaan_anak_id' => $pemeriksaanAnakId,
-                'tanggal_sakit' => $sakit['tanggal_sakit'],
-                'diagnosis' => $sakit['diagnosis'],
-                'gejala' => $sakit['gejala'] ?? null,
-                'tindakan_pengobatan' => $sakit['tindakan_pengobatan'] ?? null,
-                'catatan' => $sakit['catatan'] ?? null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        })->toArray();
 
-        RiwayatSakitAnak::insert($sakitData);
-    }
 
 
 }
