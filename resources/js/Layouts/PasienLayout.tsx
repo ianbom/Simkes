@@ -20,9 +20,10 @@ export default function PasienLayout({ children, currentPage }: Props) {
     const user = auth?.user;
     const navItems = [
         {
-            id: 'dashboard',
-            label: 'Dashboard',
-            key: 'dashboard',
+            id: 'pasien.homepage',
+            label: 'Beranda',
+            key: 'pasien.homepage',
+            href: '/pasien/homepage',
             showOnMobile: true,
             showOnDesktop: true,
             hasDropdown: false,
@@ -53,7 +54,7 @@ export default function PasienLayout({ children, currentPage }: Props) {
             ],
         },
         {
-            id: 'bank-obat',
+            id: 'pasien-bank-obat',
             label: 'Bank Obat',
             key: 'bank-obat',
             showOnMobile: true,
@@ -104,7 +105,7 @@ export default function PasienLayout({ children, currentPage }: Props) {
     };
 
     return (
-        <div className="bg-background min-h-screen">
+        <div className="min-h-screen bg-background">
             <Navbar
                 user={user}
                 navItems={navItems}
