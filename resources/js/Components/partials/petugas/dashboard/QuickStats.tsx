@@ -74,7 +74,10 @@ const QuickStats = () => {
     return (
         <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat, index) => (
-                <Card key={index} className="transition-shadow hover:shadow-md">
+                <Card
+                    key={index}
+                    className="bg-white transition-shadow hover:shadow-md"
+                >
                     <CardContent className="p-6">
                         <div className="flex items-center">
                             <div

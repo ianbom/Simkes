@@ -18,25 +18,29 @@ class DashboardService
         //
     }
 
-    public function getLatestPregnantPatient(){
+    public function getLatestPregnantPatient()
+    {
         $userId = Auth::id();
         $latestPregnantPatients = PemeriksaanAnc::where('petugas_faskes_id', $userId)->with('kehamilan.user')->limit(4)->get();
         return $latestPregnantPatients;
     }
 
-    public function getLatestChildPatient(){
+    public function getLatestChildPatient()
+    {
         $userId = Auth::id();
         $latestChildPatients = PemeriksaanAnak::where('petugas_faskes_id', $userId)->limit(4)->get();
         return $latestChildPatients;
     }
 
-    public function getConsulQueue(){
+    public function getConsulQueue()
+    {
         $userId = Auth::id();
         $consulQueue = SesiKonsultasi::with('anak', 'kehamilan', 'pasien', 'petugas', 'jadwal')->where('petugas_faskes_id', $userId)->get();
         return $consulQueue;
     }
 
-    public function getPatientByNik($nik){
+    public function getPatientByNik($nik)
+    {
         $patient = User::where('nik', $nik)->first();
         return $patient;
     }

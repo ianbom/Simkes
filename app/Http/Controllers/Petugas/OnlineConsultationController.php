@@ -12,43 +12,43 @@ use Inertia\Inertia;
 
 class OnlineConsultationController extends Controller
 {
-     protected $dashboardService, $onlineConsultationService;
+    protected $dashboardService, $onlineConsultationService;
 
-    public function __construct(DashboardService $dashboardService, OnlineConsultationService $onlineConsultationService){
+    public function __construct(DashboardService $dashboardService, OnlineConsultationService $onlineConsultationService)
+    {
         $this->dashboardService = $dashboardService;
         $this->onlineConsultationService = $onlineConsultationService;
     }
 
-    public function index(){
+    public function index()
+    {
         $consulQueue = $this->dashboardService->getConsulQueue();
-    return Inertia::render('Petugas/Konsultasi/ListConsultationPageRoute',
-    ['consulQueue' => $consulQueue]);
+        return Inertia::render(
+            'Petugas/Konsultasi/ListConsultationPageRoute',
+            ['consulQueue' => $consulQueue]
+        );
     }
 
-    public function joinMeet($id){
-    $sesiKonsultasi = $this->onlineConsultationService->getSesiKonsultasiById($id);
-    $roomName = $sesiKonsultasi->room_name;
-    $user = Auth::user();
+    public function joinMeet($id)
+    {
+        $sesiKonsultasi = $this->onlineConsultationService->getSesiKonsultasiById($id);
+        $roomName = $sesiKonsultasi->room_name;
+        $user = Auth::user();
 
-    return Inertia::render('Petugas/Konsultasi/ConsultationPageRoute', [
-        'sesiKonsultasi' => $sesiKonsultasi,
-        'roomName' => $roomName,
-        'user' => $user
-    ]);
-}
+        return Inertia::render('Petugas/Konsultasi/ConsultationPageRoute', [
+            'sesiKonsultasi' => $sesiKonsultasi,
+            'roomName' => $roomName,
+            'user' => $user
+        ]);
+    }
 
-    public function listSchedulePetugas(){
+    public function listSchedulePetugas()
+    {
 
         $schedule = $this->onlineConsultationService->listSchedulePetugas();
 
         return Inertia::render('Petugas/JadwalKetersediaan/ListJadwalKetersediaanPageRoute', [
             'schedule' => $schedule
         ]);
-
-
     }
-
-
-
-
 }

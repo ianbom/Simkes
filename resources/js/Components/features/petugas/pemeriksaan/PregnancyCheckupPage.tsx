@@ -67,16 +67,16 @@ const PregnancyCheckupPage = ({pregnant}) => {
         <div className="px-4 py-6 pb-20 lg:px-8 lg:pb-6">
             {/* Header */}
             <div className="mb-6">
-                <div className="mb-4 flex items-center gap-4">
+                <div className="flex items-center gap-4 mb-4">
                     <div className="flex items-center gap-2">
-                        <h1 className="font-heading text-foreground text-2xl font-bold">
+                        <h1 className="text-2xl font-bold font-heading text-foreground">
                             Ruang Pemeriksaan Offline{' '}
                         </h1>
                     </div>
                 </div>
-                <div className="text-muted-foreground flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
+                        <Clock className="w-4 h-4" />
                         {patient.appointmentTime}
                     </span>
                     <Badge variant="outline">{patient.appointmentType}</Badge>
@@ -90,7 +90,7 @@ const PregnancyCheckupPage = ({pregnant}) => {
             {/* Tabs Section */}
             <div className="mt-8">
                 {/* Mobile: Dropdown */}
-                <div className="mb-4 block md:hidden">
+                <div className="block mb-4 md:hidden">
                     <Select value={activeTab} onValueChange={setActiveTab}>
                         <SelectTrigger className="w-full bg-white">
                             <SelectValue />
@@ -98,7 +98,7 @@ const PregnancyCheckupPage = ({pregnant}) => {
                         <SelectContent>
                             <SelectItem value="checkup" className="bg-white">
                                 <div className="flex items-center gap-2">
-                                    <Stethoscope className="h-4 w-4" />
+                                    <Stethoscope className="w-4 h-4" />
                                     <span>Checkup</span>
                                 </div>
                             </SelectItem>
@@ -107,7 +107,7 @@ const PregnancyCheckupPage = ({pregnant}) => {
                                 className="bg-white"
                             >
                                 <div className="flex items-center gap-2">
-                                    <History className="h-4 w-4" />
+                                    <History className="w-4 h-4" />
                                     <span>Riwayat Sakit</span>
                                 </div>
                             </SelectItem>
@@ -116,13 +116,13 @@ const PregnancyCheckupPage = ({pregnant}) => {
                                 className="bg-white"
                             >
                                 <div className="flex items-center gap-2">
-                                    <Activity className="h-4 w-4" />
+                                    <Activity className="w-4 h-4" />
                                     <span>Riwayat Perkembangan Janin</span>
                                 </div>
                             </SelectItem>
                             <SelectItem value="charts" className="bg-white">
                                 <div className="flex items-center gap-2">
-                                    <TrendingUp className="h-4 w-4" />
+                                    <TrendingUp className="w-4 h-4" />
                                     <span>Grafik</span>
                                 </div>
                             </SelectItem>
@@ -136,33 +136,33 @@ const PregnancyCheckupPage = ({pregnant}) => {
                     onValueChange={setActiveTab}
                     className="w-full"
                 >
-                    <TabsList className="bg-muted/50 hidden w-full justify-start rounded-lg border bg-white px-3 py-7 md:inline-flex">
+                    <TabsList className="justify-start hidden w-full px-3 bg-white border rounded-lg bg-muted/50 py-7 md:inline-flex">
                         <TabsTrigger
                             value="checkup"
                             className="data-[state=inactive]:text-muted-foreground flex items-center gap-2 px-4 py-4 text-base font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md"
                         >
-                            <Stethoscope className="h-5 w-5" />
+                            <Stethoscope className="w-5 h-5" />
                             Checkup
                         </TabsTrigger>
                         <TabsTrigger
                             value="medical-history"
                             className="data-[state=inactive]:text-muted-foreground flex items-center gap-2 px-4 py-4 text-base font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md"
                         >
-                            <History className="h-5 w-5" />
+                            <History className="w-5 h-5" />
                             Riwayat Sakit
                         </TabsTrigger>
                         <TabsTrigger
                             value="child-development"
                             className="data-[state=inactive]:text-muted-foreground flex items-center gap-2 px-4 py-4 text-base font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md"
                         >
-                            <Activity className="h-5 w-5" />
+                            <Activity className="w-5 h-5" />
                             Riwayat Perkembangan Janin
                         </TabsTrigger>
                         <TabsTrigger
                             value="charts"
                             className="data-[state=inactive]:text-muted-foreground flex items-center gap-2 px-4 py-4 text-base font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md"
                         >
-                            <TrendingUp className="h-5 w-5" />
+                            <TrendingUp className="w-5 h-5" />
                             Grafik
                         </TabsTrigger>
                     </TabsList>
