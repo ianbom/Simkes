@@ -1,8 +1,6 @@
 ('use client');
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Link } from '@inertiajs/react';
-
 import { Input } from '@/Components/ui/input';
 import {
     Select,
@@ -11,44 +9,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/Components/ui/select';
-import { medicinesData } from '@/data/medicine';
-import {
-    Clock,
-    Heart,
-    RefreshCcw,
-    Shield,
-    SlidersHorizontal,
-} from 'lucide-react';
+import { Faskes } from '@/types/faskes/interface';
+import { Link } from '@inertiajs/react';
+import { MapPin, RefreshCcw, SlidersHorizontal } from 'lucide-react';
 
-const getSafetyBadge = (safety: string) => {
-    switch (safety) {
-        case 'safe':
-            return (
-                <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
-                    <Shield className="h-3 w-3" />
-                    Aman
-                </span>
-            );
-        case 'caution':
-            return (
-                <span className="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700">
-                    <Clock className="h-3 w-3" />
-                    Hati-hati
-                </span>
-            );
-        case 'consult':
-            return (
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
-                    <Heart className="h-3 w-3" />
-                    Konsultasi
-                </span>
-            );
-        default:
-            return null;
-    }
-};
+interface Props {
+    faskes: Faskes[];
+}
 
-const MedicinePage = () => {
+const FaskesPage = ({ faskes }: Props) => {
     return (
         <div>
             <div
@@ -63,11 +32,15 @@ const MedicinePage = () => {
                 <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-8">
                         <h1 className="mb-2 text-3xl font-bold text-gray-900">
-                            Bank Obat
+                            Daftar Faskes
                         </h1>
                         <p className="text-gray-600">
-                            Temukan obat aman untuk Bunda & si kecil, lengkap
-                            dengan aturan pemakaian nya.
+                            <span className="font-semibold text-sky-600">
+                                SIMKESIA{' '}
+                            </span>{' '}
+                            bekerja sama dengan faskes terpercaya supaya Bunda
+                            dan si Kecil selalu mendapat layanan yang aman dan
+                            ramah
                         </p>
                     </div>
                     <Card className="mb-6 rounded-xl bg-white">
@@ -79,7 +52,7 @@ const MedicinePage = () => {
                                             size={20}
                                             className="mr-2 text-sky-600"
                                         />
-                                        Filter Obat
+                                        Filter Faskes
                                     </div>
                                 </CardTitle>
                                 <Button variant="outline" size="sm">
@@ -89,80 +62,107 @@ const MedicinePage = () => {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 divide-y divide-gray-300 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                            <div className="grid grid-cols-1 divide-y divide-gray-300 sm:grid-cols-5 sm:divide-x sm:divide-y-0">
                                 <div className="py-4 sm:py-0 sm:pr-6">
                                     <label className="mb-2 block text-sm font-medium text-gray-700">
-                                        Kategori Obat
+                                        Jenis Faskes
                                     </label>
                                     <Select>
                                         <SelectTrigger className="w-full border-gray-400">
-                                            <SelectValue placeholder="Semua Kategori" />
+                                            <SelectValue placeholder="Semua Jenis" />
                                         </SelectTrigger>
                                         <SelectContent className="border border-gray-200 bg-white">
                                             <SelectItem value="all">
-                                                Semua Kategori
+                                                Semua Jenis
                                             </SelectItem>
-                                            <SelectItem value="vitamin">
-                                                Vitamin
+                                            <SelectItem value="Puskesmas">
+                                                Puskesmas
                                             </SelectItem>
-                                            <SelectItem value="mineral">
-                                                Mineral
+                                            <SelectItem value="Klinik">
+                                                Klinik
                                             </SelectItem>
-                                            <SelectItem value="analgesik">
-                                                Analgesik
+                                            <SelectItem value="RSIA">
+                                                RSIA
                                             </SelectItem>
-                                            <SelectItem value="pencernaan">
-                                                Pencernaan
+                                            <SelectItem value="RSUD">
+                                                RSUD
                                             </SelectItem>
-                                            <SelectItem value="suplemen">
-                                                Suplemen
-                                            </SelectItem>
-                                            <SelectItem value="anti-mual">
-                                                Anti-mual
+                                            <SelectItem value="Posyandu">
+                                                Posyandu
                                             </SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="py-4 sm:px-6 sm:py-0">
                                     <label className="mb-2 block text-sm font-medium text-gray-700">
-                                        Jenis Obat
+                                        Provinsi
                                     </label>
                                     <Select>
                                         <SelectTrigger className="w-full border-gray-400">
-                                            <SelectValue placeholder="Semua Kategori" />
+                                            <SelectValue placeholder="Semua Provinsi" />
                                         </SelectTrigger>
                                         <SelectContent className="border border-gray-200 bg-white">
                                             <SelectItem value="all">
-                                                Semua Kategori
+                                                Semua Provinsi
                                             </SelectItem>
-                                            <SelectItem value="vitamin">
-                                                Vitamin
+                                            <SelectItem value="jawa-barat">
+                                                Jawa Barat
                                             </SelectItem>
-                                            <SelectItem value="mineral">
-                                                Mineral
+                                            <SelectItem value="jawa-timur">
+                                                Jawa Timur
                                             </SelectItem>
-                                            <SelectItem value="analgesik">
-                                                Analgesik
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="py-4 sm:px-6 sm:py-0">
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                        Kabupaten / Kota
+                                    </label>
+                                    <Select>
+                                        <SelectTrigger className="w-full border-gray-400">
+                                            <SelectValue placeholder="Semua Kota" />
+                                        </SelectTrigger>
+                                        <SelectContent className="border border-gray-200 bg-white">
+                                            <SelectItem value="all">
+                                                Semua Kota
                                             </SelectItem>
-                                            <SelectItem value="pencernaan">
-                                                Pencernaan
+                                            <SelectItem value="jawa-barat">
+                                                Jawa Barat
                                             </SelectItem>
-                                            <SelectItem value="suplemen">
-                                                Suplemen
+                                            <SelectItem value="jawa-timur">
+                                                Jawa Timur
                                             </SelectItem>
-                                            <SelectItem value="anti-mual">
-                                                Anti-mual
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="py-4 sm:px-6 sm:py-0">
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                        Kecamatan
+                                    </label>
+                                    <Select>
+                                        <SelectTrigger className="w-full border-gray-400">
+                                            <SelectValue placeholder="Semua Kecamatan" />
+                                        </SelectTrigger>
+                                        <SelectContent className="border border-gray-200 bg-white">
+                                            <SelectItem value="all">
+                                                Semua Kecamatan
+                                            </SelectItem>
+                                            <SelectItem value="jawa-barat">
+                                                Jawa Barat
+                                            </SelectItem>
+                                            <SelectItem value="jawa-timur">
+                                                Jawa Timur
                                             </SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="py-4 sm:py-0 sm:pl-6">
                                     <label className="mb-2 block text-sm font-medium text-gray-700">
-                                        Pencarian Obat
+                                        Pencarian Faskes
                                     </label>
                                     <Input
                                         type="text"
-                                        placeholder="Cari berdasarkan nama obat..."
+                                        placeholder="Cari berdasarkan nama faskes..."
                                         className="w-full"
                                     />
                                 </div>
@@ -173,41 +173,45 @@ const MedicinePage = () => {
             </div>
             <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {medicinesData.map((medicine) => (
+                    {faskes.map((faskes) => (
                         <Card
-                            key={medicine.id}
+                            key={faskes.id}
                             className="group overflow-hidden border border-gray-100 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                         >
                             <div className="relative h-48 overflow-hidden">
                                 <img
-                                    src={medicine.image}
-                                    alt={medicine.name}
+                                    src={
+                                        faskes.profile_pic_url ||
+                                        '/images/no-image.png'
+                                    }
+                                    alt={faskes.nama}
                                     className="line-clamp-1 h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                 />
-                                <div className="absolute right-3 top-3">
-                                    {getSafetyBadge(medicine.safety)}
-                                </div>
-                                <div className="absolute bottom-3 left-3">
-                                    <span className="rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-gray-700 backdrop-blur-sm">
-                                        {medicine.category}
-                                    </span>
-                                </div>
                             </div>
                             <CardContent className="p-6">
                                 <div className="mb-3 flex items-start justify-between">
                                     <h3 className="line-clamp-1 text-lg font-bold text-gray-900 transition-colors group-hover:text-sky-600">
-                                        {medicine.name}
+                                        {faskes.nama}
                                     </h3>
                                     <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-500">
-                                        {medicine.type}
+                                        {faskes.tipe_faskes}
                                     </span>
                                 </div>
 
-                                <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                    {medicine.description}
+                                <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-gray-600">
+                                    {faskes.deskripsi}
                                 </p>
+                                <p className="mb-4 flex items-center text-sm text-gray-600">
+                                    <MapPin className="mr-2 h-4 w-4 text-secondary" />
+                                    <span className="truncate">
+                                        {faskes.provinsi?.nama} /{' '}
+                                        {faskes.kota?.nama} /{' '}
+                                        {faskes.kecamatan?.nama}
+                                    </span>
+                                </p>
+
                                 <Link
-                                    href={`/pasien/bank-obat/${medicine.id}`}
+                                    href={`/pasien/faskes/${faskes.id}`}
                                     className="block w-full rounded-md bg-secondary py-2 text-center font-semibold text-white hover:bg-secondary/90"
                                 >
                                     Lihat Detail
@@ -221,4 +225,4 @@ const MedicinePage = () => {
     );
 };
 
-export default MedicinePage;
+export default FaskesPage;

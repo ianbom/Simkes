@@ -12,4 +12,16 @@ export type Faskes = {
     longitude: number;
     created_at: string;
     updated_at: string;
+    provinsi: {
+        id: number;
+        nama: string;
+    };
+    kota: {
+        id: number;
+        nama: string;
+    };
+    kecamatan: {
+        id: number;
+        nama: string;
+    };
 };

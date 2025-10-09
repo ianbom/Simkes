@@ -13,7 +13,7 @@ interface Props {
     currentPage: string;
     user: User;
 }
-export default function PasienLayout({ children, currentPage }: Props) {
+export default function PasienLayout({ children }: Props) {
     const { flash = {} } = usePage().props;
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const { auth } = usePage<PageProps>().props;
@@ -36,19 +36,14 @@ export default function PasienLayout({ children, currentPage }: Props) {
             hasDropdown: true,
             dropdownItems: [
                 {
-                    id: 'faskes-a',
-                    label: 'Faskes A',
-                    key: 'faskes-a',
+                    id: 'list-faskes',
+                    label: 'List Faskes',
+                    key: '/pasien/faskes',
                 },
                 {
-                    id: 'faskes-b',
-                    label: 'Faskes B',
-                    key: 'faskes-b',
-                },
-                {
-                    id: 'faskes-c',
-                    label: 'Faskes C',
-                    key: 'faskes-c',
+                    id: 'map-faskes',
+                    label: 'Map Faskes',
+                    key: '/pasien/faskes-map',
                 },
             ],
         },
@@ -102,6 +97,7 @@ export default function PasienLayout({ children, currentPage }: Props) {
     const handleLogoutClick = () => {
         // Inertia.post(route('logout'));
     };
+    const currentPage = window.location.pathname;
 
     return (
         <div className="bg-background min-h-screen">

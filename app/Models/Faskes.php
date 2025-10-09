@@ -9,25 +9,31 @@ class Faskes extends Model
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
     protected $table = 'faskes';
-    public function kecamatan() {
+    public function kecamatan()
+    {
         return $this->belongsTo(Kecamatan::class);
     }
 
-    public function provinsi() {
+    public function provinsi()
+    {
         return $this->belongsTo(Provinsi::class);
     }
 
-    public function kota() {
+    public function kota()
+    {
         return $this->belongsTo(Kota::class);
     }
 
-     public function users() {
+    public function users()
+    {
         return $this->hasMany(User::class);
     }
-    public function kegiatan() {
+    public function kegiatan()
+    {
         return $this->hasMany(KegiatanFaskes::class);
     }
-    public function langganan() {
+    public function langganan()
+    {
         return $this->hasMany(LanggananFaskes::class);
     }
 }

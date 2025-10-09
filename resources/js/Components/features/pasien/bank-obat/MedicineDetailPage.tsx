@@ -1,8 +1,17 @@
 ('use client');
 
 import { Card, CardContent } from '@/Components/ui/card';
+import { medicinesData } from '@/data/medicine';
+import { usePage } from '@inertiajs/react';
 
 const MedicineDetailPage = () => {
+    const { props } = usePage();
+    const medicineId = Number(props.id);
+    const medicine = medicinesData.find((m) => m.id === medicineId);
+
+    if (!medicine) {
+        return <div>Obat tidak ditemukan</div>;
+    }
     return (
         <div>
             <div className="relative overflow-hidden bg-[url('/assets/images/story-bg2.png')] bg-cover bg-center bg-no-repeat py-8">
@@ -21,8 +30,8 @@ const MedicineDetailPage = () => {
                             <div className="lg:col-span-2">
                                 <div className="relative rounded-2xl bg-gradient-to-br from-sky-50 to-blue-50 p-8 shadow-md">
                                     <img
-                                        src="/assets/images/dummy-obat.png"
-                                        alt="Obat Dummy"
+                                        src={medicine.image}
+                                        alt={medicine.name}
                                         className="mx-auto h-36 w-full object-contain"
                                     />
                                 </div>
@@ -30,15 +39,8 @@ const MedicineDetailPage = () => {
                             <div className="space-y-6 lg:col-span-3">
                                 <div>
                                     <h2 className="mb-2 text-3xl font-bold text-gray-900">
-                                        Neurobion Forte 10 Tablet{' '}
+                                        {medicine.name}
                                     </h2>
-                                </div>
-                                <div className="space-y-4">
-                                    <p className="text-base leading-relaxed text-gray-600">
-                                        Neurobion Forte 10 Tablet membantu
-                                        menjaga kesehatan saraf dan mengurangi
-                                        gejala kesemutan atau pegal.
-                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -48,20 +50,7 @@ const MedicineDetailPage = () => {
             <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div className="group mb-8 overflow-hidden">
                     <p className="text-justify text-sm leading-relaxed text-gray-600">
-                        NEUROBION FORTE merupakan sediaan vitamin neurotropik
-                        yang mengandung kombinasi Vitamin B1 (Thiamine), Vitamin
-                        B6 (Pyridoxine), dan Vitamin B12 (Cyanocobalamin) dalam
-                        dosis terapeutik. Produk ini diformulasikan secara
-                        khusus untuk mendukung fungsi sistem saraf yang sehat
-                        dan digunakan untuk pengobatan kondisi klinis yang
-                        disebabkan oleh defisiensi vitamin-vitamin tersebut.
-                        Kombinasi Vitamin B1, B6, dan B12 dalam Neurobion Forte
-                        bekerja secara sinergis, artinya mereka saling mendukung
-                        untuk memberikan manfaat yang komprehensif bagi sistem
-                        saraf. Vitamin B1 bekerja dengan memetabolisme
-                        karbohidrat, Vitamin B6 membantu memetabolisme protein
-                        dan asam amino, Vitamin B12 membantu memelihara keutuhan
-                        jaringan saraf.
+                        {medicine.description}
                     </p>
                 </div>
                 <Card className="group mb-8 overflow-hidden border border-gray-100 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -72,11 +61,7 @@ const MedicineDetailPage = () => {
                             </h3>
                         </div>
                         <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                            Obat ini digunakan untuk defisiensi Vitamin B1, B6,
-                            dan B12 pada keadaan kekurangan asupan, gangguan
-                            penyerapan, meningkatnya kehilangan di ginjal maupun
-                            meningkatnya kebutuhan seperti pada penderita
-                            diabetes dan usia lanjut.
+                            {medicine.indication}
                         </p>
                     </CardContent>
                 </Card>
@@ -89,8 +74,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                Vitamin B1 100 mg, Vitamin B6 100, Vitamin B12
-                                5000 mcg
+                                {medicine.composition}
                             </p>
                         </CardContent>
                     </Card>
@@ -102,8 +86,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                Dewasa: 1 tablet, 1 kali per hari atau sesuai
-                                dengan anjuran dokter.
+                                {medicine.dosage}
                             </p>
                         </CardContent>
                     </Card>
@@ -115,7 +98,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                Berikan pada saat makan atau sesudah makan.
+                                {medicine.usage}
                             </p>
                         </CardContent>
                     </Card>
@@ -127,8 +110,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                Wanita hamil dan menyusui, gangguan ginjal dan
-                                hati.
+                                {medicine.warnings}
                             </p>
                         </CardContent>
                     </Card>
@@ -140,8 +122,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                Diabetes melitus, Ulkus peptikum, Infark
-                                miokard, Aritmia.
+                                {medicine.contraindication}
                             </p>
                         </CardContent>
                     </Card>
@@ -153,8 +134,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                Ruam kulit, diare, penglihatan kabur, gatal,
-                                sakit pada dada.
+                                {medicine.sideEffects}
                             </p>
                         </CardContent>
                     </Card>
@@ -166,7 +146,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                Obat Bebas (Hijau)
+                                {medicine.productGroup}
                             </p>
                         </CardContent>
                     </Card>
@@ -178,7 +158,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                Dus, 5 Blister @ 10 tablet Salut Gula
+                                {medicine.packaging}
                             </p>
                         </CardContent>
                     </Card>
@@ -190,7 +170,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                Merck Indonesia
+                                {medicine.manufacturer}
                             </p>
                         </CardContent>
                     </Card>
@@ -202,7 +182,7 @@ const MedicineDetailPage = () => {
                                 </h3>
                             </div>
                             <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
-                                ΒΡΟΜ: DBL9615806416A1
+                                ΒΡΟΜ: {medicine.bpomNumber}
                             </p>
                         </CardContent>
                     </Card>
