@@ -8,7 +8,7 @@ export default function DashboardPageRoute({
     consulQueue,
     childPatient,
     patientPregnant,
-    patient
+    patient,
 }) {
     return (
         <PetugasLayout user={user}>

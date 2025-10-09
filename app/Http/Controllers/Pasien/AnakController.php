@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
+
 class AnakController extends Controller
 {
     protected AnakService $anakService;
@@ -26,7 +27,6 @@ class AnakController extends Controller
             $anak = $this->anakService->createAnak($request);
 
             return redirect()->back();
-
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Terjadi kesalahan saat menambahkan data anak.',
@@ -39,8 +39,8 @@ class AnakController extends Controller
         //     ->route('anak.index')
         //     ->with('success', "Data anak {$anak->nama} berhasil ditambahkan.");
     }
-
-    public function viewPerkembanganAnak($id){
+    public function viewPerkembanganAnak($id)
+    {
         $child = Anak::findOrFail($id);
         $growth = PemeriksaanAnak::where('anak_id', $child->id)->get();
 
@@ -50,8 +50,45 @@ class AnakController extends Controller
             'child' => $child,
             'growth' => $growth
         ]);
-
     }
+    public function childCheckupHistory()
+    {
+        $user = Auth::user();
 
+        $checkupHistory = PemeriksaanAnak::with([
+            'anak.kelahiran',
+            'anak.orangTua',
+            'petugas.faskes',
+            'skrining',
+        ])
+            ->whereHas('anak', function ($query) use ($user) {
+                $query->where('orang_tua_id', $user->id);
+            })
+            ->latest('tanggal_pemeriksaan')
+            ->get(); // ✅ SEMUA DATA!
 
+        return Inertia::render('Pasien/Riwayat/ChildCheckupHistoryPageRoute', [
+            'checkupHistory' => $checkupHistory,
+        ]);
+    }
+    // public function childCheckupHistory(Request $request)
+    // {
+    //     $user = Auth::user();
+
+    //     $checkupHistory = PemeriksaanAnak::with([
+    //         'anak.kelahiran',
+    //         'anak.orangTua',
+    //         'petugas.faskes',
+    //         'skrining',
+    //     ])
+    //         ->whereHas('anak', function ($query) use ($user) {
+    //             $query->where('orang_tua_id', $user->id);
+    //         })
+    //         ->latest('tanggal_pemeriksaan')
+    //         ->paginate(20); // Load 20 per batch
+
+    //     return Inertia::render('Pasien/Riwayat/ChildCheckupHistoryPageRoute', [
+    //         'checkupHistory' => $checkupHistory,
+    //     ]);
+    // }
 }

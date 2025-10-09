@@ -20,131 +20,149 @@ import {
     Stethoscope,
     User,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-interface BalitaCheckupRecord {
+interface Kelahiran {
     id: number;
-    date: string;
-    type: 'rutin' | 'sakit';
-    doctor: string;
-    faskes: string;
-    complaint?: string;
-    diagnosis: string;
-    temperature?: string;
-    weight: number;
-    height: number;
-    head_circumference: number;
-    age_months: number;
-    vaccine?: string;
-    notes: string;
-    next_checkup?: string;
+    tanggal_lahir: string;
+    berat_lahir: number;
+    panjang_lahir: number;
+}
+
+interface OrangTua {
+    id: number;
+    name: string;
+    email: string;
+}
+
+interface Anak {
+    id: number;
+    nama: string;
+    kelamin: string;
+    kelahiran?: Kelahiran;
+    orangTua?: OrangTua;
+}
+
+interface Faskes {
+    id: number;
+    nama: string;
+    tipe_faskes: string;
+}
+
+interface Petugas {
+    id: number;
+    name: string;
+    email: string;
+    faskes?: Faskes;
+}
+
+interface Skrining {
+    id: number;
+    hasil: string;
+    catatan?: string;
+}
+
+interface PemeriksaanAnak {
+    id: number;
+    anak_id: number;
+    petugas_faskes_id: number;
+    jenis_kunjungan: 'Rutin' | 'Sakit';
+    tanggal_pemeriksaan: string;
+    usia_saat_periksa_bulan: number;
+    berat_badan_kg: number;
+    tinggi_badan_cm: number;
+    lingkar_kepala_cm: number;
+    cara_ukur_tinggi?: string;
+    suhu_tubuh_celsius: number;
+    perkembangan_motorik: string;
+    perkembangan_kognitif: string;
+    perkembangan_emosional: string;
+    frekuensi_napas_per_menit?: number;
+    frekuensi_jantung_per_menit?: number;
+    catatan_pemeriksaan?: string;
+    saturasi_oksigen_persen?: number;
+    keluhan?: string;
+    diagnosis?: string;
+    tindakan?: string;
+    catatan?: string;
+    jadwal_kontrol_berikutnya?: string;
+    anak: Anak;
+    petugas: Petugas;
+    skrining?: Skrining;
+    created_at: string;
     updated_at: string;
 }
 
-const ChildCheckupHistoryPage = () => {
+interface Props {
+    checkupHistory?: PemeriksaanAnak[];
+}
+
+const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [typeFilter, setTypeFilter] = useState('all');
-    const [expandedItems, setExpandedItems] = useState(new Set());
+    const [expandedItems, setExpandedItems] = useState(new Set<number>());
+    const [showAll, setShowAll] = useState(false);
 
-    const checkupRecords: BalitaCheckupRecord[] = [
-        {
-            id: 1,
-            date: '2024-10-05',
-            type: 'rutin',
-            doctor: 'dr. Maya Sari, Sp.A',
-            faskes: 'Puskesmas Wonokromo',
-            diagnosis: 'Tumbuh Kembang Normal',
-            temperature: '36.5°C',
-            weight: 12.5,
-            height: 85,
-            head_circumference: 47,
-            age_months: 18,
-            vaccine: 'Booster DPT-HB-Hib 4',
-            notes: 'Pertumbuhan dan perkembangan anak sesuai usia. Imunisasi booster diberikan. Tidak ada keluhan. Lanjutkan pemberian makanan bergizi seimbang.',
-            next_checkup: '2024-11-05',
-            updated_at: '2024-10-05 10:30:00',
-        },
-        {
-            id: 2,
-            date: '2024-09-28',
-            type: 'sakit',
-            doctor: 'dr. Budi Santoso, Sp.A',
-            faskes: 'Puskesmas Gubeng',
-            complaint: 'Demam tinggi 3 hari, batuk, pilek',
-            diagnosis: 'ISPA (Infeksi Saluran Pernapasan Atas)',
-            temperature: '38.7°C',
-            weight: 12.3,
-            height: 85,
-            head_circumference: 47,
-            age_months: 18,
-            notes: 'Diberikan obat penurun panas (paracetamol), obat batuk, dan vitamin. Disarankan banyak minum air putih dan istirahat cukup. Kontrol kembali jika demam tidak turun dalam 3 hari.',
-            updated_at: '2024-09-28 14:15:00',
-        },
-        {
-            id: 3,
-            date: '2024-09-05',
-            type: 'rutin',
-            doctor: 'dr. Maya Sari, Sp.A',
-            faskes: 'Puskesmas Wonokromo',
-            diagnosis: 'Tumbuh Kembang Normal',
-            temperature: '36.7°C',
-            weight: 12.0,
-            height: 84,
-            head_circumference: 46.5,
-            age_months: 17,
-            notes: 'Pemeriksaan rutin bulanan. Anak aktif dan responsif. Perkembangan motorik dan kognitif sesuai milestone usia. Orang tua diminta untuk stimulasi bicara lebih sering.',
-            next_checkup: '2024-10-05',
-            updated_at: '2024-09-05 09:45:00',
-        },
-        {
-            id: 4,
-            date: '2024-08-20',
-            type: 'sakit',
-            doctor: 'dr. Rina Wijayanti, Sp.A',
-            faskes: 'RS Ibu dan Anak',
-            complaint: 'Diare cair >5x sehari, muntah, lemas',
-            diagnosis: 'Gastroenteritis Akut (Diare)',
-            temperature: '37.2°C',
-            weight: 11.5,
-            height: 83,
-            head_circumference: 46,
-            age_months: 16,
-            notes: 'Tanda dehidrasi ringan. Diberikan oralit dan zinc. Disarankan untuk tetap menyusui/memberi makan sedikit-sedikit tapi sering. Hindari makanan pedas dan berminyak. Kontrol kembali jika diare tidak membaik dalam 2 hari.',
-            updated_at: '2024-08-20 16:20:00',
-        },
-        {
-            id: 5,
-            date: '2024-08-05',
-            type: 'rutin',
-            doctor: 'dr. Maya Sari, Sp.A',
-            faskes: 'Puskesmas Wonokromo',
-            diagnosis: 'Tumbuh Kembang Normal',
-            temperature: '36.6°C',
-            weight: 11.8,
-            height: 82,
-            head_circumference: 46,
-            age_months: 16,
-            vaccine: 'Campak Rubella (MR) 2',
-            notes: 'Imunisasi MR dosis kedua diberikan. Anak dalam kondisi sehat. Pertumbuhan berat dan tinggi badan sesuai kurva pertumbuhan WHO. Lanjutkan MPASI dengan menu bervariasi.',
-            next_checkup: '2024-09-05',
-            updated_at: '2024-08-05 11:00:00',
-        },
-    ];
+    const INITIAL_DISPLAY = 10;
 
-    const filteredRecords = checkupRecords.filter((record) => {
-        const matchesType =
-            typeFilter === 'all' ? true : record.type === typeFilter;
-        const matchesSearch = (
-            record.doctor +
-            record.diagnosis +
-            (record.complaint || '') +
-            record.faskes
-        )
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
+    const filteredRecords = useMemo(() => {
+        if (!checkupHistory) return [];
 
-        return matchesType && matchesSearch;
-    });
+        return checkupHistory.filter((record) => {
+            const matchesType =
+                typeFilter === 'all'
+                    ? true
+                    : record.jenis_kunjungan?.toLowerCase() === typeFilter;
+
+            const searchText = `
+                ${record.petugas?.name || ''}
+                ${record.diagnosis || ''}
+                ${record.keluhan || ''}
+                ${record.petugas?.faskes?.nama || ''}
+                ${record.anak?.nama || ''}
+            `.toLowerCase();
+
+            const matchesSearch =
+                searchQuery.trim() === '' ||
+                searchText.includes(searchQuery.toLowerCase());
+
+            return matchesType && matchesSearch;
+        });
+    }, [checkupHistory, typeFilter, searchQuery]);
+
+    const displayedRecords = showAll
+        ? filteredRecords
+        : filteredRecords.slice(0, INITIAL_DISPLAY);
+
+    const hasMoreRecords = filteredRecords.length > INITIAL_DISPLAY;
+
+    if (!checkupHistory || checkupHistory.length === 0) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mb-8">
+                        <h1 className="mb-1 text-2xl font-bold text-gray-900 sm:text-3xl">
+                            Riwayat Checkup Anak
+                        </h1>
+                        <p className="text-gray-600">
+                            Catatan lengkap pemeriksaan buah hati Anda
+                        </p>
+                    </div>
+                    <Card className="shadow-sm">
+                        <CardContent className="flex flex-col items-center py-12 text-center">
+                            <ClipboardList className="mb-3 h-12 w-12 text-gray-400" />
+                            <p className="text-lg font-medium text-gray-900">
+                                Tidak ada data pemeriksaan
+                            </p>
+                            <p className="mt-1 text-gray-500">
+                                Belum ada riwayat pemeriksaan anak
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        );
+    }
 
     const resetFilters = () => {
         setSearchQuery('');
@@ -164,14 +182,16 @@ const ChildCheckupHistoryPage = () => {
     const hasActiveFilters = searchQuery.trim() || typeFilter !== 'all';
 
     const getTypeBadge = (type: string) => {
-        if (type === 'rutin') {
+        if (type.toLowerCase() === 'rutin') {
             return 'bg-green-100 text-green-700 hover:bg-green-100';
         }
         return 'bg-red-100 text-red-700 hover:bg-red-100';
     };
 
     const getTypeLabel = (type: string) => {
-        return type === 'rutin' ? 'Pemeriksaan Rutin' : 'Pemeriksaan Sakit';
+        return type.toLowerCase() === 'rutin'
+            ? 'Pemeriksaan Rutin'
+            : 'Pemeriksaan Sakit';
     };
 
     const formatDate = (dateString: string) => {
@@ -198,7 +218,7 @@ const ChildCheckupHistoryPage = () => {
                 <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
                         <h1 className="mb-1 text-2xl font-bold text-gray-900 sm:text-3xl">
-                            Riwayat Checkup Balita
+                            Riwayat Checkup Anak
                         </h1>
                         <p className="text-gray-600">
                             Catatan lengkap pemeriksaan buah hati Anda
@@ -207,7 +227,7 @@ const ChildCheckupHistoryPage = () => {
                     <div className="flex items-center gap-3">
                         <div className="inline-flex items-center gap-1.5 rounded-md bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-800">
                             <Activity className="h-4 w-4 text-purple-600" />
-                            Total Kunjungan: {checkupRecords.length}
+                            Total: {checkupHistory?.length || 0}
                         </div>
                     </div>
                 </div>
@@ -273,7 +293,7 @@ const ChildCheckupHistoryPage = () => {
                                 </label>
                                 <Input
                                     type="text"
-                                    placeholder="Cari dokter, diagnosis, atau faskes..."
+                                    placeholder="Cari nama anak, dokter, diagnosis..."
                                     value={searchQuery}
                                     onChange={(e) =>
                                         setSearchQuery(e.target.value)
@@ -285,7 +305,7 @@ const ChildCheckupHistoryPage = () => {
                 </Card>
 
                 <div className="space-y-4">
-                    {filteredRecords.map((record) => (
+                    {displayedRecords.map((record) => (
                         <Card
                             key={record.id}
                             className="bg-white shadow-sm transition-shadow hover:shadow-md"
@@ -296,24 +316,34 @@ const ChildCheckupHistoryPage = () => {
                                         <div className="flex flex-wrap items-center gap-3">
                                             <Badge
                                                 className={getTypeBadge(
-                                                    record.type,
+                                                    record.jenis_kunjungan,
                                                 )}
                                             >
-                                                {getTypeLabel(record.type)}
+                                                {getTypeLabel(
+                                                    record.jenis_kunjungan,
+                                                )}
                                             </Badge>
                                             <div className="flex items-center gap-2 text-sm text-gray-600">
                                                 <Calendar className="h-4 w-4" />
-                                                {formatDate(record.date)}
+                                                {formatDate(
+                                                    record.tanggal_pemeriksaan,
+                                                )}
                                             </div>
                                         </div>
 
                                         <div>
                                             <h3 className="mb-1 text-lg font-semibold text-gray-900">
-                                                {record.diagnosis}
+                                                {record.anak.nama}
                                             </h3>
-                                            {record.complaint && (
+                                            {record.diagnosis && (
+                                                <p className="mb-1 text-sm text-gray-700">
+                                                    Diagnosis:{' '}
+                                                    {record.diagnosis}
+                                                </p>
+                                            )}
+                                            {record.keluhan && (
                                                 <p className="mb-2 text-sm text-red-600">
-                                                    Keluhan: {record.complaint}
+                                                    Keluhan: {record.keluhan}
                                                 </p>
                                             )}
                                         </div>
@@ -321,12 +351,21 @@ const ChildCheckupHistoryPage = () => {
                                         <div className="flex flex-col gap-2 text-sm text-gray-700">
                                             <div className="flex items-center gap-2">
                                                 <User className="h-4 w-4 text-gray-400" />
-                                                <span>{record.doctor}</span>
+                                                <span>
+                                                    {record.petugas.name}
+                                                </span>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <Stethoscope className="h-4 w-4 text-gray-400" />
-                                                <span>{record.faskes}</span>
-                                            </div>
+                                            {record.petugas.faskes && (
+                                                <div className="flex items-center gap-2">
+                                                    <Stethoscope className="h-4 w-4 text-gray-400" />
+                                                    <span>
+                                                        {
+                                                            record.petugas
+                                                                .faskes.nama
+                                                        }
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-2 sm:items-end">
@@ -361,10 +400,22 @@ const ChildCheckupHistoryPage = () => {
                                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                             <div>
                                                 <p className="font-medium text-gray-900">
-                                                    Suhu
+                                                    Usia Saat Periksa
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    {record.temperature}
+                                                    {
+                                                        record.usia_saat_periksa_bulan
+                                                    }{' '}
+                                                    bulan
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="font-medium text-gray-900">
+                                                    Suhu Tubuh
+                                                </p>
+                                                <p className="text-gray-600">
+                                                    {record.suhu_tubuh_celsius}
+                                                    °C
                                                 </p>
                                             </div>
                                             <div>
@@ -372,7 +423,7 @@ const ChildCheckupHistoryPage = () => {
                                                     Berat Badan
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    {record.weight} kg
+                                                    {record.berat_badan_kg} kg
                                                 </p>
                                             </div>
                                             <div>
@@ -380,36 +431,89 @@ const ChildCheckupHistoryPage = () => {
                                                     Tinggi Badan
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    {record.height}
+                                                    {record.tinggi_badan_cm} cm
                                                 </p>
                                             </div>
                                             <div>
                                                 <p className="font-medium text-gray-900">
-                                                    Lingkar Kepala (cm)
+                                                    Lingkar Kepala
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    {record.head_circumference}
+                                                    {record.lingkar_kepala_cm}{' '}
+                                                    cm
                                                 </p>
                                             </div>
+                                            {record.saturasi_oksigen_persen && (
+                                                <div>
+                                                    <p className="font-medium text-gray-900">
+                                                        Saturasi Oksigen
+                                                    </p>
+                                                    <p className="text-gray-600">
+                                                        {
+                                                            record.saturasi_oksigen_persen
+                                                        }
+                                                        %
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
 
-                                        <div className="mt-4 border-t border-gray-200 pt-4">
-                                            <p className="font-medium text-gray-900">
-                                                Catatan Dokter
-                                            </p>
-                                            <p className="mt-1 text-gray-600">
-                                                {record.notes}
-                                            </p>
-                                        </div>
+                                        {record.perkembangan_motorik && (
+                                            <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <p className="font-medium text-gray-900">
+                                                    Perkembangan Motorik:
+                                                </p>
+                                                <p className="mt-1 text-gray-600">
+                                                    {
+                                                        record.perkembangan_motorik
+                                                    }
+                                                </p>
+                                            </div>
+                                        )}
+                                        {record.perkembangan_kognitif && (
+                                            <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <p className="font-medium text-gray-900">
+                                                    Perkembangan Kognitif:
+                                                </p>
+                                                <p className="mt-1 text-gray-600">
+                                                    {
+                                                        record.perkembangan_kognitif
+                                                    }
+                                                </p>
+                                            </div>
+                                        )}
+                                        {record.perkembangan_emosional && (
+                                            <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <p className="font-medium text-gray-900">
+                                                    Perkembangan Emosional:
+                                                </p>
+                                                <p className="mt-1 text-gray-600">
+                                                    {
+                                                        record.perkembangan_emosional
+                                                    }
+                                                </p>
+                                            </div>
+                                        )}
 
-                                        {record.next_checkup && (
+                                        {record.catatan_pemeriksaan && (
+                                            <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <p className="font-medium text-gray-900">
+                                                    Catatan Pemeriksaan:
+                                                </p>
+                                                <p className="mt-1 text-gray-600">
+                                                    {record.catatan_pemeriksaan}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {record.jadwal_kontrol_berikutnya && (
                                             <div className="mt-4 rounded-md bg-green-50 p-3">
                                                 <p className="font-medium text-green-900">
                                                     Jadwal Kontrol Berikutnya
                                                 </p>
                                                 <p className="text-green-700">
                                                     {formatDate(
-                                                        record.next_checkup,
+                                                        record.jadwal_kontrol_berikutnya,
                                                     )}
                                                 </p>
                                             </div>
@@ -424,21 +528,55 @@ const ChildCheckupHistoryPage = () => {
                             </CardContent>
                         </Card>
                     ))}
+
                     {filteredRecords.length === 0 && (
-                        <Card className="shadow-sm">
+                        <Card className="bg-white shadow-sm">
                             <CardContent className="flex flex-col items-center py-12 text-center">
                                 <ClipboardList className="mb-3 h-12 w-12 text-gray-400" />
                                 <p className="text-lg font-medium text-gray-900">
                                     Tidak ada data pemeriksaan
                                 </p>
                                 <p className="mt-1 text-gray-500">
-                                    Belum ada riwayat pemeriksaan yang sesuai
-                                    dengan filter
+                                    {hasActiveFilters
+                                        ? 'Belum ada riwayat pemeriksaan yang sesuai dengan filter'
+                                        : 'Belum ada riwayat pemeriksaan anak'}
                                 </p>
                             </CardContent>
                         </Card>
                     )}
                 </div>
+
+                {/* Show More Button */}
+                {!showAll && hasMoreRecords && (
+                    <div className="mt-8 flex flex-col items-center gap-3">
+                        <Button
+                            onClick={() => setShowAll(true)}
+                            size="lg"
+                            className="min-w-[250px]"
+                        >
+                            Tampilkan Semua Data ({filteredRecords.length}{' '}
+                            total)
+                        </Button>
+                        <p className="text-sm text-gray-600">
+                            Menampilkan {displayedRecords.length} dari{' '}
+                            {filteredRecords.length} data
+                        </p>
+                    </div>
+                )}
+
+                {/* Show Less Button */}
+                {showAll && hasMoreRecords && (
+                    <div className="mt-8 flex justify-center">
+                        <Button
+                            onClick={() => setShowAll(false)}
+                            variant="outline"
+                            size="lg"
+                        >
+                            <ChevronUp className="mr-2 h-4 w-4" />
+                            Tampilkan Lebih Sedikit
+                        </Button>
+                    </div>
+                )}
             </div>
         </div>
     );

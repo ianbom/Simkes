@@ -187,7 +187,7 @@ const ChildGraphPage = ({ child, growth }) => {
 
             if (measurement) {
                 return (
-                    <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-lg">
+                    <div className="px-4 py-3 bg-white border border-gray-200 rounded-lg shadow-lg">
                         <p className="mb-1 text-sm font-semibold text-gray-800">
                             Usia: {data.month} Bulan
                         </p>
@@ -241,19 +241,19 @@ const ChildGraphPage = ({ child, growth }) => {
     const statusColors = getStatusColor(currentConfig.status.color);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
-            <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen p-8 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+            <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 {/* Header Section */}
-                <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
+                <div className="p-6 mb-6 bg-white shadow-sm rounded-2xl">
                     <h1 className="mb-6 text-2xl font-bold text-gray-800">
                         Grafik Pertumbuhan Anak
                     </h1>
 
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
                         {/* Info Anak */}
-                        <div className="rounded-xl border border-purple-100 bg-white p-4 shadow-sm lg:col-span-2">
-                            <div className="flex h-full items-center gap-4">
-                                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-200">
+                        <div className="p-4 bg-white border border-purple-100 shadow-sm rounded-xl lg:col-span-2">
+                            <div className="flex items-center h-full gap-4">
+                                <div className="flex items-center justify-center bg-purple-200 rounded-full h-14 w-14">
                                     <span className="text-2xl font-bold text-purple-600">
                                         {child?.nama_lengkap?.charAt(0) || 'A'}
                                     </span>
@@ -284,7 +284,7 @@ const ChildGraphPage = ({ child, growth }) => {
                                     <div className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full ${
                                             activeTab === 'height' ? 'bg-white' : 'bg-sky-50'
                                         }`}>
-                                        <svg className="h-10 w-10 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-10 h-10 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                                         </svg>
                                     </div>
@@ -334,7 +334,7 @@ const ChildGraphPage = ({ child, growth }) => {
                                     <div className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full ${
                                             activeTab === 'headCircumference' ? 'bg-white' : 'bg-sky-50'
                                         }`}>
-                                        <svg className="h-10 w-10 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-10 h-10 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3c4.97 0 9 4.03 9 9s-4.03 9-9 9-9-4.03-9-9 4.03-9 9-9z" />
                                         </svg>
                                     </div>
@@ -350,7 +350,7 @@ const ChildGraphPage = ({ child, growth }) => {
                 </div>
 
                 {/* Chart Section */}
-                <div className="rounded-2xl bg-white p-8 shadow-sm">
+                <div className="p-8 bg-white shadow-sm rounded-2xl">
                     <div className="mb-6">
                         <h2 className="text-xl font-semibold text-gray-800">
                             {currentConfig.title}
@@ -424,29 +424,29 @@ const ChildGraphPage = ({ child, growth }) => {
                     </ResponsiveContainer>
 
                     {/* Legend */}
-                    <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
+                    <div className="flex flex-wrap justify-center gap-4 mt-6 text-sm">
                         <div className="flex items-center gap-2">
-                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#ef4444' }}></div>
+                            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#ef4444' }}></div>
                             <span className="text-gray-600">P3</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#f97316' }}></div>
+                            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#f97316' }}></div>
                             <span className="text-gray-600">P15</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#eab308' }}></div>
+                            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#eab308' }}></div>
                             <span className="text-gray-600">P50</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#84cc16' }}></div>
+                            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#84cc16' }}></div>
                             <span className="text-gray-600">P85</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="h-4 w-4 rounded" style={{ backgroundColor: '#fbbf24' }}></div>
+                            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#fbbf24' }}></div>
                             <span className="text-gray-600">P97</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="h-3 w-3 rounded-full border-2 border-white bg-blue-500"></div>
+                            <div className="w-3 h-3 bg-blue-500 border-2 border-white rounded-full"></div>
                             <span className="text-gray-600">Data Anak ({currentConfig.measurements.length} pengukuran)</span>
                         </div>
                     </div>
@@ -477,7 +477,7 @@ const ChildGraphPage = ({ child, growth }) => {
                     )}
 
                     {currentConfig.measurements.length === 0 && (
-                        <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-center">
+                        <div className="p-4 mt-6 text-center border border-gray-200 rounded-lg bg-gray-50">
                             <p className="text-gray-600">Belum ada data pemeriksaan untuk ditampilkan</p>
                         </div>
                     )}

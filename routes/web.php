@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminFaskes\DashboardController as AdmDashboardController;
 use App\Http\Controllers\AdminFaskes\PetugasController as AdmPetugasController;
 use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
+use App\Http\Controllers\Pasien\KehamilanController as PsnKehamilanController;
 use App\Http\Controllers\Pasien\KonsultasiOnlineController;
 use App\Http\Controllers\Pasien\RiwayatMedisUserController;
 use App\Http\Controllers\Petugas\DashboardController as PtgDashboardController;
@@ -59,15 +60,7 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/profil', function () {
         return Inertia::render('Pasien/Profil/ProfilePageRoute');
     });
-    Route::get('/riwayat/checkup-rutin', function () {
-        return Inertia::render('Pasien/Profile/ProfilePageRoute');
-    });
-    Route::get('/riwayat/checkup-sakit', action: function () {
-        return Inertia::render('Pasien/Profile/ProfilePageRoute');
-    });
-    Route::get('/riwayat/konsultasi', action: function () {
-        return Inertia::render('Pasien/Profile/ProfilePageRoute');
-    });
+
 
     Route::get('/panduan/ibu-hamil', function () {
         return Inertia::render('Pasien/Panduan/PregnancyGuidePageRoute');
@@ -81,12 +74,10 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/bank-obat/{id}', function () {
         return Inertia::render('Pasien/BankObat/MedicineDetailPageRoute');
     });
-    Route::get('/history/checkup-kehamilan', function () {
-        return Inertia::render('Pasien/Riwayat/PregnancyCheckupHistoryPageRoute');
-    });
-    Route::get('/history/checkup-balita', function () {
-        return Inertia::render('Pasien/Riwayat/ChildCheckupHistoryPageRoute');
-    });
+
+    Route::get('/history/checkup-balita', [PsnAnakController::class, 'childCheckupHistory'])->name('child.checkup.history');
+    Route::get('/history/checkup-kehamilan', [PsnKehamilanController::class, 'pregnancyCheckupHistory'])->name('pregnancy.checkup.history');
+
 
     Route::get('/history/konsultasi-online', [KonsultasiOnlineController::class, 'consultHistory'])->name('consult.history');
     Route::get('/history/konsultasi-online/room/{id}', [KonsultasiOnlineController::class, 'joinMeet'])->name('consult.joinMeet');
@@ -111,8 +102,8 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
     Route::get('/checkup-anak/{id}', [PemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
     Route::post('/store-checkup', [PemeriksaanAnakController::class, 'store'])->name('store.pemeriksaanAnak');
 
-    Route::get('/checkup-kehamilan/{id}',[PemeriksaanAncController::class, 'createPemeriksaanKehamilan'])->name('create.pemeriksaanAnc');
-    Route::post('/store-checkup-kehamilan',[PemeriksaanAncController::class, 'store'])->name('store.pemeriksaanAnc');
+    Route::get('/checkup-kehamilan/{id}', [PemeriksaanAncController::class, 'createPemeriksaanKehamilan'])->name('create.pemeriksaanAnc');
+    Route::post('/store-checkup-kehamilan', [PemeriksaanAncController::class, 'store'])->name('store.pemeriksaanAnc');
 
 
     Route::get('/list-konsultasi', [PtgOnlineConsultationController::class, 'index'])->name('consultation.index');

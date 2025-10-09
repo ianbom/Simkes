@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
-import { Bell, ChevronDown, LogOut, Menu, User } from 'lucide-react';
+import { ChevronDown, LogOut, Menu, User } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 export function Header({ onMenuClick, user }) {
@@ -41,7 +41,6 @@ export function Header({ onMenuClick, user }) {
     return (
         <header className="fixed left-0 right-0 top-0 z-50 bg-white px-4 py-3 shadow-sm lg:left-72 lg:px-6">
             <div className="flex items-center justify-between">
-                {/* Left side - Menu + Logo + Date */}
                 <div className="flex items-center gap-x-4">
                     <Button
                         variant="ghost"
@@ -71,16 +70,6 @@ export function Header({ onMenuClick, user }) {
 
                 {/* Right side - Notifications + Profile */}
                 <div className="flex items-center gap-x-3">
-                    {/* Notifications */}
-                    <Button variant="ghost" size="sm" className="relative">
-                        <Bell className="h-5 w-5" />
-                        {notifications > 0 && (
-                            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                                {notifications > 9 ? '9+' : notifications}
-                            </span>
-                        )}
-                    </Button>
-
                     {/* Profile Dropdown */}
                     <div className="relative" ref={profileRef}>
                         <Button
@@ -128,46 +117,6 @@ export function Header({ onMenuClick, user }) {
                                         <User className="h-4 w-4" />
                                         Profil Saya
                                     </Link>
-                                    <Link
-                                        href="/profile"
-                                        className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                        onClick={() => setIsProfileOpen(false)}
-                                    >
-                                        <User className="h-4 w-4" />
-                                        Riwayat Checkup Rutin
-                                    </Link>
-                                    <Link
-                                        href="/profile"
-                                        className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                        onClick={() => setIsProfileOpen(false)}
-                                    >
-                                        <User className="h-4 w-4" />
-                                        Riwayat Checkup Sakit{' '}
-                                    </Link>
-                                    <Link
-                                        href="/profile"
-                                        className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                        onClick={() => setIsProfileOpen(false)}
-                                    >
-                                        <User className="h-4 w-4" />
-                                        Riwayat Konsultasi Online{' '}
-                                    </Link>
-                                    <Link
-                                        href="/profile"
-                                        className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                        onClick={() => setIsProfileOpen(false)}
-                                    >
-                                        <User className="h-4 w-4" />
-                                        Perkembangan Anak
-                                    </Link>
-                                    <Link
-                                        href="/profile"
-                                        className="flex items-center gap-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                        onClick={() => setIsProfileOpen(false)}
-                                    >
-                                        <User className="h-4 w-4" />
-                                        Perkembangan Kehamilan
-                                    </Link>
                                 </div>
 
                                 <div className="py-1">
@@ -175,11 +124,10 @@ export function Header({ onMenuClick, user }) {
                                         className="flex w-full items-center gap-x-3 px-4 py-2 text-sm text-red-700 hover:bg-red-50"
                                         onClick={() => {
                                             setIsProfileOpen(false);
-                                            // Handle logout logic here
                                         }}
                                     >
                                         <LogOut className="h-4 w-4" />
-                                        Keluar
+                                        Log Out
                                     </button>
                                 </div>
                             </div>

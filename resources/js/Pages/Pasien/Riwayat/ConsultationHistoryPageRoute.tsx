@@ -4,7 +4,7 @@ import PasienLayout from '@/Layouts/PasienLayout';
 export default function ConsultationHistoryPageRoute({ user, consultations }) {
     return (
         <PasienLayout currentPage="dashboard" user={user}>
-            <ConsultationHistoryPage consultations={consultations}/>
+            <ConsultationHistoryPage consultations={consultations} />
         </PasienLayout>
     );
 }

@@ -16,12 +16,11 @@ import {
     ChevronDown,
     ChevronUp,
     Clock,
-    DollarSign,
     RefreshCcw,
     SlidersHorizontal,
     Video,
 } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 interface Faskes {
     id: number;
@@ -86,17 +85,20 @@ const ConsultationHistoryPage = ({ consultations }: Props) => {
             const dateTime = new Date(consultation.waktu_mulai_dijadwalkan);
 
             // Map status dari API ke status internal
-            let status: 'completed' | 'cancelled' | 'no-show' | 'scheduled' = 'scheduled';
+            let status: 'completed' | 'cancelled' | 'no-show' | 'scheduled' =
+                'scheduled';
             if (consultation.status_sesi === 'Selesai') status = 'completed';
-            else if (consultation.status_sesi === 'Dibatalkan') status = 'cancelled';
-            else if (consultation.status_sesi === 'Tidak Hadir') status = 'no-show';
+            else if (consultation.status_sesi === 'Dibatalkan')
+                status = 'cancelled';
+            else if (consultation.status_sesi === 'Tidak Hadir')
+                status = 'no-show';
 
             return {
                 id: consultation.id,
                 date: consultation.waktu_mulai_dijadwalkan,
                 time: dateTime.toLocaleTimeString('id-ID', {
                     hour: '2-digit',
-                    minute: '2-digit'
+                    minute: '2-digit',
                 }),
                 duration: consultation.durasi_menit,
                 doctor: consultation.petugas?.name || 'Dokter Tidak Diketahui',
@@ -106,11 +108,13 @@ const ConsultationHistoryPage = ({ consultations }: Props) => {
                 complaint: 'Konsultasi Kesehatan',
                 diagnosis: consultation.ringkasan_konsultasi || '-',
                 prescription: undefined,
-                notes: consultation.rekomendasi_petugas || 'Tidak ada catatan tambahan',
+                notes:
+                    consultation.rekomendasi_petugas ||
+                    'Tidak ada catatan tambahan',
 
                 payment_status: 'paid',
                 rating: status === 'completed' ? 5 : undefined,
-                updated_at: consultation.updated_at
+                updated_at: consultation.updated_at,
             };
         });
     }, [consultations]);
@@ -474,11 +478,20 @@ const ConsultationHistoryPage = ({ consultations }: Props) => {
                                     </div>
 
                                     <div className="flex flex-col gap-2 sm:items-end">
-                                       <Link href={route('pasien.consult.joinMeet', record.id)}>
-                                          <Button variant="default" className="text-white" size="sm">
-                                            Join Meet
-                                          </Button>
-                                       </Link>
+                                        <Link
+                                            href={route(
+                                                'pasien.consult.joinMeet',
+                                                record.id,
+                                            )}
+                                        >
+                                            <Button
+                                                variant="default"
+                                                className="text-white"
+                                                size="sm"
+                                            >
+                                                Join Meet
+                                            </Button>
+                                        </Link>
 
                                         <Button
                                             variant="outline"
