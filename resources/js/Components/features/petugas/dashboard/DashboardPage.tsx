@@ -11,21 +11,20 @@ import {
     CardTitle,
 } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
-import { Search } from 'lucide-react';
 import { router } from '@inertiajs/react';
+import { differenceInDays, parseISO } from 'date-fns';
+import { Search } from 'lucide-react';
 import { useState } from 'react';
-import { differenceInDays, parseISO } from "date-fns";
 
 // ✅ Import komponen modal
+import CreateAnakForm from '@/Components/Pasien/CreateAnakForm';
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogDescription,
 } from '@/Components/ui/dialog';
-import CreateAnakForm from '@/Components/Pasien/CreateAnakForm';
-
 
 interface PregnantCheckup {
     id: number;
@@ -59,19 +58,22 @@ export default function DashboardPetugasPage({
     patientPregnant,
     patient,
 }: DashboardPetugasPageProps) {
-
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateAnakOpen, setIsCreateAnakOpen] = useState(false);
 
     const handleSearch = () => {
         if (!searchQuery.trim()) return;
-        router.get(route('petugas.dashboard.index'), { patient_nik: searchQuery }, {
-            preserveState: true,
-            onSuccess: () => {
-                setIsModalOpen(true);
+        router.get(
+            route('petugas.dashboard.index'),
+            { patient_nik: searchQuery },
+            {
+                preserveState: true,
+                onSuccess: () => {
+                    setIsModalOpen(true);
+                },
             },
-        });
+        );
     };
 
     const handleStartExamination = (patientId: string | number) => {
@@ -159,7 +161,7 @@ export default function DashboardPetugasPage({
             <QuickStats />
 
             {/* Patient Search */}
-            <Card className="mb-8">
+            <Card className="mb-8 bg-white">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Search className="h-5 w-5" />
@@ -192,30 +194,32 @@ export default function DashboardPetugasPage({
 
             {/* 🔹 Modal hasil pencarian pasien */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent
-                    className="w-[90vw] max-w-6xl bg-white text-black rounded-2xl shadow-xl border border-gray-200"
-                >
+                <DialogContent className="w-[90vw] max-w-6xl rounded-2xl border border-gray-200 bg-white text-black shadow-xl">
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-bold text-black">
                             Hasil Pencarian Pasien
                         </DialogTitle>
-                        <DialogDescription className="text-gray-600 text-base">
-                            Menampilkan hasil pencarian berdasarkan NIK:{" "}
-                            <span className="font-semibold text-black">{searchQuery}</span>
+                        <DialogDescription className="text-base text-gray-600">
+                            Menampilkan hasil pencarian berdasarkan NIK:{' '}
+                            <span className="font-semibold text-black">
+                                {searchQuery}
+                            </span>
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-2">
                         {/* === Kolom Kehamilan === */}
-                        <div className="pr-4 border-r border-gray-200">
-                            <div className="flex items-center justify-between mb-4 border-b pb-2">
-                                <h3 className="font-semibold text-lg flex items-center gap-2">
+                        <div className="border-r border-gray-200 pr-4">
+                            <div className="mb-4 flex items-center justify-between border-b pb-2">
+                                <h3 className="flex items-center gap-2 text-lg font-semibold">
                                     🤰 Kehamilan
                                 </h3>
                                 <Button
                                     size="sm"
                                     className="bg-green-500 text-white hover:bg-green-600"
-                                    onClick={() => console.log("Tambah Kehamilan diklik")}
+                                    onClick={() =>
+                                        console.log('Tambah Kehamilan diklik')
+                                    }
                                 >
                                     + Kehamilan
                                 </Button>
@@ -224,24 +228,59 @@ export default function DashboardPetugasPage({
                             {patientPregnant && patientPregnant.length > 0 ? (
                                 patientPregnant.map((p) => {
                                     const createdAt = parseISO(p.created_at);
-                                    const usiaHari = differenceInDays(new Date(), createdAt);
+                                    const usiaHari = differenceInDays(
+                                        new Date(),
+                                        createdAt,
+                                    );
 
                                     return (
                                         <div
-                                            onClick={() => router.get(route('petugas.create.pemeriksaanAnc', { id: p.id }))}
+                                            onClick={() =>
+                                                router.get(
+                                                    route(
+                                                        'petugas.create.pemeriksaanAnc',
+                                                        { id: p.id },
+                                                    ),
+                                                )
+                                            }
                                             key={p.id}
-                                            className="cursor-pointer border border-gray-300 p-5 rounded-lg mb-4 bg-gray-50 hover:bg-gray-100 transition"
+                                            className="mb-4 cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-5 transition hover:bg-gray-100"
                                         >
-                                            <p><span className="font-medium">ID: </span>{p.id}</p>
-                                            <p><span className="font-medium">Kehamilan ke: </span>{p.kehamilan_ke ?? "-"}</p>
-                                            <p><span className="font-medium">Jumlah Janin: </span>{p.jumlah_janin ?? "-"}</p>
-                                            <p><span className="font-medium">Status: </span>{p.status ?? "Tidak diketahui"}</p>
-                                            <p><span className="font-medium">Usia: </span>{usiaHari} hari sejak pencatatan</p>
+                                            <p>
+                                                <span className="font-medium">
+                                                    ID:{' '}
+                                                </span>
+                                                {p.id}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium">
+                                                    Kehamilan ke:{' '}
+                                                </span>
+                                                {p.kehamilan_ke ?? '-'}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium">
+                                                    Jumlah Janin:{' '}
+                                                </span>
+                                                {p.jumlah_janin ?? '-'}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium">
+                                                    Status:{' '}
+                                                </span>
+                                                {p.status ?? 'Tidak diketahui'}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium">
+                                                    Usia:{' '}
+                                                </span>
+                                                {usiaHari} hari sejak pencatatan
+                                            </p>
                                         </div>
                                     );
                                 })
                             ) : (
-                                <p className="text-gray-500 text-sm mt-2">
+                                <p className="mt-2 text-sm text-gray-500">
                                     Tidak ada data kehamilan.
                                 </p>
                             )}
@@ -249,8 +288,8 @@ export default function DashboardPetugasPage({
 
                         {/* === Kolom Anak === */}
                         <div className="pl-4">
-                            <div className="flex items-center justify-between mb-4 border-b pb-2">
-                                <h3 className="font-semibold text-lg flex items-center gap-2">
+                            <div className="mb-4 flex items-center justify-between border-b pb-2">
+                                <h3 className="flex items-center gap-2 text-lg font-semibold">
                                     👶 Anak
                                 </h3>
                                 <Button
@@ -265,47 +304,66 @@ export default function DashboardPetugasPage({
                             {childPatient && childPatient.length > 0 ? (
                                 childPatient.map((c) => {
                                     const createdAt = parseISO(c.created_at);
-                                    const usiaHari = differenceInDays(new Date(), createdAt);
+                                    const usiaHari = differenceInDays(
+                                        new Date(),
+                                        createdAt,
+                                    );
 
-                                 return (
-                                    <div
-                                        key={c.id}
-                                        onClick={() => router.get(route('petugas.create.pemeriksaanAnak', { id: c.id }))}
-                                        className="cursor-pointer border border-gray-300 p-5 rounded-lg mb-4 bg-gray-50 hover:bg-blue-50 hover:border-blue-400 transition-all duration-200"
-                                    >
-                                        <div className="flex justify-between items-center">
-                                            <div>
-                                                <p>
-                                                    <span className="font-medium">Nama: </span>{c.nama}
-                                                </p>
-                                                <p>
-                                                    <span className="font-medium">Kelamin: </span>
-                                                    {c.kelamin === "L" ? "Laki-laki" : c.kelamin === "P" ? "Perempuan" : "-"}
-                                                </p>
-                                                <p>
-                                                    <span className="font-medium">Usia: </span>
-                                                    {usiaHari} hari sejak pencatatan
-                                                </p>
+                                    return (
+                                        <div
+                                            key={c.id}
+                                            onClick={() =>
+                                                router.get(
+                                                    route(
+                                                        'petugas.create.pemeriksaanAnak',
+                                                        { id: c.id },
+                                                    ),
+                                                )
+                                            }
+                                            className="mb-4 cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-5 transition-all duration-200 hover:border-blue-400 hover:bg-blue-50"
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <p>
+                                                        <span className="font-medium">
+                                                            Nama:{' '}
+                                                        </span>
+                                                        {c.nama}
+                                                    </p>
+                                                    <p>
+                                                        <span className="font-medium">
+                                                            Kelamin:{' '}
+                                                        </span>
+                                                        {c.kelamin === 'L'
+                                                            ? 'Laki-laki'
+                                                            : c.kelamin === 'P'
+                                                              ? 'Perempuan'
+                                                              : '-'}
+                                                    </p>
+                                                    <p>
+                                                        <span className="font-medium">
+                                                            Usia:{' '}
+                                                        </span>
+                                                        {usiaHari} hari sejak
+                                                        pencatatan
+                                                    </p>
+                                                </div>
                                             </div>
-
-
                                         </div>
-                                    </div>
-                                );
-
+                                    );
                                 })
                             ) : (
-                                <p className="text-gray-500 text-sm mt-2">
+                                <p className="mt-2 text-sm text-gray-500">
                                     Tidak ada data anak.
                                 </p>
                             )}
                         </div>
                     </div>
 
-                    <div className="flex justify-end mt-8">
+                    <div className="mt-8 flex justify-end">
                         <Button
                             variant="outline"
-                            className="border-gray-400 text-black hover:bg-gray-200 px-6 py-2 rounded-lg"
+                            className="rounded-lg border-gray-400 px-6 py-2 text-black hover:bg-gray-200"
                             onClick={() => setIsModalOpen(false)}
                         >
                             Tutup
@@ -316,7 +374,7 @@ export default function DashboardPetugasPage({
 
             {/* 🔹 Modal Create Anak */}
             <Dialog open={isCreateAnakOpen} onOpenChange={setIsCreateAnakOpen}>
-                <DialogContent className="max-w-2xl bg-white text-black rounded-xl shadow-lg border border-gray-200">
+                <DialogContent className="max-w-2xl rounded-xl border border-gray-200 bg-white text-black shadow-lg">
                     <DialogHeader>
                         <DialogTitle className="text-xl font-bold text-black">
                             Tambah Data Anak
@@ -327,10 +385,10 @@ export default function DashboardPetugasPage({
                     </DialogHeader>
 
                     <div className="mt-4">
-                        <CreateAnakForm patient={patient}/>
+                        <CreateAnakForm patient={patient} />
                     </div>
 
-                    <div className="flex justify-end mt-6">
+                    <div className="mt-6 flex justify-end">
                         <Button
                             variant="outline"
                             className="border-gray-400 text-black hover:bg-gray-200"

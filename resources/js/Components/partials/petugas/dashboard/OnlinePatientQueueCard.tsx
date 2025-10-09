@@ -36,19 +36,19 @@ const OnlinePatientQueueCard = ({
         switch (status) {
             case 'in-progress':
                 return (
-                    <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                    <Badge className="border-yellow-200 bg-yellow-100 text-yellow-800">
                         Proses...
                     </Badge>
                 );
             case 'completed':
                 return (
-                    <Badge className="bg-green-100 text-green-800 border-green-200">
+                    <Badge className="border-green-200 bg-green-100 text-green-800">
                         Selesai
                     </Badge>
                 );
             default:
                 return (
-                    <Badge className="bg-gray-100 text-gray-800 border-gray-200">
+                    <Badge className="border-gray-200 bg-gray-100 text-gray-800">
                         Menunggu..
                     </Badge>
                 );
@@ -56,7 +56,7 @@ const OnlinePatientQueueCard = ({
     };
 
     return (
-        <Card>
+        <Card className="bg-white">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Calendar className="h-5 w-5" />
@@ -100,13 +100,13 @@ const OnlinePatientQueueCard = ({
                                             {patient.name}
                                         </p>
                                         {patient.isPregnant && (
-                                            <Badge className="bg-blue-500 text-white text-xs">
+                                            <Badge className="bg-blue-500 text-xs text-white">
                                                 Hamil
                                             </Badge>
                                         )}
                                     </div>
 
-                                    <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                                    <div className="text-muted-foreground mt-1 flex flex-wrap items-center gap-3 text-sm">
                                         <span className="flex items-center gap-1">
                                             <Clock className="h-3 w-3" />
                                             {patient.time}
@@ -121,7 +121,7 @@ const OnlinePatientQueueCard = ({
                                     </div>
 
                                     {patient.notes && (
-                                        <p className="mt-1 text-sm text-blue-600 hover:underline cursor-pointer">
+                                        <p className="mt-1 cursor-pointer text-sm text-blue-600 hover:underline">
                                             {patient.notes}
                                         </p>
                                     )}

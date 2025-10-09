@@ -1,18 +1,10 @@
-
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/Components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { Textarea } from '@/Components/ui/textarea';
 import { useForm } from '@inertiajs/react';
-
-
 
 interface LabTest {
     id: string;
@@ -22,9 +14,8 @@ interface LabTest {
     status: string;
 }
 
-
-export default function FormPemeriksaanSakitKehamilan({pregnant}){
-   console.log('form pregnant', pregnant);
+export default function FormPemeriksaanSakitKehamilan({ pregnant }) {
+    console.log('form pregnant', pregnant);
 
     const { data, setData, post, processing, errors } = useForm({
         kehamilan_id: pregnant?.id || '',
@@ -70,9 +61,7 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
         <form onSubmit={handleSubmit} className="space-y-4">
             <Card className="border-2">
                 <CardHeader>
-                    <CardTitle className="text-lg">
-                        Pemeriksaan ANC
-                    </CardTitle>
+                    <CardTitle className="text-lg">Pemeriksaan ANC</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {/* Tekanan Darah */}
@@ -88,11 +77,18 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                                 step="0.1"
                                 placeholder="Masukkan tekanan darah sistolik"
                                 value={data.tekanan_darah_sistolik}
-                                onChange={(e) => setData('tekanan_darah_sistolik', e.target.value)}
+                                onChange={(e) =>
+                                    setData(
+                                        'tekanan_darah_sistolik',
+                                        e.target.value,
+                                    )
+                                }
                                 required
                             />
                             {errors.tekanan_darah_sistolik && (
-                                <span className="text-red-500 text-sm">{errors.tekanan_darah_sistolik}</span>
+                                <span className="text-sm text-red-500">
+                                    {errors.tekanan_darah_sistolik}
+                                </span>
                             )}
                         </div>
                         <div className="space-y-2">
@@ -106,11 +102,18 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                                 step="0.1"
                                 placeholder="Masukkan tekanan darah diastolik"
                                 value={data.tekanan_darah_diastolik}
-                                onChange={(e) => setData('tekanan_darah_diastolik', e.target.value)}
+                                onChange={(e) =>
+                                    setData(
+                                        'tekanan_darah_diastolik',
+                                        e.target.value,
+                                    )
+                                }
                                 required
                             />
                             {errors.tekanan_darah_diastolik && (
-                                <span className="text-red-500 text-sm">{errors.tekanan_darah_diastolik}</span>
+                                <span className="text-sm text-red-500">
+                                    {errors.tekanan_darah_diastolik}
+                                </span>
                             )}
                         </div>
                     </div>
@@ -128,11 +131,15 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                                 step="0.1"
                                 placeholder="Masukkan berat badan"
                                 value={data.berat_badan}
-                                onChange={(e) => setData('berat_badan', e.target.value)}
+                                onChange={(e) =>
+                                    setData('berat_badan', e.target.value)
+                                }
                                 required
                             />
                             {errors.berat_badan && (
-                                <span className="text-red-500 text-sm">{errors.berat_badan}</span>
+                                <span className="text-sm text-red-500">
+                                    {errors.berat_badan}
+                                </span>
                             )}
                         </div>
                         <div className="space-y-2">
@@ -146,11 +153,15 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                                 step="0.1"
                                 placeholder="Masukkan lingkar lengan atas"
                                 value={data.lila}
-                                onChange={(e) => setData('lila', e.target.value)}
+                                onChange={(e) =>
+                                    setData('lila', e.target.value)
+                                }
                                 required
                             />
                             {errors.lila && (
-                                <span className="text-red-500 text-sm">{errors.lila}</span>
+                                <span className="text-sm text-red-500">
+                                    {errors.lila}
+                                </span>
                             )}
                         </div>
                     </div>
@@ -168,7 +179,9 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                                 step="0.1"
                                 placeholder="Masukkan tinggi fundus"
                                 value={data.tinggi_fundus}
-                                onChange={(e) => setData('tinggi_fundus', e.target.value)}
+                                onChange={(e) =>
+                                    setData('tinggi_fundus', e.target.value)
+                                }
                             />
                         </div>
                         <div className="space-y-2">
@@ -180,16 +193,25 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                                 name="status_bengkak_kaki"
                                 className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm outline-none focus-visible:ring-2"
                                 value={data.status_bengkak_kaki}
-                                onChange={(e) => setData('status_bengkak_kaki', e.target.value)}
+                                onChange={(e) =>
+                                    setData(
+                                        'status_bengkak_kaki',
+                                        e.target.value,
+                                    )
+                                }
                                 required
                             >
-                                <option value="">Pilih Status Bengkak Kaki</option>
+                                <option value="">
+                                    Pilih Status Bengkak Kaki
+                                </option>
                                 <option value="Tidak Ada">Tidak Ada</option>
                                 <option value="Ringan">Ringan</option>
                                 <option value="Berat">Berat</option>
                             </select>
                             {errors.status_bengkak_kaki && (
-                                <span className="text-red-500 text-sm">{errors.status_bengkak_kaki}</span>
+                                <span className="text-sm text-red-500">
+                                    {errors.status_bengkak_kaki}
+                                </span>
                             )}
                         </div>
                     </div>
@@ -206,11 +228,15 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                             step="0.1"
                             placeholder="Masukkan suhu tubuh dalam celcius"
                             value={data.suhu_tubuh_celsius}
-                            onChange={(e) => setData('suhu_tubuh_celsius', e.target.value)}
+                            onChange={(e) =>
+                                setData('suhu_tubuh_celsius', e.target.value)
+                            }
                             required
                         />
                         {errors.suhu_tubuh_celsius && (
-                            <span className="text-red-500 text-sm">{errors.suhu_tubuh_celsius}</span>
+                            <span className="text-sm text-red-500">
+                                {errors.suhu_tubuh_celsius}
+                            </span>
                         )}
                     </div>
 
@@ -227,11 +253,18 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                                 step="0.1"
                                 placeholder="Masukkan frekuensi nafas per menit"
                                 value={data.frekuensi_napas_per_menit}
-                                onChange={(e) => setData('frekuensi_napas_per_menit', e.target.value)}
+                                onChange={(e) =>
+                                    setData(
+                                        'frekuensi_napas_per_menit',
+                                        e.target.value,
+                                    )
+                                }
                                 required
                             />
                             {errors.frekuensi_napas_per_menit && (
-                                <span className="text-red-500 text-sm">{errors.frekuensi_napas_per_menit}</span>
+                                <span className="text-sm text-red-500">
+                                    {errors.frekuensi_napas_per_menit}
+                                </span>
                             )}
                         </div>
                         <div className="space-y-2">
@@ -245,11 +278,18 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                                 step="0.1"
                                 placeholder="Masukkan frekuensi jantung per menit"
                                 value={data.frekuensi_jantung_per_menit}
-                                onChange={(e) => setData('frekuensi_jantung_per_menit', e.target.value)}
+                                onChange={(e) =>
+                                    setData(
+                                        'frekuensi_jantung_per_menit',
+                                        e.target.value,
+                                    )
+                                }
                                 required
                             />
                             {errors.frekuensi_jantung_per_menit && (
-                                <span className="text-red-500 text-sm">{errors.frekuensi_jantung_per_menit}</span>
+                                <span className="text-sm text-red-500">
+                                    {errors.frekuensi_jantung_per_menit}
+                                </span>
                             )}
                         </div>
                     </div>
@@ -267,26 +307,34 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="catatan_petugas">Catatan Petugas (Opsional)</Label>
+                        <Label htmlFor="catatan_petugas">
+                            Catatan Petugas (Opsional)
+                        </Label>
                         <Textarea
                             id="catatan_petugas"
                             name="catatan_petugas"
                             placeholder="Tuliskan catatan petugas..."
                             rows={2}
                             value={data.catatan_petugas}
-                            onChange={(e) => setData('catatan_petugas', e.target.value)}
+                            onChange={(e) =>
+                                setData('catatan_petugas', e.target.value)
+                            }
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="deteksi_resiko">Deteksi Resiko (Opsional)</Label>
+                        <Label htmlFor="deteksi_resiko">
+                            Deteksi Resiko (Opsional)
+                        </Label>
                         <Textarea
                             id="deteksi_resiko"
                             name="deteksi_resiko"
                             placeholder="Tuliskan deteksi resiko..."
                             rows={3}
                             value={data.deteksi_resiko}
-                            onChange={(e) => setData('deteksi_resiko', e.target.value)}
+                            onChange={(e) =>
+                                setData('deteksi_resiko', e.target.value)
+                            }
                         />
                     </div>
 
@@ -299,11 +347,18 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                             name="saran_kunjungan_berikutnya"
                             type="date"
                             value={data.saran_kunjungan_berikutnya}
-                            onChange={(e) => setData('saran_kunjungan_berikutnya', e.target.value)}
+                            onChange={(e) =>
+                                setData(
+                                    'saran_kunjungan_berikutnya',
+                                    e.target.value,
+                                )
+                            }
                             required
                         />
                         {errors.saran_kunjungan_berikutnya && (
-                            <span className="text-red-500 text-sm">{errors.saran_kunjungan_berikutnya}</span>
+                            <span className="text-sm text-red-500">
+                                {errors.saran_kunjungan_berikutnya}
+                            </span>
                         )}
                     </div>
                 </CardContent>
@@ -325,11 +380,16 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                             <Input
                                 id="tanggal_diagnosis"
                                 type="date"
-                                value={data.riwayat_sakit_kehamilan.tanggal_diagnosis}
-                                onChange={(e) => setData('riwayat_sakit_kehamilan', {
-                                    ...data.riwayat_sakit_kehamilan,
-                                    tanggal_diagnosis: e.target.value
-                                })}
+                                value={
+                                    data.riwayat_sakit_kehamilan
+                                        .tanggal_diagnosis
+                                }
+                                onChange={(e) =>
+                                    setData('riwayat_sakit_kehamilan', {
+                                        ...data.riwayat_sakit_kehamilan,
+                                        tanggal_diagnosis: e.target.value,
+                                    })
+                                }
                             />
                         </div>
                         <div className="space-y-2">
@@ -339,11 +399,15 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                             <select
                                 id="status_penyakit"
                                 className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm outline-none focus-visible:ring-2"
-                                value={data.riwayat_sakit_kehamilan.status_penyakit}
-                                onChange={(e) => setData('riwayat_sakit_kehamilan', {
-                                    ...data.riwayat_sakit_kehamilan,
-                                    status_penyakit: e.target.value
-                                })}
+                                value={
+                                    data.riwayat_sakit_kehamilan.status_penyakit
+                                }
+                                onChange={(e) =>
+                                    setData('riwayat_sakit_kehamilan', {
+                                        ...data.riwayat_sakit_kehamilan,
+                                        status_penyakit: e.target.value,
+                                    })
+                                }
                             >
                                 <option value="">Pilih status penyakit</option>
                                 <option value="Aktif">Aktif</option>
@@ -354,33 +418,33 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="gejala">
-                            Gejala (Opsional)
-                        </Label>
+                        <Label htmlFor="gejala">Gejala (Opsional)</Label>
                         <Textarea
                             id="gejala"
                             placeholder="Demam, batuk, pilek, dll..."
                             rows={2}
                             value={data.riwayat_sakit_kehamilan.gejala}
-                            onChange={(e) => setData('riwayat_sakit_kehamilan', {
-                                ...data.riwayat_sakit_kehamilan,
-                                gejala: e.target.value
-                            })}
+                            onChange={(e) =>
+                                setData('riwayat_sakit_kehamilan', {
+                                    ...data.riwayat_sakit_kehamilan,
+                                    gejala: e.target.value,
+                                })
+                            }
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="diagnosis">
-                            Diagnosis (Opsional)
-                        </Label>
+                        <Label htmlFor="diagnosis">Diagnosis (Opsional)</Label>
                         <Input
                             id="diagnosis"
                             placeholder="Diagnosis sakit"
                             value={data.riwayat_sakit_kehamilan.diagnosis}
-                            onChange={(e) => setData('riwayat_sakit_kehamilan', {
-                                ...data.riwayat_sakit_kehamilan,
-                                diagnosis: e.target.value
-                            })}
+                            onChange={(e) =>
+                                setData('riwayat_sakit_kehamilan', {
+                                    ...data.riwayat_sakit_kehamilan,
+                                    diagnosis: e.target.value,
+                                })
+                            }
                         />
                     </div>
 
@@ -392,11 +456,15 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                             id="tindakan_pengobatan"
                             placeholder="Obat yang diberikan, tindakan medis..."
                             rows={3}
-                            value={data.riwayat_sakit_kehamilan.tindakan_pengobatan}
-                            onChange={(e) => setData('riwayat_sakit_kehamilan', {
-                                ...data.riwayat_sakit_kehamilan,
-                                tindakan_pengobatan: e.target.value
-                            })}
+                            value={
+                                data.riwayat_sakit_kehamilan.tindakan_pengobatan
+                            }
+                            onChange={(e) =>
+                                setData('riwayat_sakit_kehamilan', {
+                                    ...data.riwayat_sakit_kehamilan,
+                                    tindakan_pengobatan: e.target.value,
+                                })
+                            }
                         />
                     </div>
                 </CardContent>
@@ -411,10 +479,7 @@ export default function FormPemeriksaanSakitKehamilan({pregnant}){
                 >
                     Batal
                 </Button>
-                <Button
-                    type="submit"
-                    disabled={processing}
-                >
+                <Button type="submit" disabled={processing}>
                     {processing ? 'Menyimpan...' : 'Simpan Data'}
                 </Button>
             </div>

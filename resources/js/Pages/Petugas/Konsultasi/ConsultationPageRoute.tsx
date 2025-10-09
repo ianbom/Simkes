@@ -11,7 +11,15 @@ import {
 } from '@/Components/ui/card';
 import { VideoCallInterface } from '@/Components/video-call-interface';
 import { router } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Clock, Phone, User, Video, FileText } from 'lucide-react';
+import {
+    ArrowLeft,
+    Calendar,
+    Clock,
+    FileText,
+    Phone,
+    User,
+    Video,
+} from 'lucide-react';
 import { useState } from 'react';
 
 interface SesiKonsultasi {
@@ -78,7 +86,11 @@ interface Props {
     };
 }
 
-export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }: Props) {
+export default function ConsultationPageRoute({
+    sesiKonsultasi,
+    roomName,
+    user,
+}: Props) {
     const [showSummaryForm, setShowSummaryForm] = useState(false);
     const [notes, setNotes] = useState('');
 
@@ -88,7 +100,10 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
         const birth = new Date(birthDate);
         let age = today.getFullYear() - birth.getFullYear();
         const monthDiff = today.getMonth() - birth.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        if (
+            monthDiff < 0 ||
+            (monthDiff === 0 && today.getDate() < birth.getDate())
+        ) {
             age--;
         }
         return age;
@@ -101,17 +116,20 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
             date: date.toLocaleDateString('id-ID', {
                 day: '2-digit',
                 month: 'long',
-                year: 'numeric'
+                year: 'numeric',
             }),
             time: date.toLocaleTimeString('id-ID', {
                 hour: '2-digit',
-                minute: '2-digit'
-            })
+                minute: '2-digit',
+            }),
         };
     };
 
     const handleCompleteSummary = (summaryData: any) => {
-        router.post(`/consultations/${sesiKonsultasi.id}/complete`, summaryData);
+        router.post(
+            `/consultations/${sesiKonsultasi.id}/complete`,
+            summaryData,
+        );
     };
 
     const getStatusColor = (status: string) => {
@@ -132,29 +150,36 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
 
     const getStatusLabel = (status: string) => {
         const statusMap: Record<string, string> = {
-            'Dikonfirmasi': 'Terjadwal',
-            'Berlangsung': 'Sedang Berlangsung',
-            'Selesai': 'Selesai',
-            'Dibatalkan': 'Dibatalkan'
+            Dikonfirmasi: 'Terjadwal',
+            Berlangsung: 'Sedang Berlangsung',
+            Selesai: 'Selesai',
+            Dibatalkan: 'Dibatalkan',
         };
         return statusMap[status] || status;
     };
 
-    const scheduledDateTime = formatDateTime(sesiKonsultasi.waktu_mulai_dijadwalkan);
+    const scheduledDateTime = formatDateTime(
+        sesiKonsultasi.waktu_mulai_dijadwalkan,
+    );
     const patientAge = calculateAge(sesiKonsultasi.pasien.tanggal_lahir);
-    const genderLabel = sesiKonsultasi.pasien.kelamin === 'L' ? 'Laki-laki' : 'Perempuan';
+    const genderLabel =
+        sesiKonsultasi.pasien.kelamin === 'L' ? 'Laki-laki' : 'Perempuan';
 
     // Get patient info - prioritize child info if exists
-    const patientName = sesiKonsultasi.anak ? sesiKonsultasi.anak.nama : sesiKonsultasi.pasien.name;
+    const patientName = sesiKonsultasi.anak
+        ? sesiKonsultasi.anak.nama
+        : sesiKonsultasi.pasien.name;
     const patientGender = sesiKonsultasi.anak
-        ? (sesiKonsultasi.anak.kelamin === 'L' ? 'Laki-laki' : 'Perempuan')
+        ? sesiKonsultasi.anak.kelamin === 'L'
+            ? 'Laki-laki'
+            : 'Perempuan'
         : genderLabel;
     const patientAge2 = sesiKonsultasi.anak
         ? calculateAge(sesiKonsultasi.anak.tanggal_lahir)
         : patientAge;
 
     return (
-        <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
             <Navigation />
 
             <div className="pb-16 lg:pb-0 lg:pl-72">
@@ -166,8 +191,10 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => router.visit('/consultations')}
-                                    className="mb-3 -ml-2"
+                                    onClick={() =>
+                                        router.visit('/consultations')
+                                    }
+                                    className="-ml-2 mb-3"
                                 >
                                     <ArrowLeft className="mr-2 h-4 w-4" />
                                     Kembali ke Dashboard
@@ -188,7 +215,9 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                             </div>
                             <div className="flex items-center gap-3">
                                 <Badge
-                                    variant={getStatusColor(sesiKonsultasi.status_sesi)}
+                                    variant={getStatusColor(
+                                        sesiKonsultasi.status_sesi,
+                                    )}
                                     className="px-4 py-2 text-sm"
                                 >
                                     {getStatusLabel(sesiKonsultasi.status_sesi)}
@@ -202,15 +231,21 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                                 <div className="flex flex-wrap items-center gap-6 text-sm">
                                     <div className="flex items-center gap-2">
                                         <Calendar className="h-4 w-4 text-blue-600" />
-                                        <span className="font-medium">{scheduledDateTime.date}</span>
+                                        <span className="font-medium">
+                                            {scheduledDateTime.date}
+                                        </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Clock className="h-4 w-4 text-blue-600" />
-                                        <span className="font-medium">{scheduledDateTime.time}</span>
+                                        <span className="font-medium">
+                                            {scheduledDateTime.time}
+                                        </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Clock className="h-4 w-4 text-purple-600" />
-                                        <span className="font-medium">{sesiKonsultasi.durasi_menit} menit</span>
+                                        <span className="font-medium">
+                                            {sesiKonsultasi.durasi_menit} menit
+                                        </span>
                                     </div>
                                 </div>
                             </CardContent>
@@ -230,7 +265,11 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                                 {/* Avatar */}
                                 <div className="flex-shrink-0">
                                     <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-purple-500 text-2xl font-bold text-white shadow-lg">
-                                        {patientName.split(' ').map(n => n[0]).join('').toUpperCase()}
+                                        {patientName
+                                            .split(' ')
+                                            .map((n) => n[0])
+                                            .join('')
+                                            .toUpperCase()}
                                     </div>
                                 </div>
 
@@ -242,44 +281,64 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                                         </h3>
                                         {sesiKonsultasi.anak && (
                                             <p className="text-muted-foreground text-sm">
-                                                Orang Tua: {sesiKonsultasi.pasien.name}
+                                                Orang Tua:{' '}
+                                                {sesiKonsultasi.pasien.name}
                                             </p>
                                         )}
                                     </div>
 
                                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                         <div className="flex items-center gap-2">
-                                            <User className="h-4 w-4 text-muted-foreground" />
+                                            <User className="text-muted-foreground h-4 w-4" />
                                             <span className="text-sm">
-                                                <span className="text-muted-foreground">Usia:</span>{' '}
-                                                <span className="font-medium">{patientAge2} tahun</span>
+                                                <span className="text-muted-foreground">
+                                                    Usia:
+                                                </span>{' '}
+                                                <span className="font-medium">
+                                                    {patientAge2} tahun
+                                                </span>
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <User className="h-4 w-4 text-muted-foreground" />
+                                            <User className="text-muted-foreground h-4 w-4" />
                                             <span className="text-sm">
-                                                <span className="text-muted-foreground">Jenis Kelamin:</span>{' '}
-                                                <span className="font-medium">{patientGender}</span>
+                                                <span className="text-muted-foreground">
+                                                    Jenis Kelamin:
+                                                </span>{' '}
+                                                <span className="font-medium">
+                                                    {patientGender}
+                                                </span>
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <FileText className="h-4 w-4 text-muted-foreground" />
+                                            <FileText className="text-muted-foreground h-4 w-4" />
                                             <span className="text-sm">
-                                                <span className="text-muted-foreground">NIK:</span>{' '}
-                                                <span className="font-medium">{sesiKonsultasi.pasien.nik}</span>
+                                                <span className="text-muted-foreground">
+                                                    NIK:
+                                                </span>{' '}
+                                                <span className="font-medium">
+                                                    {sesiKonsultasi.pasien.nik}
+                                                </span>
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <Phone className="h-4 w-4 text-muted-foreground" />
+                                            <Phone className="text-muted-foreground h-4 w-4" />
                                             <span className="text-sm">
-                                                <span className="text-muted-foreground">Telepon:</span>{' '}
-                                                <span className="font-medium">{sesiKonsultasi.pasien.no_telp}</span>
+                                                <span className="text-muted-foreground">
+                                                    Telepon:
+                                                </span>{' '}
+                                                <span className="font-medium">
+                                                    {
+                                                        sesiKonsultasi.pasien
+                                                            .no_telp
+                                                    }
+                                                </span>
                                             </span>
                                         </div>
                                     </div>
 
-                                    <div className="rounded-lg bg-amber-50 border border-amber-200 p-3">
-                                        <h4 className="text-foreground mb-2 flex items-center gap-2 font-semibold text-sm">
+                                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                                        <h4 className="text-foreground mb-2 flex items-center gap-2 text-sm font-semibold">
                                             <FileText className="h-4 w-4 text-amber-600" />
                                             Alamat
                                         </h4>
@@ -289,27 +348,57 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                                     </div>
 
                                     {sesiKonsultasi.anak && (
-                                        <div className="rounded-lg bg-blue-50 border border-blue-200 p-3">
-                                            <h4 className="text-foreground mb-2 flex items-center gap-2 font-semibold text-sm">
+                                        <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                                            <h4 className="text-foreground mb-2 flex items-center gap-2 text-sm font-semibold">
                                                 <FileText className="h-4 w-4 text-blue-600" />
                                                 Informasi Kelahiran
                                             </h4>
                                             <div className="grid grid-cols-2 gap-2 text-sm">
                                                 <div>
-                                                    <span className="text-muted-foreground">Berat Lahir:</span>{' '}
-                                                    <span className="font-medium">{sesiKonsultasi.anak.berat_lahir_gram}g</span>
+                                                    <span className="text-muted-foreground">
+                                                        Berat Lahir:
+                                                    </span>{' '}
+                                                    <span className="font-medium">
+                                                        {
+                                                            sesiKonsultasi.anak
+                                                                .berat_lahir_gram
+                                                        }
+                                                        g
+                                                    </span>
                                                 </div>
                                                 <div>
-                                                    <span className="text-muted-foreground">Panjang Lahir:</span>{' '}
-                                                    <span className="font-medium">{sesiKonsultasi.anak.panjang_lahir_cm} cm</span>
+                                                    <span className="text-muted-foreground">
+                                                        Panjang Lahir:
+                                                    </span>{' '}
+                                                    <span className="font-medium">
+                                                        {
+                                                            sesiKonsultasi.anak
+                                                                .panjang_lahir_cm
+                                                        }{' '}
+                                                        cm
+                                                    </span>
                                                 </div>
                                                 <div>
-                                                    <span className="text-muted-foreground">Anak ke:</span>{' '}
-                                                    <span className="font-medium">{sesiKonsultasi.anak.urutan_kelahiran}</span>
+                                                    <span className="text-muted-foreground">
+                                                        Anak ke:
+                                                    </span>{' '}
+                                                    <span className="font-medium">
+                                                        {
+                                                            sesiKonsultasi.anak
+                                                                .urutan_kelahiran
+                                                        }
+                                                    </span>
                                                 </div>
                                                 <div>
-                                                    <span className="text-muted-foreground">Status:</span>{' '}
-                                                    <span className="font-medium">{sesiKonsultasi.anak.status_hidup}</span>
+                                                    <span className="text-muted-foreground">
+                                                        Status:
+                                                    </span>{' '}
+                                                    <span className="font-medium">
+                                                        {
+                                                            sesiKonsultasi.anak
+                                                                .status_hidup
+                                                        }
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -324,11 +413,11 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                             {/* Video Call Interface */}
                             <div className="lg:col-span-2">
-                                    <VideoCallInterface
-                                        consultation={sesiKonsultasi}
-                                        roomName={roomName}
-                                        user={user}
-                                    />
+                                <VideoCallInterface
+                                    consultation={sesiKonsultasi}
+                                    roomName={roomName}
+                                    user={user}
+                                />
                             </div>
 
                             {/* Sidebar */}
@@ -344,22 +433,48 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                                     <CardContent className="pt-6">
                                         <div className="space-y-4">
                                             <div className="flex items-center justify-between">
-                                                <span className="text-muted-foreground text-sm">Status</span>
-                                                <Badge variant={getStatusColor(sesiKonsultasi.status_sesi)}>
-                                                    {getStatusLabel(sesiKonsultasi.status_sesi)}
+                                                <span className="text-muted-foreground text-sm">
+                                                    Status
+                                                </span>
+                                                <Badge
+                                                    variant={getStatusColor(
+                                                        sesiKonsultasi.status_sesi,
+                                                    )}
+                                                >
+                                                    {getStatusLabel(
+                                                        sesiKonsultasi.status_sesi,
+                                                    )}
                                                 </Badge>
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-muted-foreground text-sm">Dijadwalkan</span>
-                                                <span className="text-sm font-medium">{scheduledDateTime.time}</span>
+                                                <span className="text-muted-foreground text-sm">
+                                                    Dijadwalkan
+                                                </span>
+                                                <span className="text-sm font-medium">
+                                                    {scheduledDateTime.time}
+                                                </span>
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-muted-foreground text-sm">Durasi</span>
-                                                <span className="text-sm font-medium">{sesiKonsultasi.durasi_menit} menit</span>
+                                                <span className="text-muted-foreground text-sm">
+                                                    Durasi
+                                                </span>
+                                                <span className="text-sm font-medium">
+                                                    {
+                                                        sesiKonsultasi.durasi_menit
+                                                    }{' '}
+                                                    menit
+                                                </span>
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-muted-foreground text-sm">Petugas</span>
-                                                <span className="text-sm font-medium">{sesiKonsultasi.petugas.name}</span>
+                                                <span className="text-muted-foreground text-sm">
+                                                    Petugas
+                                                </span>
+                                                <span className="text-sm font-medium">
+                                                    {
+                                                        sesiKonsultasi.petugas
+                                                            .name
+                                                    }
+                                                </span>
                                             </div>
                                         </div>
                                     </CardContent>
@@ -379,7 +494,9 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                                     <CardContent className="pt-6">
                                         <textarea
                                             value={notes}
-                                            onChange={(e) => setNotes(e.target.value)}
+                                            onChange={(e) =>
+                                                setNotes(e.target.value)
+                                            }
                                             className="border-border focus:ring-ring h-36 w-full resize-none rounded-lg border p-3 text-sm focus:outline-none focus:ring-2"
                                             placeholder="Tulis catatan di sini..."
                                         />
@@ -387,25 +504,36 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                                 </Card>
 
                                 {/* Previous Summary */}
-                                {(sesiKonsultasi.ringkasan_konsultasi || sesiKonsultasi.rekomendasi_petugas) && (
+                                {(sesiKonsultasi.ringkasan_konsultasi ||
+                                    sesiKonsultasi.rekomendasi_petugas) && (
                                     <Card className="shadow-lg">
                                         <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50">
-                                            <CardTitle className="text-lg">Ringkasan Sebelumnya</CardTitle>
+                                            <CardTitle className="text-lg">
+                                                Ringkasan Sebelumnya
+                                            </CardTitle>
                                         </CardHeader>
                                         <CardContent className="pt-6">
                                             {sesiKonsultasi.ringkasan_konsultasi && (
                                                 <div className="mb-4">
-                                                    <h4 className="mb-2 font-semibold text-sm">Ringkasan:</h4>
+                                                    <h4 className="mb-2 text-sm font-semibold">
+                                                        Ringkasan:
+                                                    </h4>
                                                     <p className="text-muted-foreground text-sm">
-                                                        {sesiKonsultasi.ringkasan_konsultasi}
+                                                        {
+                                                            sesiKonsultasi.ringkasan_konsultasi
+                                                        }
                                                     </p>
                                                 </div>
                                             )}
                                             {sesiKonsultasi.rekomendasi_petugas && (
                                                 <div>
-                                                    <h4 className="mb-2 font-semibold text-sm">Rekomendasi:</h4>
+                                                    <h4 className="mb-2 text-sm font-semibold">
+                                                        Rekomendasi:
+                                                    </h4>
                                                     <p className="text-muted-foreground text-sm">
-                                                        {sesiKonsultasi.rekomendasi_petugas}
+                                                        {
+                                                            sesiKonsultasi.rekomendasi_petugas
+                                                        }
                                                     </p>
                                                 </div>
                                             )}
@@ -414,7 +542,8 @@ export default function ConsultationPageRoute({ sesiKonsultasi, roomName, user }
                                 )}
 
                                 {/* Action Button */}
-                                {sesiKonsultasi.status_sesi === 'Berlangsung' && (
+                                {sesiKonsultasi.status_sesi ===
+                                    'Berlangsung' && (
                                     <Button
                                         onClick={() => setShowSummaryForm(true)}
                                         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"

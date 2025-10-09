@@ -1,4 +1,4 @@
-import PetugasLayout from '@/Layouts/PetugasLayout';
+import { Badge } from '@/Components/ui/badge';
 import {
     Card,
     CardContent,
@@ -7,11 +7,11 @@ import {
     CardTitle,
 } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
+import PetugasLayout from '@/Layouts/PetugasLayout';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/Components/ui/badge';
-import { Search, Video, Calendar, Clock } from 'lucide-react';
-import { useState, useMemo } from 'react';
 import { Link } from '@inertiajs/react';
+import { Calendar, Clock, Search, Video } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 interface Anak {
     id: number;
@@ -44,8 +44,6 @@ interface ListConsultationPageRouteProps {
     consulQueue: Consul[];
 }
 
-
-
 export default function ListConsultationPageRoute({
     user,
     consulQueue,
@@ -75,32 +73,32 @@ export default function ListConsultationPageRoute({
         switch (status) {
             case 'Dikonfirmasi':
                 return (
-                    <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                    <Badge className="border-blue-200 bg-blue-100 text-blue-800">
                         {status}
                     </Badge>
                 );
             case 'Berlangsung':
                 return (
-                    <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                    <Badge className="border-yellow-200 bg-yellow-100 text-yellow-800">
                         {status}
                     </Badge>
                 );
             case 'Selesai':
                 return (
-                    <Badge className="bg-green-100 text-green-800 border-green-200">
+                    <Badge className="border-green-200 bg-green-100 text-green-800">
                         {status}
                     </Badge>
                 );
             case 'Batal':
             case 'Tidak Hadir':
                 return (
-                    <Badge className="bg-red-100 text-red-800 border-red-200">
+                    <Badge className="border-red-200 bg-red-100 text-red-800">
                         {status}
                     </Badge>
                 );
             default:
                 return (
-                    <Badge className="bg-gray-100 text-gray-800 border-gray-200">
+                    <Badge className="border-gray-200 bg-gray-100 text-gray-800">
                         {status}
                     </Badge>
                 );
@@ -110,12 +108,12 @@ export default function ListConsultationPageRoute({
     return (
         <PetugasLayout user={user}>
             <div className="px-4 py-6 lg:px-8">
-                <h1 className="font-heading text-2xl font-bold mb-6">
+                <h1 className="font-heading mb-6 text-2xl font-bold">
                     Daftar Konsultasi Online
                 </h1>
 
                 {/* Filter & Search */}
-                <Card className="mb-6">
+                <Card className="mb-6 bg-white">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Search className="h-5 w-5" />
@@ -139,7 +137,7 @@ export default function ListConsultationPageRoute({
                                 onChange={(e) =>
                                     setStatusFilter(e.target.value)
                                 }
-                                className="border rounded-md px-3 py-2 text-sm"
+                                className="rounded-md border px-3 py-2 text-sm"
                             >
                                 <option value="all">Semua Status</option>
                                 <option value="Dipesan">Dipesan</option>
@@ -156,7 +154,7 @@ export default function ListConsultationPageRoute({
                 </Card>
 
                 {/* List Konsultasi */}
-                <Card>
+                <Card className="bg-white">
                     <CardHeader>
                         <CardTitle>
                             Antrian ({filteredConsultations.length})
@@ -178,22 +176,20 @@ export default function ListConsultationPageRoute({
                                     >
                                         {/* Left: Data Pasien */}
                                         <div>
-                                            <p className="font-semibold text-foreground">
+                                            <p className="text-foreground font-semibold">
                                                 {name}
                                             </p>
-                                            <div className="mt-1 text-sm text-muted-foreground flex flex-wrap gap-3">
+                                            <div className="text-muted-foreground mt-1 flex flex-wrap gap-3 text-sm">
                                                 <span className="flex items-center gap-1">
                                                     <Calendar className="h-3 w-3" />
-                                                    {
-                                                        c.waktu_mulai_dijadwalkan
-                                                    }
+                                                    {c.waktu_mulai_dijadwalkan}
                                                 </span>
                                                 <span className="flex items-center gap-1">
                                                     <Clock className="h-3 w-3" />
                                                     {c.durasi_menit} menit
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-blue-600 mt-1">
+                                            <p className="mt-1 text-xs text-blue-600">
                                                 {c.link_video_conference}
                                             </p>
                                         </div>
@@ -203,13 +199,16 @@ export default function ListConsultationPageRoute({
                                             {getStatusBadge(c.status_sesi)}
                                             {c.link_video_conference && (
                                                 <Link
-                                                    href={route('petugas.joinMeet', c.id)} // route Laravel
+                                                    href={route(
+                                                        'petugas.joinMeet',
+                                                        c.id,
+                                                    )} // route Laravel
                                                 >
                                                     <Button
                                                         size="sm"
                                                         className="bg-green-500 text-white hover:bg-green-600"
                                                     >
-                                                        <Video className="h-4 w-4 mr-1" />
+                                                        <Video className="mr-1 h-4 w-4" />
                                                         Join
                                                     </Button>
                                                 </Link>

@@ -3,16 +3,26 @@ import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
 import {
     Calendar,
-    FileText,
     LayoutDashboard,
     Menu,
+    SquareActivity,
+    Stethoscope,
     Video,
     X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const toggleNavigation = [
-    { name: 'Riwayat Pasien', href: '/history', icon: FileText },
+    {
+        name: 'Riwayat Pemeriksaan Kehamilan',
+        href: '/petugas/history/checkup-kehamilan',
+        icon: SquareActivity,
+    },
+    {
+        name: 'Riwayat Pemeriksaan Anak',
+        href: '/petugas/history/checkup-anak',
+        icon: Stethoscope,
+    },
 ];
 const navigation = [
     { name: 'Dashboard', href: '/petugas/dashboard', icon: LayoutDashboard },
@@ -27,7 +37,16 @@ const navigation = [
         href: '/petugas/jadwal-ketersediaan',
         icon: Calendar,
     },
-    { name: 'Riwayat Pasien', href: '/history', icon: FileText },
+    {
+        name: 'Riwayat Pemeriksaan Kehamilan',
+        href: '/petugas/history/checkup-kehamilan',
+        icon: SquareActivity,
+    },
+    {
+        name: 'Riwayat Pemeriksaan Anak',
+        href: '/petugas/history/checkup-anak',
+        icon: Stethoscope,
+    },
 ];
 
 const bottomNavigation = [

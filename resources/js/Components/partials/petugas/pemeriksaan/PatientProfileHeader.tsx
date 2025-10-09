@@ -5,10 +5,10 @@ import {
     Droplet,
     Heart,
     MapPin,
+    Mars,
     Phone,
     User,
     Venus,
-    Mars,
 } from 'lucide-react';
 
 interface Child {
@@ -69,7 +69,7 @@ export function PatientProfileHeader({
                 <div className="flex flex-col gap-6 sm:flex-row">
                     {/* Foto / Inisial Anak */}
                     <div className="flex-shrink-0">
-                        <div className="bg-muted h-24 w-24 overflow-hidden rounded-full flex items-center justify-center text-xl font-bold text-gray-700">
+                        <div className="bg-muted flex h-24 w-24 items-center justify-center overflow-hidden rounded-full text-xl font-bold text-gray-700">
                             {child.nama
                                 .split(' ')
                                 .map((n) => n[0])
@@ -125,11 +125,15 @@ export function PatientProfileHeader({
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Phone className="h-3 w-3" />
-                                            <span>{child.orang_tua.no_telp}</span>
+                                            <span>
+                                                {child.orang_tua.no_telp}
+                                            </span>
                                         </div>
                                         <div className="flex items-start gap-2">
                                             <MapPin className="mt-0.5 h-3 w-3 flex-shrink-0" />
-                                            <span>{child.orang_tua.alamat}</span>
+                                            <span>
+                                                {child.orang_tua.alamat}
+                                            </span>
                                         </div>
                                     </div>
                                 ) : (
@@ -144,20 +148,22 @@ export function PatientProfileHeader({
                                 <h3 className="mb-2 font-medium text-gray-900">
                                     Informasi Tambahan
                                 </h3>
-                                <div className="text-sm text-gray-600 space-y-1">
+                                <div className="space-y-1 text-sm text-gray-600">
                                     <div className="flex items-center gap-2">
                                         <Calendar className="h-3 w-3" />
                                         <span>
                                             Tanggal Lahir:{' '}
                                             {new Date(
-                                                child.tanggal_lahir
+                                                child.tanggal_lahir,
                                             ).toLocaleDateString('id-ID')}
                                         </span>
                                     </div>
                                     {child.kondisi && (
                                         <div className="flex items-center gap-2">
                                             <Heart className="h-3 w-3" />
-                                            <span>Kondisi: {child.kondisi}</span>
+                                            <span>
+                                                Kondisi: {child.kondisi}
+                                            </span>
                                         </div>
                                     )}
                                 </div>
