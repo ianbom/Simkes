@@ -39,7 +39,8 @@ class AnakController extends Controller
         //     ->route('anak.index')
         //     ->with('success', "Data anak {$anak->nama} berhasil ditambahkan.");
     }
-      public function viewPerkembanganAnak($id){
+    public function viewPerkembanganAnak($id)
+    {
         $child = Anak::findOrFail($id);
         $growth = PemeriksaanAnak::where('anak_id', $child->id)->get();
 
@@ -49,28 +50,45 @@ class AnakController extends Controller
             'child' => $child,
             'growth' => $growth
         ]);
-
     }
     public function childCheckupHistory()
     {
         $user = Auth::user();
 
         $checkupHistory = PemeriksaanAnak::with([
-            'anak.kelahiran', // Tambahkan ini untuk data kelahiran
+            'anak.kelahiran',
             'anak.orangTua',
-            'petugas.faskes', // Tambahkan ini jika petugas punya relasi faskes
+            'petugas.faskes',
             'skrining',
         ])
             ->whereHas('anak', function ($query) use ($user) {
                 $query->where('orang_tua_id', $user->id);
             })
-            ->latest('tanggal_pemeriksaan') // Urutkan berdasarkan tanggal pemeriksaan
-            ->paginate(10);
+            ->latest('tanggal_pemeriksaan')
+            ->get(); // ✅ SEMUA DATA!
 
         return Inertia::render('Pasien/Riwayat/ChildCheckupHistoryPageRoute', [
             'checkupHistory' => $checkupHistory,
         ]);
     }
+    // public function childCheckupHistory(Request $request)
+    // {
+    //     $user = Auth::user();
 
+    //     $checkupHistory = PemeriksaanAnak::with([
+    //         'anak.kelahiran',
+    //         'anak.orangTua',
+    //         'petugas.faskes',
+    //         'skrining',
+    //     ])
+    //         ->whereHas('anak', function ($query) use ($user) {
+    //             $query->where('orang_tua_id', $user->id);
+    //         })
+    //         ->latest('tanggal_pemeriksaan')
+    //         ->paginate(20); // Load 20 per batch
 
+    //     return Inertia::render('Pasien/Riwayat/ChildCheckupHistoryPageRoute', [
+    //         'checkupHistory' => $checkupHistory,
+    //     ]);
+    // }
 }

@@ -5,7 +5,7 @@ import { PageProps } from '@/types';
 interface Props extends PageProps {
     checkupHistory: any; // Tambahkan ini
 }
-export default function PregnancyGuidePageRoute({
+export default function ChildCheckupHistoryPageRoute({
     user,
     checkupHistory,
 }: Props) {

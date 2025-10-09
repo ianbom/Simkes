@@ -1,474 +1,3 @@
-// import { Badge } from '@/Components/ui/badge';
-// import { Button } from '@/components/ui/button';
-// import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
-// import { Input } from '@/Components/ui/input';
-// import {
-//     Select,
-//     SelectContent,
-//     SelectItem,
-//     SelectTrigger,
-//     SelectValue,
-// } from '@/Components/ui/select';
-// import {
-//     Activity,
-//     Calendar,
-//     ChevronDown,
-//     ChevronUp,
-//     ClipboardList,
-//     RefreshCcw,
-//     SlidersHorizontal,
-//     Stethoscope,
-//     User,
-// } from 'lucide-react';
-// import { useState } from 'react';
-// interface Petugas {
-//     id: number;
-//     name: string;
-//     email: string;
-//     role: string;
-//     faskes?: Faskes;
-// }
-// interface Faskes {
-//     id: number;
-//     nama: string;
-//     tipe_faskes: string;
-//     alamat: string;
-// }
-// interface Anak {
-//     id: number;
-//     kelahiran_id: number;
-//     orangTua: {
-//         id: number;
-//         name: string;
-//     };
-//     nama: string;
-// }
-// interface BalitaCheckupRecord {
-//     id: number;
-//     jenis_kunjungan: 'Rutin' | 'Sakit';
-//     tanggal_pemeriksaan: string;
-//     usia_saat_periksa_bulan: number;
-//     berat_badan_kg: number;
-//     tinggi_badan_cm: number;
-//     lingkar_kepala_cm: number;
-//     cara_ukur_tinggi: 'Berbaring' | 'Berdiri';
-//     suhu_tubuh_celsius: number;
-//     frekuensi_napas_per_menit: number;
-//     frekuensi_jantung_per_menit: number;
-//     saturasi_oksigen_persen: number;
-//     perkembangan_motorik: string;
-//     perkembangan_kognitif: string;
-//     perkembangan_emosional: string;
-//     catatan_pemeriksaan: string;
-//     petugas: Petugas;
-//     created_at: string;
-//     updated_at: string;
-// }
-
-// const ChildCheckupHistoryPage = () => {
-//     const [searchQuery, setSearchQuery] = useState('');
-//     const [typeFilter, setTypeFilter] = useState('all');
-//     const [expandedItems, setExpandedItems] = useState(new Set());
-
-//     const checkupRecords: BalitaCheckupRecord[] = [
-//         {
-//             id: 1,
-//             date: '2024-10-05',
-//             type: 'rutin',
-//             doctor: 'dr. Maya Sari, Sp.A',
-//             faskes: 'Puskesmas Wonokromo',
-//             diagnosis: 'Tumbuh Kembang Normal',
-//             temperature: '36.5°C',
-//             weight: 12.5,
-//             height: 85,
-//             head_circumference: 47,
-//             age_months: 18,
-//             vaccine: 'Booster DPT-HB-Hib 4',
-//             notes: 'Pertumbuhan dan perkembangan anak sesuai usia. Imunisasi booster diberikan. Tidak ada keluhan. Lanjutkan pemberian makanan bergizi seimbang.',
-//             next_checkup: '2024-11-05',
-//             updated_at: '2024-10-05 10:30:00',
-//         },
-//         {
-//             id: 2,
-//             date: '2024-09-28',
-//             type: 'sakit',
-//             doctor: 'dr. Budi Santoso, Sp.A',
-//             faskes: 'Puskesmas Gubeng',
-//             complaint: 'Demam tinggi 3 hari, batuk, pilek',
-//             diagnosis: 'ISPA (Infeksi Saluran Pernapasan Atas)',
-//             temperature: '38.7°C',
-//             weight: 12.3,
-//             height: 85,
-//             head_circumference: 47,
-//             age_months: 18,
-//             notes: 'Diberikan obat penurun panas (paracetamol), obat batuk, dan vitamin. Disarankan banyak minum air putih dan istirahat cukup. Kontrol kembali jika demam tidak turun dalam 3 hari.',
-//             updated_at: '2024-09-28 14:15:00',
-//         },
-//         {
-//             id: 3,
-//             date: '2024-09-05',
-//             type: 'rutin',
-//             doctor: 'dr. Maya Sari, Sp.A',
-//             faskes: 'Puskesmas Wonokromo',
-//             diagnosis: 'Tumbuh Kembang Normal',
-//             temperature: '36.7°C',
-//             weight: 12.0,
-//             height: 84,
-//             head_circumference: 46.5,
-//             age_months: 17,
-//             notes: 'Pemeriksaan rutin bulanan. Anak aktif dan responsif. Perkembangan motorik dan kognitif sesuai milestone usia. Orang tua diminta untuk stimulasi bicara lebih sering.',
-//             next_checkup: '2024-10-05',
-//             updated_at: '2024-09-05 09:45:00',
-//         },
-//         {
-//             id: 4,
-//             date: '2024-08-20',
-//             type: 'sakit',
-//             doctor: 'dr. Rina Wijayanti, Sp.A',
-//             faskes: 'RS Ibu dan Anak',
-//             complaint: 'Diare cair >5x sehari, muntah, lemas',
-//             diagnosis: 'Gastroenteritis Akut (Diare)',
-//             temperature: '37.2°C',
-//             weight: 11.5,
-//             height: 83,
-//             head_circumference: 46,
-//             age_months: 16,
-//             notes: 'Tanda dehidrasi ringan. Diberikan oralit dan zinc. Disarankan untuk tetap menyusui/memberi makan sedikit-sedikit tapi sering. Hindari makanan pedas dan berminyak. Kontrol kembali jika diare tidak membaik dalam 2 hari.',
-//             updated_at: '2024-08-20 16:20:00',
-//         },
-//         {
-//             id: 5,
-//             date: '2024-08-05',
-//             type: 'rutin',
-//             doctor: 'dr. Maya Sari, Sp.A',
-//             faskes: 'Puskesmas Wonokromo',
-//             diagnosis: 'Tumbuh Kembang Normal',
-//             temperature: '36.6°C',
-//             weight: 11.8,
-//             height: 82,
-//             head_circumference: 46,
-//             age_months: 16,
-//             vaccine: 'Campak Rubella (MR) 2',
-//             notes: 'Imunisasi MR dosis kedua diberikan. Anak dalam kondisi sehat. Pertumbuhan berat dan tinggi badan sesuai kurva pertumbuhan WHO. Lanjutkan MPASI dengan menu bervariasi.',
-//             next_checkup: '2024-09-05',
-//             updated_at: '2024-08-05 11:00:00',
-//         },
-//     ];
-
-//     const filteredRecords = checkupRecords.filter((record) => {
-//         const matchesType =
-//             typeFilter === 'all' ? true : record.type === typeFilter;
-//         const matchesSearch = (
-//             record.doctor +
-//             record.diagnosis +
-//             (record.complaint || '') +
-//             record.faskes
-//         )
-//             .toLowerCase()
-//             .includes(searchQuery.toLowerCase());
-
-//         return matchesType && matchesSearch;
-//     });
-
-//     const resetFilters = () => {
-//         setSearchQuery('');
-//         setTypeFilter('all');
-//     };
-
-//     const toggleDetail = (id: number) => {
-//         const newExpanded = new Set(expandedItems);
-//         if (newExpanded.has(id)) {
-//             newExpanded.delete(id);
-//         } else {
-//             newExpanded.add(id);
-//         }
-//         setExpandedItems(newExpanded);
-//     };
-
-//     const hasActiveFilters = searchQuery.trim() || typeFilter !== 'all';
-
-//     const getTypeBadge = (type: string) => {
-//         if (type === 'rutin') {
-//             return 'bg-green-100 text-green-700 hover:bg-green-100';
-//         }
-//         return 'bg-red-100 text-red-700 hover:bg-red-100';
-//     };
-
-//     const getTypeLabel = (type: string) => {
-//         return type === 'rutin' ? 'Pemeriksaan Rutin' : 'Pemeriksaan Sakit';
-//     };
-
-//     const formatDate = (dateString: string) => {
-//         return new Date(dateString).toLocaleDateString('id-ID', {
-//             day: 'numeric',
-//             month: 'long',
-//             year: 'numeric',
-//         });
-//     };
-
-//     const formatDateTime = (dateString: string) => {
-//         return new Date(dateString).toLocaleString('id-ID', {
-//             day: 'numeric',
-//             month: 'long',
-//             year: 'numeric',
-//             hour: '2-digit',
-//             minute: '2-digit',
-//         });
-//     };
-
-//     return (
-//         <div className="min-h-screen p-8 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
-//             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-//                 <div className="flex flex-col justify-between gap-4 mb-8 sm:flex-row sm:items-center">
-//                     <div>
-//                         <h1 className="mb-1 text-2xl font-bold text-gray-900 sm:text-3xl">
-//                             Riwayat Checkup Balita
-//                         </h1>
-//                         <p className="text-gray-600">
-//                             Catatan lengkap pemeriksaan buah hati Anda
-//                         </p>
-//                     </div>
-//                     <div className="flex items-center gap-3">
-//                         <div className="inline-flex items-center gap-1.5 rounded-md bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-800">
-//                             <Activity className="w-4 h-4 text-purple-600" />
-//                             Total Kunjungan: {checkupRecords.length}
-//                         </div>
-//                     </div>
-//                 </div>
-
-//                 <Card className="mb-6 bg-white shadow-sm">
-//                     <CardHeader>
-//                         <div className="flex items-center justify-between">
-//                             <CardTitle className="flex items-center justify-between gap-4 text-lg">
-//                                 <div className="flex items-center">
-//                                     <SlidersHorizontal
-//                                         size={20}
-//                                         className="mr-2 text-blue-600"
-//                                     />
-//                                     Filter Pemeriksaan
-//                                 </div>
-//                                 {hasActiveFilters && (
-//                                     <span className="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-600">
-//                                         Aktif
-//                                     </span>
-//                                 )}
-//                             </CardTitle>
-//                             <Button
-//                                 variant="outline"
-//                                 size="sm"
-//                                 onClick={resetFilters}
-//                                 disabled={!hasActiveFilters}
-//                             >
-//                                 <RefreshCcw className="w-4 h-4 mr-2" />
-//                                 Reset Filter
-//                             </Button>
-//                         </div>
-//                     </CardHeader>
-//                     <CardContent>
-//                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-//                             <div className="space-y-2">
-//                                 <label className="text-sm font-medium">
-//                                     Jenis Pemeriksaan
-//                                 </label>
-//                                 <Select
-//                                     value={typeFilter}
-//                                     onValueChange={setTypeFilter}
-//                                 >
-//                                     <SelectTrigger>
-//                                         <SelectValue placeholder="Semua Pemeriksaan" />
-//                                     </SelectTrigger>
-//                                     <SelectContent className="bg-white">
-//                                         <SelectItem value="all">
-//                                             Semua Pemeriksaan
-//                                         </SelectItem>
-//                                         <SelectItem value="rutin">
-//                                             Pemeriksaan Rutin
-//                                         </SelectItem>
-//                                         <SelectItem value="sakit">
-//                                             Pemeriksaan Sakit
-//                                         </SelectItem>
-//                                     </SelectContent>
-//                                 </Select>
-//                             </div>
-
-//                             <div className="space-y-2">
-//                                 <label className="text-sm font-medium">
-//                                     Pencarian
-//                                 </label>
-//                                 <Input
-//                                     type="text"
-//                                     placeholder="Cari dokter, diagnosis, atau faskes..."
-//                                     value={searchQuery}
-//                                     onChange={(e) =>
-//                                         setSearchQuery(e.target.value)
-//                                     }
-//                                 />
-//                             </div>
-//                         </div>
-//                     </CardContent>
-//                 </Card>
-
-//                 <div className="space-y-4">
-//                     {filteredRecords.map((record) => (
-//                         <Card
-//                             key={record.id}
-//                             className="transition-shadow bg-white shadow-sm hover:shadow-md"
-//                         >
-//                             <CardContent className="p-6">
-//                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-//                                     <div className="flex flex-col flex-1 gap-3">
-//                                         <div className="flex flex-wrap items-center gap-3">
-//                                             <Badge
-//                                                 className={getTypeBadge(
-//                                                     record.type,
-//                                                 )}
-//                                             >
-//                                                 {getTypeLabel(record.type)}
-//                                             </Badge>
-//                                             <div className="flex items-center gap-2 text-sm text-gray-600">
-//                                                 <Calendar className="w-4 h-4" />
-//                                                 {formatDate(record.date)}
-//                                             </div>
-//                                         </div>
-
-//                                         <div>
-//                                             <h3 className="mb-1 text-lg font-semibold text-gray-900">
-//                                                 {record.diagnosis}
-//                                             </h3>
-//                                             {record.complaint && (
-//                                                 <p className="mb-2 text-sm text-red-600">
-//                                                     Keluhan: {record.complaint}
-//                                                 </p>
-//                                             )}
-//                                         </div>
-
-//                                         <div className="flex flex-col gap-2 text-sm text-gray-700">
-//                                             <div className="flex items-center gap-2">
-//                                                 <User className="w-4 h-4 text-gray-400" />
-//                                                 <span>{record.doctor}</span>
-//                                             </div>
-//                                             <div className="flex items-center gap-2">
-//                                                 <Stethoscope className="w-4 h-4 text-gray-400" />
-//                                                 <span>{record.faskes}</span>
-//                                             </div>
-//                                         </div>
-//                                     </div>
-//                                     <div className="flex flex-col gap-2 sm:items-end">
-//                                         <Button
-//                                             variant="outline"
-//                                             size="sm"
-//                                             onClick={() =>
-//                                                 toggleDetail(record.id)
-//                                             }
-//                                             className="shrink-0"
-//                                         >
-//                                             {expandedItems.has(record.id) ? (
-//                                                 <>
-//                                                     <ChevronUp className="w-4 h-4 mr-2" />
-//                                                     Tutup Detail
-//                                                 </>
-//                                             ) : (
-//                                                 <>
-//                                                     <ChevronDown className="w-4 h-4 mr-2" />
-//                                                     Lihat Detail
-//                                                 </>
-//                                             )}
-//                                         </Button>
-//                                     </div>
-//                                 </div>
-//                                 {expandedItems.has(record.id) && (
-//                                     <div className="p-4 mt-4 text-sm border border-blue-200 rounded-lg shadow-sm bg-blue-50">
-//                                         <h3 className="mb-4 text-base font-semibold text-gray-800">
-//                                             Detail Pemeriksaan
-//                                         </h3>
-
-//                                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-//                                             <div>
-//                                                 <p className="font-medium text-gray-900">
-//                                                     Suhu
-//                                                 </p>
-//                                                 <p className="text-gray-600">
-//                                                     {record.temperature}
-//                                                 </p>
-//                                             </div>
-//                                             <div>
-//                                                 <p className="font-medium text-gray-900">
-//                                                     Berat Badan
-//                                                 </p>
-//                                                 <p className="text-gray-600">
-//                                                     {record.weight} kg
-//                                                 </p>
-//                                             </div>
-//                                             <div>
-//                                                 <p className="font-medium text-gray-900">
-//                                                     Tinggi Badan
-//                                                 </p>
-//                                                 <p className="text-gray-600">
-//                                                     {record.height}
-//                                                 </p>
-//                                             </div>
-//                                             <div>
-//                                                 <p className="font-medium text-gray-900">
-//                                                     Lingkar Kepala (cm)
-//                                                 </p>
-//                                                 <p className="text-gray-600">
-//                                                     {record.head_circumference}
-//                                                 </p>
-//                                             </div>
-//                                         </div>
-
-//                                         <div className="pt-4 mt-4 border-t border-gray-200">
-//                                             <p className="font-medium text-gray-900">
-//                                                 Catatan Dokter
-//                                             </p>
-//                                             <p className="mt-1 text-gray-600">
-//                                                 {record.notes}
-//                                             </p>
-//                                         </div>
-
-//                                         {record.next_checkup && (
-//                                             <div className="p-3 mt-4 rounded-md bg-green-50">
-//                                                 <p className="font-medium text-green-900">
-//                                                     Jadwal Kontrol Berikutnya
-//                                                 </p>
-//                                                 <p className="text-green-700">
-//                                                     {formatDate(
-//                                                         record.next_checkup,
-//                                                     )}
-//                                                 </p>
-//                                             </div>
-//                                         )}
-
-//                                         <div className="mt-4 text-xs text-gray-500">
-//                                             Terakhir diperbarui:{' '}
-//                                             {formatDateTime(record.updated_at)}
-//                                         </div>
-//                                     </div>
-//                                 )}
-//                             </CardContent>
-//                         </Card>
-//                     ))}
-//                     {filteredRecords.length === 0 && (
-//                         <Card className="shadow-sm">
-//                             <CardContent className="flex flex-col items-center py-12 text-center">
-//                                 <ClipboardList className="w-12 h-12 mb-3 text-gray-400" />
-//                                 <p className="text-lg font-medium text-gray-900">
-//                                     Tidak ada data pemeriksaan
-//                                 </p>
-//                                 <p className="mt-1 text-gray-500">
-//                                     Belum ada riwayat pemeriksaan yang sesuai
-//                                     dengan filter
-//                                 </p>
-//                             </CardContent>
-//                         </Card>
-//                     )}
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default ChildCheckupHistoryPage;
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
@@ -493,7 +22,6 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-// Interface sesuai dengan data dari Laravel
 interface Kelahiran {
     id: number;
     tanggal_lahir: string;
@@ -510,7 +38,7 @@ interface OrangTua {
 interface Anak {
     id: number;
     nama: string;
-    jenis_kelamin: string;
+    kelamin: string;
     kelahiran?: Kelahiran;
     orangTua?: OrangTua;
 }
@@ -541,14 +69,18 @@ interface PemeriksaanAnak {
     jenis_kunjungan: 'Rutin' | 'Sakit';
     tanggal_pemeriksaan: string;
     usia_saat_periksa_bulan: number;
-    berat_badan: number;
-    tinggi_badan: number;
-    lingkar_kepala: number;
+    berat_badan_kg: number;
+    tinggi_badan_cm: number;
+    lingkar_kepala_cm: number;
     cara_ukur_tinggi?: string;
-    suhu_tubuh: number;
-    frekuensi_napas?: number;
-    frekuensi_jantung?: number;
-    saturasi_oksigen?: number;
+    suhu_tubuh_celsius: number;
+    perkembangan_motorik: string;
+    perkembangan_kognitif: string;
+    perkembangan_emosional: string;
+    frekuensi_napas_per_menit?: number;
+    frekuensi_jantung_per_menit?: number;
+    catatan_pemeriksaan?: string;
+    saturasi_oksigen_persen?: number;
     keluhan?: string;
     diagnosis?: string;
     tindakan?: string;
@@ -561,46 +93,76 @@ interface PemeriksaanAnak {
     updated_at: string;
 }
 
-interface PaginationLinks {
-    data: PemeriksaanAnak[];
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-}
-
 interface Props {
-    checkupHistory?: PaginationLinks;
+    checkupHistory?: PemeriksaanAnak[];
 }
 
 const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [typeFilter, setTypeFilter] = useState('all');
     const [expandedItems, setExpandedItems] = useState(new Set<number>());
+    const [showAll, setShowAll] = useState(false);
 
-    // Filter records menggunakan useMemo untuk performa
+    const INITIAL_DISPLAY = 10;
+
     const filteredRecords = useMemo(() => {
-        return checkupHistory.data.filter((record) => {
+        if (!checkupHistory) return [];
+
+        return checkupHistory.filter((record) => {
             const matchesType =
                 typeFilter === 'all'
                     ? true
-                    : record.jenis_kunjungan.toLowerCase() === typeFilter;
+                    : record.jenis_kunjungan?.toLowerCase() === typeFilter;
 
             const searchText = `
-                ${record.petugas.name}
+                ${record.petugas?.name || ''}
                 ${record.diagnosis || ''}
                 ${record.keluhan || ''}
-                ${record.petugas.faskes?.nama || ''}
-                ${record.anak.nama}
+                ${record.petugas?.faskes?.nama || ''}
+                ${record.anak?.nama || ''}
             `.toLowerCase();
 
-            const matchesSearch = searchText.includes(
-                searchQuery.toLowerCase(),
-            );
+            const matchesSearch =
+                searchQuery.trim() === '' ||
+                searchText.includes(searchQuery.toLowerCase());
 
             return matchesType && matchesSearch;
         });
-    }, [checkupHistory?.data, typeFilter, searchQuery]);
+    }, [checkupHistory, typeFilter, searchQuery]);
+
+    const displayedRecords = showAll
+        ? filteredRecords
+        : filteredRecords.slice(0, INITIAL_DISPLAY);
+
+    const hasMoreRecords = filteredRecords.length > INITIAL_DISPLAY;
+
+    if (!checkupHistory || checkupHistory.length === 0) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mb-8">
+                        <h1 className="mb-1 text-2xl font-bold text-gray-900 sm:text-3xl">
+                            Riwayat Checkup Anak
+                        </h1>
+                        <p className="text-gray-600">
+                            Catatan lengkap pemeriksaan buah hati Anda
+                        </p>
+                    </div>
+                    <Card className="shadow-sm">
+                        <CardContent className="flex flex-col items-center py-12 text-center">
+                            <ClipboardList className="mb-3 h-12 w-12 text-gray-400" />
+                            <p className="text-lg font-medium text-gray-900">
+                                Tidak ada data pemeriksaan
+                            </p>
+                            <p className="mt-1 text-gray-500">
+                                Belum ada riwayat pemeriksaan anak
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        );
+    }
 
     const resetFilters = () => {
         setSearchQuery('');
@@ -665,7 +227,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                     <div className="flex items-center gap-3">
                         <div className="inline-flex items-center gap-1.5 rounded-md bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-800">
                             <Activity className="h-4 w-4 text-purple-600" />
-                            Total: {checkupHistory?.total}
+                            Total: {checkupHistory?.length || 0}
                         </div>
                     </div>
                 </div>
@@ -743,7 +305,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                 </Card>
 
                 <div className="space-y-4">
-                    {filteredRecords.map((record) => (
+                    {displayedRecords.map((record) => (
                         <Card
                             key={record.id}
                             className="bg-white shadow-sm transition-shadow hover:shadow-md"
@@ -852,7 +414,8 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                     Suhu Tubuh
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    {record.suhu_tubuh}°C
+                                                    {record.suhu_tubuh_celsius}
+                                                    °C
                                                 </p>
                                             </div>
                                             <div>
@@ -860,7 +423,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                     Berat Badan
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    {record.berat_badan} kg
+                                                    {record.berat_badan_kg} kg
                                                 </p>
                                             </div>
                                             <div>
@@ -868,7 +431,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                     Tinggi Badan
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    {record.tinggi_badan} cm
+                                                    {record.tinggi_badan_cm} cm
                                                 </p>
                                             </div>
                                             <div>
@@ -876,17 +439,18 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                     Lingkar Kepala
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    {record.lingkar_kepala} cm
+                                                    {record.lingkar_kepala_cm}{' '}
+                                                    cm
                                                 </p>
                                             </div>
-                                            {record.saturasi_oksigen && (
+                                            {record.saturasi_oksigen_persen && (
                                                 <div>
                                                     <p className="font-medium text-gray-900">
                                                         Saturasi Oksigen
                                                     </p>
                                                     <p className="text-gray-600">
                                                         {
-                                                            record.saturasi_oksigen
+                                                            record.saturasi_oksigen_persen
                                                         }
                                                         %
                                                     </p>
@@ -894,42 +458,51 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                             )}
                                         </div>
 
-                                        {record.tindakan && (
+                                        {record.perkembangan_motorik && (
                                             <div className="mt-4 border-t border-gray-200 pt-4">
                                                 <p className="font-medium text-gray-900">
-                                                    Tindakan
+                                                    Perkembangan Motorik:
                                                 </p>
                                                 <p className="mt-1 text-gray-600">
-                                                    {record.tindakan}
+                                                    {
+                                                        record.perkembangan_motorik
+                                                    }
+                                                </p>
+                                            </div>
+                                        )}
+                                        {record.perkembangan_kognitif && (
+                                            <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <p className="font-medium text-gray-900">
+                                                    Perkembangan Kognitif:
+                                                </p>
+                                                <p className="mt-1 text-gray-600">
+                                                    {
+                                                        record.perkembangan_kognitif
+                                                    }
+                                                </p>
+                                            </div>
+                                        )}
+                                        {record.perkembangan_emosional && (
+                                            <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <p className="font-medium text-gray-900">
+                                                    Perkembangan Emosional:
+                                                </p>
+                                                <p className="mt-1 text-gray-600">
+                                                    {
+                                                        record.perkembangan_emosional
+                                                    }
                                                 </p>
                                             </div>
                                         )}
 
-                                        {record.catatan && (
+                                        {record.catatan_pemeriksaan && (
                                             <div className="mt-4 border-t border-gray-200 pt-4">
                                                 <p className="font-medium text-gray-900">
-                                                    Catatan
+                                                    Catatan Pemeriksaan:
                                                 </p>
                                                 <p className="mt-1 text-gray-600">
-                                                    {record.catatan}
+                                                    {record.catatan_pemeriksaan}
                                                 </p>
-                                            </div>
-                                        )}
-
-                                        {record.skrining && (
-                                            <div className="mt-4 rounded-md bg-blue-100 p-3">
-                                                <p className="font-medium text-blue-900">
-                                                    Hasil Skrining:{' '}
-                                                    {record.skrining.hasil}
-                                                </p>
-                                                {record.skrining.catatan && (
-                                                    <p className="mt-1 text-sm text-blue-700">
-                                                        {
-                                                            record.skrining
-                                                                .catatan
-                                                        }
-                                                    </p>
-                                                )}
                                             </div>
                                         )}
 
@@ -957,7 +530,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                     ))}
 
                     {filteredRecords.length === 0 && (
-                        <Card className="shadow-sm">
+                        <Card className="bg-white shadow-sm">
                             <CardContent className="flex flex-col items-center py-12 text-center">
                                 <ClipboardList className="mb-3 h-12 w-12 text-gray-400" />
                                 <p className="text-lg font-medium text-gray-900">
@@ -973,13 +546,35 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                     )}
                 </div>
 
-                {/* Pagination info */}
-                {checkupHistory?.last_page > 1 && (
-                    <div className="mt-6 text-center">
+                {/* Show More Button */}
+                {!showAll && hasMoreRecords && (
+                    <div className="mt-8 flex flex-col items-center gap-3">
+                        <Button
+                            onClick={() => setShowAll(true)}
+                            size="lg"
+                            className="min-w-[250px]"
+                        >
+                            Tampilkan Semua Data ({filteredRecords.length}{' '}
+                            total)
+                        </Button>
                         <p className="text-sm text-gray-600">
-                            Halaman {checkupHistory?.current_page} dari{' '}
-                            {checkupHistory?.last_page}
+                            Menampilkan {displayedRecords.length} dari{' '}
+                            {filteredRecords.length} data
                         </p>
+                    </div>
+                )}
+
+                {/* Show Less Button */}
+                {showAll && hasMoreRecords && (
+                    <div className="mt-8 flex justify-center">
+                        <Button
+                            onClick={() => setShowAll(false)}
+                            variant="outline"
+                            size="lg"
+                        >
+                            <ChevronUp className="mr-2 h-4 w-4" />
+                            Tampilkan Lebih Sedikit
+                        </Button>
                     </div>
                 )}
             </div>
