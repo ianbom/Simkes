@@ -24,4 +24,7 @@ class Kehamilan extends Model
     public function kelahiran() {
         return $this->hasOne(Kelahiran::class);
     }
+    public function janin() {
+        return $this->hasMany(DataJanin::class);
+    }
 }

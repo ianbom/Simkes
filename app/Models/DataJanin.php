@@ -16,4 +16,8 @@ class DataJanin extends Model
     public function media() {
         return $this->hasMany(MediaPemeriksaan::class);
     }
+
+    public function kehamilan() {
+        return $this->belongsTo(Kehamilan::class);
+    }
 }

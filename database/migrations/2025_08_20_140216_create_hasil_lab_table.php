@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('hasil_lab', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pemeriksaan_anc_id')->constrained('pemeriksaan_anc')->cascadeOnDelete();
-            $table->enum('nama_tes', ['Hb', 'Protein Urin', 'Gula Darah', 'HIV', 'HBsAg', 'Sifilis']);
+            $table->string('nama_tes');
             $table->string('hasil', 50);
             $table->string('satuan', 20)->nullable();
-            $table->enum('status', ['Normal', 'Tidak Normal', 'Perlu Tindak Lanjut']);
+            $table->enum('status', ['Normal', 'Kurang Normal', 'Tidak Normal', 'Perlu Tindak Lanjut']);
             $table->timestamps();
         });
     }

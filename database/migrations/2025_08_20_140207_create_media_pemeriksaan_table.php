@@ -14,10 +14,7 @@ return new class extends Migration
         Schema::create('media_pemeriksaan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pemeriksaan_anc_id')->constrained('pemeriksaan_anc')->cascadeOnDelete();
-            $table->foreignId('data_janin_id')->nullable()->constrained('data_janin')->nullOnDelete();
-            $table->enum('tipe_media', ['USG', 'Fisik', 'Lainnya']);
             $table->string('file_url');
-            $table->text('deskripsi')->nullable();
             $table->timestamps();
         });
     }

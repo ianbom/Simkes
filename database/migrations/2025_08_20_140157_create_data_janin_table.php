@@ -14,12 +14,14 @@ return new class extends Migration
           Schema::create('data_janin', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pemeriksaan_anc_id')->constrained('pemeriksaan_anc')->cascadeOnDelete();
+            $table->foreignId('kehamilan_id')->constrained('kehamilan')->cascadeOnDelete();
             $table->integer('urutan_janin');
             $table->string('posisi_deskriptif')->nullable();
             $table->integer('denyut_jantung_janin')->nullable();
             $table->enum('posisi_janin', ['Kepala', 'Sungsang', 'Lintang', 'Belum Terdefinisi'])->nullable();
             $table->enum('pergerakan_janin', ['Aktif', 'Berkurang'])->nullable();
             $table->integer('taksiran_berat_janin')->nullable();
+            $table->decimal('panjang_janin_cm', 5, 2)->nullable();
 
             // USG
             $table->decimal('indeks_cairan_ketuban', 4, 1)->nullable();
