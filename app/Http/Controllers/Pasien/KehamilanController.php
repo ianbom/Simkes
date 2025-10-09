@@ -11,13 +11,17 @@ use Inertia\Inertia;
 
 class KehamilanController extends Controller
 {
-    public function viewPerkembanganKehamilan()
+    public function viewPerkembanganKehamilan($id)
     {
+        $pregnant = Kehamilan::with('user', 'janin')->findOrFail($id);
+        $growth = PemeriksaanAnc::with('hasilLab')->where('kehamilan_id', $pregnant->id)->get();
 
-        $pregnant = Kehamilan::where('user_id', Auth::id())
-            ->where('status', 'Aktif')->first();
+        // return response()->json($growth);
 
-        $growth = PemeriksaanAnc::where('kehamilan_id', $pregnant->id)->get();
+        return Inertia::render('Pasien/Grafik/PregnancyGraphPageRoute', [
+            'pregnant' => $pregnant,
+            'growth' => $growth
+        ]);
     }
     public function pregnancyCheckupHistory()
     {

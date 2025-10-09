@@ -32,12 +32,10 @@ class PemeriksaanAncController extends Controller
             );
 
             return redirect()->back();
+
+
         } catch (Throwable $e) {
-            Log::error($e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
+           return response()->json(['err' => $e->getMessage()]);
         }
     }
 

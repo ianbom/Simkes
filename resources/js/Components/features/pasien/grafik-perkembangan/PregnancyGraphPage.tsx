@@ -1,123 +1,61 @@
 import { useState } from 'react';
-import {
-    CartesianGrid,
-    Legend,
-    Line,
-    LineChart,
-    ReferenceDot,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from 'recharts';
+import GrafikJanin from './GrafikJanin';
+import GrafikIbuHamil from './GrafikIbuHamil';
 
-// Data perkembangan janin per minggu kehamilan
-const generateFetalData = () => {
-    const weeks = Array.from({ length: 40 }, (_, i) => i + 1);
-    return weeks.map((week) => {
-        let weight = 0;
-        let length = 0;
-        let heartRate = 0;
+// TypeScript interfaces
+interface Kehamilan {
+    id: number;
+    user_id: number;
+    hpht: string;
+    hpl: string;
+    tinggi_badan_awal: string;
+    user?: {
+        name: string;
+        tanggal_lahir: string;
+    };
+    janin?: Janin[];
+}
 
-        // Rumus estimasi berat janin (dalam gram)
-        if (week <= 8) {
-            weight = week * 0.15;
-        } else if (week <= 20) {
-            weight = Math.pow(week - 8, 2.5) * 2;
-        } else {
-            weight = Math.pow(week - 8, 2.8) * 2.2;
-        }
+interface Janin {
+    id: number;
+    pemeriksaan_anc_id: number;
+    kehamilan_id: number;
+    urutan_janin: number;
+    denyut_jantung_janin: number;
+    taksiran_berat_janin: number;
+    panjang_janin_cm: string;
+    posisi_janin: string;
+    pergerakan_janin: string;
+    created_at: string;
+}
 
-        // Rumus estimasi panjang janin (dalam cm)
-        if (week <= 12) {
-            length = week * 0.8;
-        } else if (week <= 28) {
-            length = 5 + (week - 12) * 1.5;
-        } else {
-            length = 29 + (week - 28) * 1.0;
-        }
+interface PemeriksaanAnc {
+    id: number;
+    kehamilan_id: number;
+    tanggal_checkup: string;
+    berat_badan: string;
+    tinggi_fundus: string;
+    frekuensi_jantung_per_menit: number;
+    tekanan_darah_sistolik: number;
+    tekanan_darah_diastolik: number;
+    lila: string;
+}
 
-        // Detak jantung janin (dalam bpm)
-        if (week <= 6) {
-            heartRate = 80 + week * 15;
-        } else if (week <= 9) {
-            heartRate = 170 + (week - 6) * 5;
-        } else if (week <= 14) {
-            heartRate = 185 - (week - 9) * 2;
-        } else {
-            heartRate = 170 - (week - 14) * 2;
-        }
+interface Props {
+    pregnant: Kehamilan;
+    growth: PemeriksaanAnc[];
+}
 
-        return {
-            week,
-            weight: parseFloat(weight.toFixed(1)),
-            length: parseFloat(length.toFixed(1)),
-            heartRate: Math.round(heartRate),
-        };
-    });
-};
 
-const pregnancyData = {
-    name: 'Senjani Nathania',
-    birthDate: '10 Juni 1999',
-    measurements: [
-        { week: 4, weight: 0.5, length: 0.2, heartRate: 0 },
-        { week: 8, weight: 1.0, length: 1.6, heartRate: 170 },
-        { week: 11, weight: 7, length: 4.1, heartRate: 165 },
-        { week: 12, weight: 14, length: 5.4, heartRate: 160 },
-        { week: 16, weight: 100, length: 11.6, heartRate: 155 },
-        { week: 20, weight: 300, length: 25.6, heartRate: 150 },
-        { week: 24, weight: 600, length: 30.0, heartRate: 145 },
-        { week: 28, weight: 1000, length: 37.6, heartRate: 140 },
-        { week: 32, weight: 1700, length: 42.4, heartRate: 140 },
-        { week: 36, weight: 2600, length: 47.4, heartRate: 140 },
-    ],
-};
-
-const PregnancyGraphPage = () => {
+const PregnancyGraphPage = ({ pregnant, growth }: Props) => {
     const [activeTrimester, setActiveTrimester] = useState(1);
 
-    const fetalData = generateFetalData();
-    const currentWeek = 11;
-    const currentData = pregnancyData.measurements.find(
-        (m) => m.week === currentWeek,
-    );
-
-    // Filter data berdasarkan trimester
-    const getFilteredData = () => {
-        if (activeTrimester === 1) {
-            return fetalData.filter((d) => d.week <= 13);
-        } else if (activeTrimester === 2) {
-            return fetalData.filter((d) => d.week >= 14 && d.week <= 27);
-        } else {
-            return fetalData.filter((d) => d.week >= 28);
-        }
-    };
-
-    const filteredData = getFilteredData();
-
-    const CustomTooltip = ({ active, payload }) => {
-        if (active && payload && payload.length) {
-            const data = payload[0].payload;
-            return (
-                <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-lg">
-                    <p className="mb-1 text-sm font-semibold text-gray-800">
-                        Minggu Kehamilan: {data.week}
-                    </p>
-                    <p className="text-sm text-blue-600">
-                        Berat: {currentData?.weight || data.weight} gram
-                    </p>
-                    <p className="text-sm text-teal-600">
-                        Panjang: {currentData?.length || data.length} cm
-                    </p>
-                    <p className="text-sm text-pink-600">
-                        Detak Jantung:{' '}
-                        {currentData?.heartRate || data.heartRate} bpm
-                    </p>
-                </div>
-            );
-        }
-        return null;
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
     };
 
     return (
@@ -126,7 +64,7 @@ const PregnancyGraphPage = () => {
                 {/* Header Section */}
                 <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
                     <h1 className="mb-6 text-2xl font-bold text-gray-800">
-                        Grafik Perkembangan Janin
+                        Grafik Perkembangan Kehamilan
                     </h1>
 
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -134,18 +72,23 @@ const PregnancyGraphPage = () => {
                         <div className="rounded-xl border border-purple-100 bg-white p-4 shadow-sm">
                             <div className="flex h-full items-center gap-4">
                                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-200">
-                                    <img
-                                        src="/assets/images/profile-8.jpeg"
-                                        alt="Profile"
-                                        className="h-14 w-14 rounded-full object-cover"
-                                    />
+                                    <span className="text-2xl">👤</span>
                                 </div>
                                 <div className="flex flex-col justify-center">
                                     <h3 className="font-semibold text-gray-800">
-                                        {pregnancyData.name}
+                                        {pregnant.user?.name || 'Nama Pasien'}
                                     </h3>
                                     <p className="text-sm text-blue-500">
-                                        {pregnancyData.birthDate}
+                                        {pregnant.user?.tanggal_lahir
+                                            ? formatDate(pregnant.user.tanggal_lahir)
+                                            : '-'
+                                        }
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        HPHT: {formatDate(pregnant.hpht)}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                        HPL: {formatDate(pregnant.hpl)}
                                     </p>
                                 </div>
                             </div>
@@ -161,9 +104,7 @@ const PregnancyGraphPage = () => {
                                             ? 'bg-sky-700'
                                             : 'border-2 border-sky-200 bg-sky-50 hover:bg-sky-100'
                                     }`}
-                                    onClick={() =>
-                                        setActiveTrimester(trimester)
-                                    }
+                                    onClick={() => setActiveTrimester(trimester)}
                                 >
                                     <div className="flex flex-col items-center">
                                         <div
@@ -175,8 +116,7 @@ const PregnancyGraphPage = () => {
                                         >
                                             <span
                                                 className={`text-2xl ${
-                                                    activeTrimester ===
-                                                    trimester
+                                                    activeTrimester === trimester
                                                         ? 'text-blue-500'
                                                         : 'text-blue-400'
                                                 }`}
@@ -200,177 +140,13 @@ const PregnancyGraphPage = () => {
                     </div>
                 </div>
 
-                {/* Chart Section */}
-                <div className="rounded-2xl bg-white p-8 shadow-sm">
-                    <div className="mb-6">
-                        <h2 className="text-xl font-semibold text-gray-800">
-                            Grafik Perkembangan Janin - Trimester{' '}
-                            {activeTrimester}
-                        </h2>
-                        <p className="mt-1 text-sm text-gray-500">
-                            {activeTrimester === 1 && 'Minggu 1-13'}
-                            {activeTrimester === 2 && 'Minggu 14-27'}
-                            {activeTrimester === 3 && 'Minggu 28-40'}
-                        </p>
-                    </div>
+                {/* Grafik Janin */}
+                <GrafikJanin growth={growth} pregnant={pregnant} activeTrimester={activeTrimester}/>
 
-                    <ResponsiveContainer width="100%" height={400}>
-                        <LineChart
-                            data={filteredData}
-                            margin={{
-                                top: 10,
-                                right: 30,
-                                left: 20,
-                                bottom: 30,
-                            }}
-                        >
-                            <CartesianGrid
-                                strokeDasharray="3 3"
-                                stroke="#e5e7eb"
-                            />
 
-                            <XAxis
-                                dataKey="week"
-                                label={{
-                                    value: 'Minggu Kehamilan',
-                                    position: 'insideBottom',
-                                    offset: -10,
-                                }}
-                                tick={{ fontSize: 12 }}
-                            />
+                {/* Grafik Pemeriksaan ANC (Ibu) */}
+                <GrafikIbuHamil growth={growth} pregnant={pregnant} activeTrimester={activeTrimester}/>
 
-                            <YAxis
-                                yAxisId="left"
-                                label={{
-                                    value: 'Nilai Perkembangan',
-                                    angle: -90,
-                                    position: 'insideLeft',
-                                }}
-                                tick={{ fontSize: 12 }}
-                            />
-
-                            <YAxis
-                                yAxisId="right"
-                                orientation="right"
-                                tick={{ fontSize: 12 }}
-                            />
-
-                            <Tooltip content={<CustomTooltip />} />
-
-                            <Legend
-                                wrapperStyle={{ paddingTop: '20px' }}
-                                iconType="circle"
-                            />
-
-                            {/* Berat Janin */}
-                            <Line
-                                yAxisId="left"
-                                type="monotone"
-                                dataKey="weight"
-                                stroke="#3b82f6"
-                                strokeWidth={2}
-                                dot={false}
-                                name="Berat Janin (skala ×10)"
-                                isAnimationActive={true}
-                            />
-
-                            {/* Panjang Janin */}
-                            <Line
-                                yAxisId="left"
-                                type="monotone"
-                                dataKey="length"
-                                stroke="#14b8a6"
-                                strokeWidth={2}
-                                dot={false}
-                                name="Panjang Janin"
-                                isAnimationActive={true}
-                            />
-
-                            {/* Detak Jantung */}
-                            <Line
-                                yAxisId="right"
-                                type="monotone"
-                                dataKey="heartRate"
-                                stroke="#ec4899"
-                                strokeWidth={2}
-                                dot={false}
-                                name="Detak Jantung (skala ×10)"
-                                isAnimationActive={true}
-                            />
-
-                            {/* Data point saat ini */}
-                            {currentData && (
-                                <>
-                                    <ReferenceDot
-                                        yAxisId="left"
-                                        x={currentWeek}
-                                        y={currentData.weight}
-                                        r={6}
-                                        fill="#3b82f6"
-                                        stroke="#fff"
-                                        strokeWidth={2}
-                                    />
-                                    <ReferenceDot
-                                        yAxisId="left"
-                                        x={currentWeek}
-                                        y={currentData.length}
-                                        r={6}
-                                        fill="#14b8a6"
-                                        stroke="#fff"
-                                        strokeWidth={2}
-                                    />
-                                    <ReferenceDot
-                                        yAxisId="right"
-                                        x={currentWeek}
-                                        y={currentData.heartRate}
-                                        r={6}
-                                        fill="#ec4899"
-                                        stroke="#fff"
-                                        strokeWidth={2}
-                                    />
-                                </>
-                            )}
-                        </LineChart>
-                    </ResponsiveContainer>
-
-                    {/* Current Status Info */}
-                    {currentData && (
-                        <div className="mt-6 rounded-xl border-l-4 border-blue-500 bg-blue-50 p-4">
-                            <div className="flex items-start gap-3">
-                                <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-500">
-                                    <span className="text-xs font-bold text-white">
-                                        i
-                                    </span>
-                                </div>
-                                <div>
-                                    <h4 className="mb-1 font-semibold text-blue-800">
-                                        Minggu Kehamilan: {currentWeek}
-                                    </h4>
-                                    <div className="space-y-1 text-sm text-blue-700">
-                                        <p>
-                                            <span className="font-medium">
-                                                Berat:
-                                            </span>{' '}
-                                            {currentData.weight} gram
-                                        </p>
-                                        <p>
-                                            <span className="font-medium">
-                                                Panjang:
-                                            </span>{' '}
-                                            {currentData.length} cm
-                                        </p>
-                                        <p>
-                                            <span className="font-medium">
-                                                Detak Jantung:
-                                            </span>{' '}
-                                            {currentData.heartRate} bpm
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
             </div>
         </div>
     );

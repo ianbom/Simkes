@@ -1,9 +1,12 @@
 import PregnancyGraphPage from '@/Components/features/pasien/grafik-perkembangan/PregnancyGraphPage';
 import PasienLayout from '@/Layouts/PasienLayout';
-export default function ChildGraphPageRoute({ user }) {
+export default function ChildGraphPageRoute({ user, pregnant, growth }) {
+
+   
+
     return (
         <PasienLayout currentPage="dashboard" user={user}>
-            <PregnancyGraphPage />
+            <PregnancyGraphPage growth={growth} pregnant={pregnant} />
         </PasienLayout>
     );
 }

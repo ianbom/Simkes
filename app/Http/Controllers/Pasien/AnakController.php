@@ -34,10 +34,6 @@ class AnakController extends Controller
             ], 500);
         }
 
-
-        // return redirect()
-        //     ->route('anak.index')
-        //     ->with('success', "Data anak {$anak->nama} berhasil ditambahkan.");
     }
     public function viewPerkembanganAnak($id)
     {

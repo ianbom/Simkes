@@ -488,3 +488,4 @@ const ChildGraphPage = ({ child, growth }) => {
 };
 
 export default ChildGraphPage;
+
