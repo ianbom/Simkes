@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
@@ -9,8 +8,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/Components/ui/select';
-import { RefreshCcw, SlidersHorizontal } from 'lucide-react';
 import { useForm } from '@inertiajs/react';
+import { RefreshCcw, SlidersHorizontal } from 'lucide-react';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 
 interface Faskes {
@@ -58,8 +58,7 @@ const ConsultationPage = ({ schedule }: Props) => {
 
     // 🔧 Perbaikan utama: route kirim ID jadwal di URL
     const handleBookConsultation = (item: Schedule) => {
-
-        console.log('faskes', item.petugas_faskes_id)
+        console.log('faskes', item.petugas_faskes_id);
 
         Swal.fire({
             title: 'Konfirmasi Booking',
@@ -82,14 +81,14 @@ const ConsultationPage = ({ schedule }: Props) => {
                         Swal.fire(
                             'Berhasil!',
                             'Konsultasi berhasil dipesan.',
-                            'success'
+                            'success',
                         );
                     },
                     onError: () => {
                         Swal.fire(
                             'Gagal',
                             'Terjadi kesalahan saat melakukan booking.',
-                            'error'
+                            'error',
                         );
                     },
                 });
@@ -99,12 +98,12 @@ const ConsultationPage = ({ schedule }: Props) => {
 
     // === Filter ===
     const uniqueFaskesTypes = Array.from(
-        new Set(schedule.map((s) => s.petugas.faskes.tipe_faskes))
+        new Set(schedule.map((s) => s.petugas.faskes.tipe_faskes)),
     );
     const uniqueFaskes = Array.from(
         new Map(
-            schedule.map((s) => [s.petugas.faskes.id, s.petugas.faskes])
-        ).values()
+            schedule.map((s) => [s.petugas.faskes.id, s.petugas.faskes]),
+        ).values(),
     );
 
     const filteredSchedules = schedule.filter((item) => {
@@ -143,7 +142,7 @@ const ConsultationPage = ({ schedule }: Props) => {
         <div>
             {/* Header dan filter */}
             <div
-                className="relative py-8 overflow-hidden"
+                className="relative overflow-hidden py-8"
                 style={{
                     backgroundImage: "url('assets/images/story-bg2.png')",
                     backgroundSize: 'cover',
@@ -151,7 +150,7 @@ const ConsultationPage = ({ schedule }: Props) => {
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-8">
                         <h1 className="mb-2 text-3xl font-bold text-gray-900">
                             Jadwal Konsultasi Online
@@ -164,7 +163,7 @@ const ConsultationPage = ({ schedule }: Props) => {
                             tenaga kesehatan terpercaya.
                         </p>
                     </div>
-                    <Card className="mb-6 bg-white rounded-xl">
+                    <Card className="mb-6 rounded-xl bg-white">
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle className="flex items-center gap-4 text-lg">
@@ -179,7 +178,7 @@ const ConsultationPage = ({ schedule }: Props) => {
                                     size="sm"
                                     onClick={handleResetFilter}
                                 >
-                                    <RefreshCcw className="w-4 h-4 mr-2" />
+                                    <RefreshCcw className="mr-2 h-4 w-4" />
                                     Reset Filter
                                 </Button>
                             </div>
@@ -187,7 +186,7 @@ const ConsultationPage = ({ schedule }: Props) => {
                         <CardContent>
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                                 <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">
                                         Jenis Faskes
                                     </label>
                                     <Select
@@ -197,12 +196,15 @@ const ConsultationPage = ({ schedule }: Props) => {
                                         <SelectTrigger className="w-full border-gray-400">
                                             <SelectValue placeholder="Semua Jenis" />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-white border border-gray-200">
+                                        <SelectContent className="border border-gray-200 bg-white">
                                             <SelectItem value="all">
                                                 Semua Jenis
                                             </SelectItem>
                                             {uniqueFaskesTypes.map((type) => (
-                                                <SelectItem key={type} value={type}>
+                                                <SelectItem
+                                                    key={type}
+                                                    value={type}
+                                                >
                                                     {type}
                                                 </SelectItem>
                                             ))}
@@ -210,7 +212,7 @@ const ConsultationPage = ({ schedule }: Props) => {
                                     </Select>
                                 </div>
                                 <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">
                                         Faskes
                                     </label>
                                     <Select
@@ -220,7 +222,7 @@ const ConsultationPage = ({ schedule }: Props) => {
                                         <SelectTrigger className="w-full border-gray-400">
                                             <SelectValue placeholder="Semua Faskes" />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-white border border-gray-200">
+                                        <SelectContent className="border border-gray-200 bg-white">
                                             <SelectItem value="all">
                                                 Semua Faskes
                                             </SelectItem>
@@ -236,7 +238,7 @@ const ConsultationPage = ({ schedule }: Props) => {
                                     </Select>
                                 </div>
                                 <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">
                                         Pencarian Petugas
                                     </label>
                                     <Input
@@ -244,7 +246,9 @@ const ConsultationPage = ({ schedule }: Props) => {
                                         placeholder="Cari berdasarkan nama petugas..."
                                         className="w-full"
                                         value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
                                     />
                                 </div>
                             </div>
@@ -254,7 +258,7 @@ const ConsultationPage = ({ schedule }: Props) => {
             </div>
 
             {/* Card list */}
-            <div className="relative px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 {filteredSchedules.length === 0 ? (
                     <div className="py-12 text-center">
                         <p className="text-lg text-gray-500">
@@ -266,19 +270,21 @@ const ConsultationPage = ({ schedule }: Props) => {
                         {filteredSchedules.map((item) => (
                             <Card
                                 key={item.id}
-                                className="p-4 transition-all duration-300 bg-white border border-gray-200 shadow-md rounded-xl hover:-translate-y-1 hover:shadow-lg"
+                                className="rounded-xl border border-gray-200 bg-white p-4 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                             >
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="flex-shrink-0 w-16 h-16 overflow-hidden border rounded-full bg-sky-100">
+                                <div className="mb-4 flex items-center gap-4">
+                                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-full border bg-sky-100">
                                         {item.petugas.profile_pic_url ? (
                                             <img
                                                 src={`/storage/${item.petugas.profile_pic_url}`}
                                                 alt={item.petugas.name}
-                                                className="object-cover w-full h-full"
+                                                className="h-full w-full object-cover"
                                             />
                                         ) : (
-                                            <div className="flex items-center justify-center w-full h-full text-2xl font-bold text-sky-600">
-                                                {item.petugas.name.charAt(0).toUpperCase()}
+                                            <div className="flex h-full w-full items-center justify-center text-2xl font-bold text-sky-600">
+                                                {item.petugas.name
+                                                    .charAt(0)
+                                                    .toUpperCase()}
                                             </div>
                                         )}
                                     </div>
@@ -299,7 +305,10 @@ const ConsultationPage = ({ schedule }: Props) => {
                                                 {item.petugas.faskes.nama}
                                             </p>
                                             <p className="text-xs text-gray-500">
-                                                {item.petugas.faskes.tipe_faskes}
+                                                {
+                                                    item.petugas.faskes
+                                                        .tipe_faskes
+                                                }
                                             </p>
                                         </div>
                                     </div>
@@ -315,10 +324,11 @@ const ConsultationPage = ({ schedule }: Props) => {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-between gap-4 pt-3 border-t">
+                                <div className="flex items-center justify-between gap-4 border-t pt-3">
                                     <span
-                                        className={`px-3 py-1 text-xs font-medium rounded-full ${
-                                            item.status_ketersediaan === 'Tersedia'
+                                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+                                            item.status_ketersediaan ===
+                                            'Tersedia'
                                                 ? 'bg-green-100 text-green-700'
                                                 : 'bg-gray-100 text-gray-700'
                                         }`}
@@ -326,11 +336,15 @@ const ConsultationPage = ({ schedule }: Props) => {
                                         {item.status_ketersediaan}
                                     </span>
                                     <Button
-                                        onClick={() => handleBookConsultation(item)}
+                                        onClick={() =>
+                                            handleBookConsultation(item)
+                                        }
                                         disabled={processing}
-                                        className="px-4 py-2 text-sm font-semibold text-white rounded-lg bg-sky-600 hover:bg-sky-700"
+                                        className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700"
                                     >
-                                        {processing ? 'Memproses...' : 'Atur Konsultasi'}
+                                        {processing
+                                            ? 'Memproses...'
+                                            : 'Atur Konsultasi'}
                                     </Button>
                                 </div>
                             </Card>

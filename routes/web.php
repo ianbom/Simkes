@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminFaskes\DashboardController as AdmDashboardControll
 use App\Http\Controllers\AdminFaskes\PetugasController as AdmPetugasController;
 use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
 use App\Http\Controllers\Pasien\KehamilanController as PsnKehamilanController;
+use App\Http\Controllers\Pasien\FaskesController as PsnFaskesController;
 use App\Http\Controllers\Pasien\KonsultasiOnlineController;
 use App\Http\Controllers\Pasien\RiwayatMedisUserController;
 use App\Http\Controllers\Petugas\DashboardController as PtgDashboardController;
@@ -61,6 +62,10 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
         return Inertia::render('Pasien/Profil/ProfilePageRoute');
     });
 
+    Route::get('/faskes', [PsnFaskesController::class, 'index'])->name('faskes.index');
+    Route::get('/faskes-map', [PsnFaskesController::class, 'mapFaskes'])->name('faskes.map');
+    Route::get('/faskes/{id}', [PsnFaskesController::class, 'show'])->name('faskes.show');
+
 
     Route::get('/panduan/ibu-hamil', function () {
         return Inertia::render('Pasien/Panduan/PregnancyGuidePageRoute');
@@ -71,9 +76,13 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/bank-obat', function () {
         return Inertia::render('Pasien/BankObat/MedicinePageRoute');
     });
-    Route::get('/bank-obat/{id}', function () {
-        return Inertia::render('Pasien/BankObat/MedicineDetailPageRoute');
+
+    Route::get('/bank-obat/{id}', function ($id) {
+        return Inertia::render('Pasien/BankObat/MedicineDetailPageRoute', [
+            'id' => $id,
+        ]);
     });
+
 
     Route::get('/history/checkup-balita', [PsnAnakController::class, 'childCheckupHistory'])->name('child.checkup.history');
     Route::get('/history/checkup-kehamilan', [PsnKehamilanController::class, 'pregnancyCheckupHistory'])->name('pregnancy.checkup.history');
