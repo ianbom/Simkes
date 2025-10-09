@@ -28,14 +28,10 @@ class PemeriksaanAncController extends Controller
                 $request->validated()
             );
 
-           return redirect()->back();
+           return response()->json($result);
 
         } catch (Throwable $e) {
-            Log::error($e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
+           return response()->json(['err' => $e->getMessage()]);
         }
     }
 
