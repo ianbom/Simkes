@@ -10,7 +10,7 @@ class PemeriksaanAnc extends Model
     protected $primaryKey = 'id';
     protected $table = 'pemeriksaan_anc';
 
-   
+
     public function kehamilan() {
         return $this->belongsTo(Kehamilan::class);
     }
@@ -31,5 +31,9 @@ class PemeriksaanAnc extends Model
     }
     public function resep() {
         return $this->hasMany(ResepObatCheckup::class);
+    }
+
+    public function riwayatSakitKehamilan(){
+        return $this->hasMany(RiwayatSakitKehamilan::class);
     }
 }

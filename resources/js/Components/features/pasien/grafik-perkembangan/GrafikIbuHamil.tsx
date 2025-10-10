@@ -126,10 +126,6 @@ export default function GrafikIbuHamil({pregnant, growth, activeTrimester}: Prop
             }).sort((a, b) => a.week - b.week);
         }, [growth, pregnant.hpht]);
 
-
-
-
-
         const getFilteredAncData = () => {
             return ancMeasurements.filter((d) => {
                 if (activeTrimester === 1) return d.week <= 13;
@@ -296,129 +292,190 @@ export default function GrafikIbuHamil({pregnant, growth, activeTrimester}: Prop
                                   Tekanan Darah
                                 </th>
                                 <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                                  Hasil Lab
+                                  Detail
                                 </th>
                               </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                              {ancMeasurements.map((m, idx) => {
-                                const pemeriksaan = growth.find(g => g.tanggal_checkup === m.date);
-                                const hasilLab = pemeriksaan?.hasil_lab || [];
-                                const [openRows, setOpenRows] = useState<number[]>([]);
+                                  {growth.map((pemeriksaan: any, idx: number) => {
+                                    const [openRows, setOpenRows] = useState<number[]>([]);
 
-                                const toggleRow = (index: number) => {
-                                  setOpenRows(prev =>
-                                    prev.includes(index)
-                                      ? prev.filter(i => i !== index)
-                                      : [...prev, index]
-                                  );
-                                };
+                                    const toggleRow = (index: number) => {
+                                      setOpenRows((prev) =>
+                                        prev.includes(index)
+                                          ? prev.filter((i) => i !== index)
+                                          : [...prev, index]
+                                      );
+                                    };
 
-                                const isOpen = openRows.includes(idx);
+                                    const isOpen = openRows.includes(idx);
 
-                                return (
-                                  <>
-                                    <tr
-                                      key={idx}
-                                      className="hover:bg-gray-50 transition cursor-pointer"
-                                      onClick={() => toggleRow(idx)}
-                                    >
-                                      <td className="px-4 py-3 text-sm text-gray-900">
-                                        Minggu {m.week}
-                                      </td>
-                                      <td className="px-4 py-3 text-sm text-gray-500">
-                                        {formatDate(m.date)}
-                                      </td>
-                                      <td className="px-4 py-3 text-sm text-blue-600">
-                                        {m.beratBadan} kg
-                                      </td>
-                                      <td className="px-4 py-3 text-sm text-purple-600">
-                                        {m.lila} cm
-                                      </td>
-                                      <td className="px-4 py-3 text-sm text-green-600">
-                                        {m.tinggiFundus} cm
-                                      </td>
+                                    const hasilLab = pemeriksaan.hasil_lab || [];
+                                    const riwayatSakit = pemeriksaan.riwayat_sakit_kehamilan || [];
+                                    const petugas = pemeriksaan.petugas;
+                                    const faskes = petugas?.faskes;
+                                    const weekNumber = calculatePregnancyWeek(pregnant.hpht, pemeriksaan.tanggal_checkup);
 
-                                      <td className="px-4 py-3 text-sm text-gray-900">
-                                        {m.tekananDarahSistolik}/{m.tekananDarahDiastolik} mmHg
-                                      </td>
-                                      <td className="px-4 py-3 text-center">
-                                        <button
-                                          type="button"
-                                          className="text-blue-600 text-sm font-medium hover:underline focus:outline-none"
+                                    return (
+                                      <>
+                                        <tr
+                                          className="hover:bg-gray-50 transition cursor-pointer "
+                                          onClick={() => toggleRow(idx)}
                                         >
-                                          {isOpen ? 'Tutup' : 'Lihat'}
-                                        </button>
-                                      </td>
-                                    </tr>
+                                        <td className="px-4 py-3 text-sm text-gray-900">
+                                           Minggu {weekNumber}
+                                          </td>
+                                          <td className="px-4 py-3 text-sm text-gray-900">
+                                            {new Date(pemeriksaan.tanggal_checkup).toLocaleDateString("id-ID")}
+                                          </td>
+                                          <td className="px-4 py-3 text-sm text-blue-600">
+                                            {pemeriksaan.berat_badan} kg
+                                          </td>
+                                          <td className="px-4 py-3 text-sm text-green-600">
+                                            {pemeriksaan.tinggi_fundus} cm
+                                          </td>
+                                          <td className="px-4 py-3 text-sm text-purple-600">
+                                            {pemeriksaan.lila} cm
+                                          </td>
+                                          <td className="px-4 py-3 text-sm text-gray-900">
+                                            {pemeriksaan.tekanan_darah_sistolik}/
+                                            {pemeriksaan.tekanan_darah_diastolik} mmHg
+                                          </td>
+                                          <td className="px-4 py-3 text-center">
+                                            <button
+                                              type="button"
+                                              className="text-blue-600 text-sm font-medium hover:underline focus:outline-none"
+                                            >
+                                              {isOpen ? "Tutup" : "Lihat"}
+                                            </button>
+                                          </td>
+                                        </tr>
 
-                                    {/* Baris hasil lab */}
-                                    {isOpen && hasilLab.length > 0 && (
-                                      <tr>
-                                        <td colSpan={7} className="bg-gray-50 px-6 py-4">
-                                          <div className="border rounded-lg bg-white shadow-sm p-4">
-                                            <p className="font-semibold text-gray-800 mb-2">
-                                              🧪 Hasil Laboratorium
-                                            </p>
-                                            <div className="overflow-x-auto">
-                                              <table className="min-w-full text-sm">
-                                                <thead>
-                                                  <tr className="border-b bg-gray-100">
-                                                    <th className="px-3 py-2 text-left font-medium text-gray-600">
-                                                      Nama Tes
-                                                    </th>
-                                                    <th className="px-3 py-2 text-left font-medium text-gray-600">
-                                                      Hasil
-                                                    </th>
-                                                    <th className="px-3 py-2 text-left font-medium text-gray-600">
-                                                      Satuan
-                                                    </th>
-                                                    <th className="px-3 py-2 text-left font-medium text-gray-600">
-                                                      Status
-                                                    </th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody>
-                                                  {hasilLab.map((lab: any, i: number) => (
-                                                    <tr
-                                                      key={i}
-                                                      className="border-b last:border-0 hover:bg-gray-50"
-                                                    >
-                                                      <td className="px-3 py-2 text-gray-800">
-                                                        {lab.nama_tes}
-                                                      </td>
-                                                      <td className="px-3 py-2 text-gray-700">
-                                                        {lab.hasil}
-                                                      </td>
-                                                      <td className="px-3 py-2 text-gray-700">
-                                                        {lab.satuan}
-                                                      </td>
-                                                      <td
-                                                        className={`px-3 py-2 font-medium ${
-                                                          lab.status === 'Normal'
-                                                            ? 'text-green-600'
-                                                            : lab.status === 'Kurang Normal'
-                                                            ? 'text-yellow-600'
-                                                            : lab.status === 'Tidak Normal'
-                                                            ? 'text-red-600'
-                                                            : 'text-purple-600'
-                                                        }`}
-                                                      >
-                                                        {lab.status}
-                                                      </td>
-                                                    </tr>
-                                                  ))}
-                                                </tbody>
-                                              </table>
-                                            </div>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </>
-                                );
-                              })}
-                            </tbody>
+                                        {isOpen && (
+                                          <tr>
+                                            <td colSpan={6} className="bg-gray-50 px-6 py-4">
+                                              <div className="space-y-6">
+                                                {/* 🧍‍♀️ Data Pemeriksaan Ibu */}
+                                                <div className="border rounded-lg bg-white shadow-sm p-4">
+                                                  <h4 className="font-semibold text-gray-800 mb-2">
+                                                    📋 Detail Pemeriksaan
+                                                  </h4>
+                                                  <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 text-sm text-gray-700">
+                                                    <p><strong>Jenis Pemeriksaan:</strong> {pemeriksaan.jenis_pemeriksaan}</p>
+                                                    <p><strong>Berat Badan:</strong> {pemeriksaan.berat_badan} kg</p>
+                                                    <p><strong>Tinggi Fundus:</strong> {pemeriksaan.tinggi_fundus} cm</p>
+                                                    <p><strong>LILA:</strong> {pemeriksaan.lila} cm</p>
+                                                    <p><strong>Tekanan Darah:</strong> {pemeriksaan.tekanan_darah_sistolik}/{pemeriksaan.tekanan_darah_diastolik} mmHg</p>
+                                                    <p><strong>Suhu Tubuh:</strong> {pemeriksaan.suhu_tubuh_celsius} °C</p>
+                                                    <p><strong>Frekuensi Napas:</strong> {pemeriksaan.frekuensi_napas_per_menit}x/menit</p>
+                                                    <p><strong>Denyut Jantung:</strong> {pemeriksaan.frekuensi_jantung_per_menit} bpm</p>
+                                                    <p><strong>Status Bengkak:</strong> {pemeriksaan.status_bengkak_kaki}</p>
+                                                    <p><strong>Keluhan:</strong> {pemeriksaan.keluhan || '-'}</p>
+                                                    <p><strong>Catatan Petugas:</strong> {pemeriksaan.catatan_petugas}</p>
+                                                    <p><strong>Deteksi Risiko:</strong> {pemeriksaan.deteksi_resiko || '-'}</p>
+                                                  </div>
+                                                </div>
+
+                                                {/* 🧪 Hasil Lab */}
+                                                {hasilLab.length > 0 && (
+                                                  <div className="border rounded-lg bg-white shadow-sm p-4">
+                                                    <h4 className="font-semibold text-gray-800 mb-2">
+                                                      🧪 Hasil Laboratorium
+                                                    </h4>
+                                                    <table className="min-w-full text-sm border border-gray-200 rounded-lg">
+                                                      <thead className="bg-gray-100">
+                                                        <tr>
+                                                          <th className="px-3 py-2 text-left">Nama Tes</th>
+                                                          <th className="px-3 py-2 text-left">Hasil</th>
+                                                          <th className="px-3 py-2 text-left">Satuan</th>
+                                                          <th className="px-3 py-2 text-left">Status</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        {hasilLab.map((lab: any, i: number) => (
+                                                          <tr key={i} className="border-t hover:bg-gray-50">
+                                                            <td className="px-3 py-2">{lab.nama_tes}</td>
+                                                            <td className="px-3 py-2">{lab.hasil}</td>
+                                                            <td className="px-3 py-2">{lab.satuan}</td>
+                                                            <td
+                                                              className={`px-3 py-2 font-medium ${
+                                                                lab.status === "Normal"
+                                                                  ? "text-green-600"
+                                                                  : lab.status === "Perlu Tindak Lanjut"
+                                                                  ? "text-orange-600"
+                                                                  : "text-red-600"
+                                                              }`}
+                                                            >
+                                                              {lab.status}
+                                                            </td>
+                                                          </tr>
+                                                        ))}
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                )}
+
+                                                {/* 🤒 Riwayat Sakit Kehamilan */}
+                                                {riwayatSakit.length > 0 && (
+                                                  <div className="border rounded-lg bg-white shadow-sm p-4">
+                                                    <h4 className="font-semibold text-gray-800 mb-2">
+                                                      🤒 Riwayat Sakit Kehamilan
+                                                    </h4>
+                                                    <table className="min-w-full text-sm border border-gray-200 rounded-lg">
+                                                      <thead className="bg-gray-100">
+                                                        <tr>
+                                                          <th className="px-3 py-2 text-left">Tanggal Diagnosis</th>
+                                                          <th className="px-3 py-2 text-left">Diagnosis</th>
+                                                          <th className="px-3 py-2 text-left">Gejala</th>
+                                                          <th className="px-3 py-2 text-left">Tindakan</th>
+                                                          <th className="px-3 py-2 text-left">Status</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        {riwayatSakit.map((r: any, i: number) => (
+                                                          <tr key={i} className="border-t hover:bg-gray-50">
+                                                            <td className="px-3 py-2">
+                                                              {new Date(r.tanggal_diagnosis).toLocaleDateString("id-ID")}
+                                                            </td>
+                                                            <td className="px-3 py-2">{r.diagnosis}</td>
+                                                            <td className="px-3 py-2">{r.gejala}</td>
+                                                            <td className="px-3 py-2">{r.tindakan_pengobatan}</td>
+                                                            <td className="px-3 py-2">{r.status_penyakit}</td>
+                                                          </tr>
+                                                        ))}
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                )}
+
+                                                {/* 🧑‍⚕️ Petugas dan Faskes */}
+                                                {petugas && (
+                                                  <div className="border rounded-lg bg-white shadow-sm p-4">
+                                                    <h4 className="font-semibold text-gray-800 mb-2">
+                                                      🏥 Petugas & Fasilitas Kesehatan
+                                                    </h4>
+                                                    <div className="text-sm text-gray-700 space-y-1">
+                                                      <p><strong>Petugas:</strong> {petugas.name} ({petugas.role})</p>
+                                                      <p><strong>Email:</strong> {petugas.email}</p>
+                                                      <p><strong>Nomor Telepon:</strong> {petugas.no_telp}</p>
+                                                      {faskes && (
+                                                        <>
+                                                          <p><strong>Faskes:</strong> {faskes.nama} ({faskes.tipe_faskes})</p>
+                                                          <p><strong>Alamat:</strong> {faskes.alamat}</p>
+                                                        </>
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                )}
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        )}
+                                      </>
+                                    );
+                                  })}
+                                </tbody>
+
                           </table>
                         </div>
                       </div>
