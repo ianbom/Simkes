@@ -22,4 +22,8 @@ class PemeriksaanAnak extends Model
     {
         return $this->hasOne(SkriningPerkembangan::class);
     }
+
+    public function riwayatSakit(){
+        return $this->hasMany(RiwayatSakitAnak::class);
+    }
 }
