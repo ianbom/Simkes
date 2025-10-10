@@ -19,6 +19,10 @@ class Anak extends Model
     {
         return $this->hasMany(PemeriksaanAnak::class);
     }
+    public function pemeriksaanAnak()
+    {
+        return $this->hasMany(PemeriksaanAnak::class);
+    }
     public function imunisasi()
     {
         return $this->hasMany(RiwayatImunisasiAnak::class);
@@ -28,6 +32,10 @@ class Anak extends Model
         return $this->hasMany(RiwayatObatAnak::class);
     }
     public function riwayatSakit()
+    {
+        return $this->hasMany(RiwayatSakitAnak::class);
+    }
+    public function riwayatSakitAnak()
     {
         return $this->hasMany(RiwayatSakitAnak::class);
     }

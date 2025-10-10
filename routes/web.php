@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AdminFaskes\DashboardController as AdmDashboardController;
 use App\Http\Controllers\AdminFaskes\PetugasController as AdmPetugasController;
+use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
+use App\Http\Controllers\Pasien\DashboardController;
 use App\Http\Controllers\Pasien\KehamilanController as PsnKehamilanController;
 use App\Http\Controllers\Pasien\FaskesController as PsnFaskesController;
 use App\Http\Controllers\Pasien\KonsultasiOnlineController;
@@ -29,6 +31,8 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('myData', [ChatBotController::class, 'buildContext']);
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -44,6 +48,10 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Pasien/Dashboard/DashboardPageRoute');
     });
+
+    Route::get('/chatbot', [DashboardController::class, 'chatbot'])->name('chatbot');
+    Route::post('/chat', [ChatBotController::class, 'chat'])->name('chat')->middleware('auth');
+
     Route::get('/create/anak', function () {
         return Inertia::render('Pasien/Anak/CreateAnakPageRoute');
     });

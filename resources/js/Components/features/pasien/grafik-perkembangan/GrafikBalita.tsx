@@ -405,51 +405,53 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                                 </tr>
                             </thead>
 
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {growth.map((item: any, idx: number) => {
-                                    const isOpen = openRows.includes(idx);
-                                    const riwayatSakit = item.riwayat_sakit || [];
+                           <tbody className="bg-white divide-y divide-gray-200">
+                              {growth.map((item: any, idx: number) => {
+                                const isOpen = openRows.includes(idx);
+                                const riwayatSakit = item.riwayat_sakit || [];
+                                const petugas = item.petugas;
+                                const faskes = petugas?.faskes;
 
-                                    return (
-                                        <>
-                                            <tr
-                                                key={`row-${idx}`}
-                                                className="hover:bg-gray-50 transition cursor-pointer"
-                                                onClick={() => toggleRow(idx)}
-                                            >
-                                                <td className="px-4 py-3 text-sm text-gray-900">
-                                                    {item.usia_saat_periksa_bulan} bln
-                                                </td>
-                                                <td className="px-4 py-3 text-sm text-gray-500">
-                                                    {new Date(item.tanggal_pemeriksaan).toLocaleDateString("id-ID")}
-                                                </td>
-                                                <td className="px-4 py-3 text-sm text-blue-600">
-                                                    {item.berat_badan_kg}
-                                                </td>
-                                                <td className="px-4 py-3 text-sm text-green-600">
-                                                    {item.tinggi_badan_cm}
-                                                </td>
-                                                <td className="px-4 py-3 text-sm text-purple-600">
-                                                    {item.lingkar_kepala_cm}
-                                                </td>
-                                                <td className="px-4 py-3 text-sm text-gray-800">
-                                                    {item.suhu_tubuh_celsius}
-                                                </td>
-                                                <td className="px-4 py-3 text-center">
-                                                    <button
-                                                        type="button"
-                                                        className="text-blue-600 text-sm font-medium hover:underline focus:outline-none"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            toggleRow(idx);
-                                                        }}
-                                                    >
-                                                        {isOpen ? "Tutup" : "Lihat"}
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                return (
+                                  <>
+                                    <tr
+                                      key={`row-${idx}`}
+                                      className="hover:bg-gray-50 transition cursor-pointer"
+                                      onClick={() => toggleRow(idx)}
+                                    >
+                                      <td className="px-4 py-3 text-sm text-gray-900">
+                                        {item.usia_saat_periksa_bulan} Bulan
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-500">
+                                        {new Date(item.tanggal_pemeriksaan).toLocaleDateString("id-ID")}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-blue-600">
+                                        {item.berat_badan_kg}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-green-600">
+                                        {item.tinggi_badan_cm}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-purple-600">
+                                        {item.lingkar_kepala_cm}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-800">
+                                        {item.suhu_tubuh_celsius}
+                                      </td>
+                                      <td className="px-4 py-3 text-center">
+                                        <button
+                                          type="button"
+                                          className="text-blue-600 text-sm font-medium hover:underline focus:outline-none"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleRow(idx);
+                                          }}
+                                        >
+                                          {isOpen ? "Tutup" : "Lihat"}
+                                        </button>
+                                      </td>
+                                    </tr>
 
-                                {/* Expand untuk Detail Pemeriksaan Anak */}
+                                    {/* Expand untuk Detail Pemeriksaan Anak */}
                                     {isOpen && (
                                       <tr key={`expand-${idx}`}>
                                         <td colSpan={7} className="bg-gray-50 px-6 py-4">
@@ -457,6 +459,63 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                                             <p className="font-semibold text-gray-800 mb-2">
                                               🩺 Detail Pemeriksaan Anak
                                             </p>
+
+                                            {/* Info Petugas & Faskes */}
+                                            {(petugas || faskes) && (
+                                              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                                <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                                  <span className="text-lg">👨‍⚕️</span>
+                                                  Informasi Petugas & Fasilitas Kesehatan
+                                                </h4>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                  {/* Info Petugas */}
+                                                  {petugas && (
+                                                    <div className="bg-white rounded-lg p-3 border border-blue-100">
+                                                      <h5 className="font-medium text-blue-700 mb-2 text-sm">Petugas Pemeriksa</h5>
+                                                      <div className="space-y-1 text-sm">
+                                                        <div className="flex justify-between">
+                                                          <span className="text-gray-600">Nama:</span>
+                                                          <span className="font-medium text-gray-800">{petugas.name}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                          <span className="text-gray-600">NIK:</span>
+                                                          <span className="text-gray-700">{petugas.nik}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                          <span className="text-gray-600">Role:</span>
+                                                          <span className="text-gray-700">{petugas.role}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                          <span className="text-gray-600">Kontak:</span>
+                                                          <span className="text-gray-700">{petugas.no_telp}</span>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  )}
+
+                                                  {/* Info Faskes */}
+                                                  {faskes && (
+                                                    <div className="bg-white rounded-lg p-3 border border-indigo-100">
+                                                      <h5 className="font-medium text-indigo-700 mb-2 text-sm">Fasilitas Kesehatan</h5>
+                                                      <div className="space-y-1 text-sm">
+                                                        <div className="flex justify-between">
+                                                          <span className="text-gray-600">Nama:</span>
+                                                          <span className="font-medium text-gray-800">{faskes.nama}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                          <span className="text-gray-600">Tipe:</span>
+                                                          <span className="text-gray-700">{faskes.tipe_faskes}</span>
+                                                        </div>
+                                                        <div className="col-span-2 pt-1">
+                                                          <span className="text-gray-600">Alamat:</span>
+                                                          <p className="text-gray-700 mt-1">{faskes.alamat}</p>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            )}
 
                                             {/* Tabel ringkas nilai vital */}
                                             <div className="overflow-x-auto">
@@ -554,10 +613,9 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                                         </td>
                                       </tr>
                                     )}
-
-                                        </>
-                                    );
-                                })}
+                                  </>
+                                );
+                              })}
                             </tbody>
                         </table>
                     </div>

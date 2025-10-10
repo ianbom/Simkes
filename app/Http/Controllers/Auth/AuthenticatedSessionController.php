@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -48,5 +49,37 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function loginApi(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+        if (!Auth::attempt($credentials)) {
+            throw ValidationException::withMessages([
+                'email' => ['Email atau password salah.'],
+            ]);
+        }
+        $user = Auth::user();
+        $user->tokens()->delete();
+        $token = $user->createToken('SIMKESIA-API')->plainTextToken;
+        return response()->json([
+            'status' => true,
+            'message' => 'Login berhasil',
+            'user' => $user,
+            'token' => $token,
+        ], 200);
+    }
+
+    public function me(){
+        try {
+           $user = Auth::user();
+        return response()->json($user);
+        } catch (\Throwable $th) {
+        return response()->json($th->getMessage());
+        }
+
     }
 }

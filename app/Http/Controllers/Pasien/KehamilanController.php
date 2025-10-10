@@ -14,9 +14,9 @@ class KehamilanController extends Controller
     public function viewPerkembanganKehamilan($id)
     {
         $pregnant = Kehamilan::with('user', 'janin')->findOrFail($id);
-        $growth = PemeriksaanAnc::with('hasilLab')->where('kehamilan_id', $pregnant->id)->get();
+        $growth = PemeriksaanAnc::with('hasilLab', 'petugas.faskes', 'riwayatSakitKehamilan')->where('kehamilan_id', $pregnant->id)->get();
 
-        // return response()->json($growth);
+
 
         return Inertia::render('Pasien/Grafik/PregnancyGraphPageRoute', [
             'pregnant' => $pregnant,

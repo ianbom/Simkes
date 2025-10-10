@@ -88,6 +88,14 @@ export default function PasienLayout({ children }: Props) {
             showOnDesktop: true,
             hasDropdown: false,
         },
+        {
+            id: 'chatbot',
+            label: 'ChatBot',
+            key: '/pasien/chatbot',
+            showOnMobile: true,
+            showOnDesktop: true,
+            hasDropdown: false,
+        },
     ];
     useEffect(() => {
         console.log('Flash data di PasienLayout:', flash);
@@ -113,6 +121,7 @@ export default function PasienLayout({ children }: Props) {
                 onNavigate={handleNavigate}
                 currentPage={currentPage}
                 onNotificationClick={() => setIsNotificationOpen(true)}
+
                 profileMenuContent={getProfileMenuContent({
                 pregnant,
                 child,

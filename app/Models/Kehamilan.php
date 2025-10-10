@@ -12,10 +12,14 @@ class Kehamilan extends Model
      public function user() {
         return $this->belongsTo(User::class);
     }
-    public function pemeriksaanANC() {
+    public function pemeriksaanAnc() {
         return $this->hasMany(PemeriksaanANC::class);
     }
+
     public function riwayatSakit() {
+        return $this->hasMany(RiwayatSakitKehamilan::class);
+    }
+     public function riwayatSakitKehamilan() {
         return $this->hasMany(RiwayatSakitKehamilan::class);
     }
     public function imunisasi() {
@@ -25,6 +29,9 @@ class Kehamilan extends Model
         return $this->hasOne(Kelahiran::class);
     }
     public function janin() {
+        return $this->hasMany(DataJanin::class);
+    }
+     public function dataJanin() {
         return $this->hasMany(DataJanin::class);
     }
 }
