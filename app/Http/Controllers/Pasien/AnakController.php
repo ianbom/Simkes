@@ -38,13 +38,14 @@ class AnakController extends Controller
     public function viewPerkembanganAnak($id)
     {
         $child = Anak::findOrFail($id);
-        $growth = PemeriksaanAnak::where('anak_id', $child->id)->get();
+        $growth = PemeriksaanAnak::with('riwayatSakit')->where('anak_id', $child->id)->get();
+        $allChilds = Anak::where('orang_tua_id', Auth::id())->get();
 
-        // return response()->json($growth);
 
         return Inertia::render('Pasien/Grafik/ChildGraphPageRoute', [
             'child' => $child,
-            'growth' => $growth
+            'growth' => $growth,
+            'allChilds' => $allChilds
         ]);
     }
     public function childCheckupHistory()

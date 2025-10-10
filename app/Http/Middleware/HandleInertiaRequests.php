@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Anak;
+use App\Models\Kehamilan;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -29,6 +31,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
         return [
             ...parent::share($request),
             'auth' => [
@@ -40,6 +43,18 @@ class HandleInertiaRequests extends Middleware
                 'info' => fn() => $request->session()->get('info'),
                 'warning' => fn() => $request->session()->get('warning'),
             ],
+
+            'child' => fn() => $user
+                ? Anak::where('orang_tua_id', $user->id)
+                    ->select('id')
+                    ->first()
+                : [],
+
+            'pregnant' => fn() => $user
+                ? Kehamilan::where('user_id', $user->id)
+                    ->select('id')
+                    ->first()
+                : [],
         ];
     }
 }
