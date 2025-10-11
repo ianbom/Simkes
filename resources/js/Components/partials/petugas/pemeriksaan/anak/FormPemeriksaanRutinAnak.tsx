@@ -80,7 +80,7 @@ export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Pro
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {/* Row 1: Berat & Tinggi */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <Label htmlFor="weight">Berat Badan (kg)</Label>
                             <Input
@@ -93,7 +93,7 @@ export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Pro
                                 }
                             />
                             {errors.berat_badan_kg && (
-                                <p className="text-red-500 text-xs">
+                                <p className="text-xs text-red-500">
                                     {errors.berat_badan_kg}
                                 </p>
                             )}
@@ -111,7 +111,7 @@ export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Pro
                                 }
                             />
                             {errors.tinggi_badan_cm && (
-                                <p className="text-red-500 text-xs">
+                                <p className="text-xs text-red-500">
                                     {errors.tinggi_badan_cm}
                                 </p>
                             )}
@@ -119,7 +119,7 @@ export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Pro
                     </div>
 
                     {/* Row 2: Lingkar Kepala & Cara Ukur */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <Label htmlFor="head">Lingkar Kepala (cm)</Label>
                             <Input
@@ -136,7 +136,7 @@ export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Pro
                             <Label htmlFor="measure">Cara Pengukuran</Label>
                             <select
                                 id="measure"
-                                className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm outline-none focus-visible:ring-2"
+                                className="flex w-full px-3 py-1 text-base bg-transparent border rounded-md shadow-sm outline-none border-input h-9 focus-visible:ring-2"
                                 value={data.cara_ukur_tinggi}
                                 onChange={(e) =>
                                     setData('cara_ukur_tinggi', e.target.value)
@@ -150,7 +150,7 @@ export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Pro
                     </div>
 
                     {/* Row 3: Vital Signs */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <Label htmlFor="temp">Suhu Tubuh (°C)</Label>
                             <Input
@@ -180,7 +180,7 @@ export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Pro
                     </div>
 
                     {/* Row 4 */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <Label htmlFor="heart">Frekuensi Jantung</Label>
                             <Input

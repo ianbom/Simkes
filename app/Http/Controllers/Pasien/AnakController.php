@@ -42,7 +42,6 @@ class AnakController extends Controller
         $allChilds = Anak::where('orang_tua_id', Auth::id())->get();
 
 
-
         return Inertia::render('Pasien/Grafik/ChildGraphPageRoute', [
             'child' => $child,
             'growth' => $growth,

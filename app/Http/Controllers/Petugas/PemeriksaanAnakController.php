@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Throwable;
+use App\Models\RiwayatSakitAnak;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PemeriksaanAnak;
 
@@ -22,7 +23,28 @@ class PemeriksaanAnakController extends Controller
     {
         $this->pemeriksaanAnakService = $pemeriksaanAnakService;
     }
+    public function index($id)
+    {
+        $child = Anak::with(['kelahiran', 'orangTua'])->findOrFail($id);
+        $growth = PemeriksaanAnak::with('riwayatSakit', 'petugas.faskes')->where('anak_id', $child->id)->get();
+        $checkupHistory = PemeriksaanAnak::where('anak_id', $id)
+            ->with(['anak.kelahiran', 'anak.orangTua', 'petugas.faskes', 'skrining'])
+            ->orderBy('tanggal_pemeriksaan', 'desc')
+            ->get()
+            ->toArray();
 
+        $sickHistory = RiwayatSakitAnak::where('anak_id', $id)
+            ->with(['anak.kelahiran', 'anak.orangTua', 'pemeriksaan.petugas.faskes'])
+            ->orderBy('tanggal_sakit', 'desc')
+            ->get()
+            ->toArray();
+        return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute', [
+            'child' => $child,
+            'checkupHistory' => $checkupHistory,
+            'sickHistory' => $sickHistory,
+            'growth' => $growth
+        ]);
+    }
     public function store(CreatePemeriksaanAnakRequest $request)
     {
         try {

@@ -15,9 +15,6 @@ class KehamilanController extends Controller
     {
         $pregnant = Kehamilan::with('user', 'janin')->findOrFail($id);
         $growth = PemeriksaanAnc::with('hasilLab', 'petugas.faskes', 'riwayatSakitKehamilan')->where('kehamilan_id', $pregnant->id)->get();
-
-
-
         return Inertia::render('Pasien/Grafik/PregnancyGraphPageRoute', [
             'pregnant' => $pregnant,
             'growth' => $growth

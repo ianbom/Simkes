@@ -1,14 +1,8 @@
-
-import { PatientProfileHeader } from '@/Components/partials/petugas/pemeriksaan/PatientProfileHeader';
-import TabsPemeriksaanAnak from '@/Components/TabsPemeriksaanAnak';
+import { PatientProfileHeader } from '@/Components/partials/petugas/pemeriksaan/anak/PatientProfileHeader';
+import TabsPemeriksaanAnak from '@/Components/partials/petugas/pemeriksaan/anak/TabsPemeriksaanAnak';
+import TabsPerkembanganAnak from '@/Components/partials/petugas/pemeriksaan/anak/TabsPerkembanganAnak';
+import TabsRiwayatSakit from '@/Components/partials/petugas/pemeriksaan/anak/TabsRiwayatSakitAnak';
 import { Badge } from '@/Components/ui/badge';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/Components/ui/card';
 import {
     Select,
     SelectContent,
@@ -16,17 +10,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/Components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
-import {
-    Activity,
-    Clock,
-    FileText,
-    History,
-    Stethoscope,
-    TrendingUp,
-    Upload,
-    X,
-} from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/Components/ui/tabs';
+import { Activity, Clock, History, Stethoscope } from 'lucide-react';
 import { useState } from 'react';
 
 const mockPatient = {
@@ -47,9 +32,18 @@ const mockPatient = {
     appointmentTime: '09:00 AM',
     chiefComplaint: 'Routine prenatal checkup',
 };
-
-const ChildCheckupPage = ({child}) => {
-
+interface Props {
+    child: any;
+    checkupHistory: any[];
+    sickHistory: any[];
+    growth: any[];
+}
+const ChildCheckupPage = ({
+    child,
+    checkupHistory,
+    sickHistory,
+    growth,
+}: Props) => {
     const [patient] = useState(mockPatient);
     const [activeTab, setActiveTab] = useState('checkup');
 
@@ -75,7 +69,7 @@ const ChildCheckupPage = ({child}) => {
             </div>
 
             {/* Patient Profile Header */}
-            <PatientProfileHeader  child={child} patientType="child" />
+            <PatientProfileHeader child={child} patientType="child" />
 
             {/* Tabs Section */}
             <div className="mt-8">
@@ -107,13 +101,7 @@ const ChildCheckupPage = ({child}) => {
                             >
                                 <div className="flex items-center gap-2">
                                     <Activity className="h-4 w-4" />
-                                    <span>Riwayat Perkembangan Anak</span>
-                                </div>
-                            </SelectItem>
-                            <SelectItem value="charts" className="bg-white">
-                                <div className="flex items-center gap-2">
-                                    <TrendingUp className="h-4 w-4" />
-                                    <span>Grafik</span>
+                                    <span>Grafik Perkembangan Anak</span>
                                 </div>
                             </SelectItem>
                         </SelectContent>
@@ -146,78 +134,13 @@ const ChildCheckupPage = ({child}) => {
                             className="data-[state=inactive]:text-muted-foreground flex items-center gap-2 px-4 py-4 text-base font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md"
                         >
                             <Activity className="h-5 w-5" />
-                            Riwayat Tumbuh Kembang
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="charts"
-                            className="data-[state=inactive]:text-muted-foreground flex items-center gap-2 px-4 py-4 text-base font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md"
-                        >
-                            <TrendingUp className="h-5 w-5" />
-                            Grafik
+                            Grafik Perkembangan Anak
                         </TabsTrigger>
                     </TabsList>
 
-                    {/* Checkup Tab */}
-                   <TabsPemeriksaanAnak child={child}/>
-
-                    {/* Medical History Tab */}
-                    <TabsContent
-                        value="medical-history"
-                        className="mt-6 bg-white"
-                    >
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Riwayat Sakit</CardTitle>
-                                <CardDescription>
-                                    History of patient's medical conditions
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">
-                                    Medical history content will be displayed
-                                    here.
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-
-                    {/* Child Development Tab */}
-                    <TabsContent
-                        value="child-development"
-                        className="mt-6 bg-white"
-                    >
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Riwayat Perkembangan Anak</CardTitle>
-                                <CardDescription>
-                                    Child development tracking and milestones
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">
-                                    Child development history will be displayed
-                                    here.
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-
-                    {/* Charts Tab */}
-                    <TabsContent value="charts" className="mt-6 bg-white">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Grafik</CardTitle>
-                                <CardDescription>
-                                    Visual charts and growth tracking
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">
-                                    Charts and graphs will be displayed here.
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
+                    <TabsPemeriksaanAnak child={child} />
+                    <TabsRiwayatSakit sickHistory={sickHistory} />
+                    <TabsPerkembanganAnak growth={growth} child={child} />
                 </Tabs>
             </div>
         </div>

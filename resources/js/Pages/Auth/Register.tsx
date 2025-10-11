@@ -35,26 +35,41 @@ export default function Register() {
         <GuestLayout>
             <Head title="Register" />
 
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 px-4 py-12 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-7xl">
+            <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 px-4 py-12 sm:px-6 lg:px-8">
+                <div className="relative z-10 mx-auto max-w-7xl">
                     <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
-                        {/* Left Side - Illustration & Info */}
                         <div className="hidden flex-col justify-center space-y-6 px-8 lg:flex">
-                            <div>
-                                <h1 className="mb-4 text-4xl font-bold text-gray-900">
+                            <div className="mb-4">
+                                <div className="mb-6 flex items-center gap-4">
+                                    <img
+                                        src="/assets/images/simkesia-logo.png"
+                                        alt="SIMKESIA Logo"
+                                        className="h-16 w-16 object-contain"
+                                    />
+                                    <div>
+                                        <h1 className="text-3xl font-bold text-gray-900">
+                                            SIMKESIA
+                                        </h1>
+                                        <p className="text-sm text-gray-600">
+                                            Sistem Informasi Kesehatan Ibu dan
+                                            Anak
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <h2 className="mb-4 text-4xl font-bold text-gray-900">
                                     Bergabung Bersama Kami
-                                </h1>
-                                <p className="mb-8 text-lg text-gray-600">
+                                </h2>
+                                <p className="text-lg text-gray-600">
                                     Daftarkan diri Anda untuk mendapatkan akses
                                     ke layanan kesehatan digital
                                 </p>
                             </div>
 
-                            {/* Feature List */}
                             <div className="space-y-4">
-                                <div className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm">
-                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100">
-                                        <UserPlus className="h-6 w-6 text-blue-600" />
+                                <div className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md">
+                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary">
+                                        <UserPlus className="h-6 w-6 text-white" />
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-gray-900">
@@ -66,9 +81,9 @@ export default function Register() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm">
-                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-green-100">
-                                        <MapPin className="h-6 w-6 text-green-600" />
+                                <div className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md">
+                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary">
+                                        <MapPin className="h-6 w-6 text-white" />
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-gray-900">
@@ -81,9 +96,9 @@ export default function Register() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm">
-                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-purple-100">
-                                        <Calendar className="h-6 w-6 text-purple-600" />
+                                <div className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md">
+                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary">
+                                        <Calendar className="h-6 w-6 text-white" />
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-gray-900">
@@ -97,8 +112,23 @@ export default function Register() {
                             </div>
                         </div>
 
-                        {/* Right Side - Form */}
                         <div className="rounded-2xl bg-white p-8 shadow-xl lg:p-10">
+                            <div className="mb-6 flex items-center justify-center gap-3 lg:hidden">
+                                <img
+                                    src="/assets/images/simkesia-logo.png"
+                                    alt="SIMKESIA Logo"
+                                    className="h-12 w-12 object-contain"
+                                />
+                                <div className="text-center">
+                                    <h1 className="text-xl font-bold text-gray-900">
+                                        SIMKESIA
+                                    </h1>
+                                    <p className="text-xs text-gray-600">
+                                        Sistem Informasi Kesehatan Ibu dan Anak
+                                    </p>
+                                </div>
+                            </div>
+
                             <div className="mb-8">
                                 <h2 className="mb-2 text-3xl font-bold text-gray-900">
                                     Daftar Akun
@@ -109,14 +139,12 @@ export default function Register() {
                             </div>
 
                             <form onSubmit={submit} className="space-y-5">
-                                {/* Data Lokasi Section */}
                                 <div className="space-y-4">
                                     <h3 className="border-b pb-2 text-sm font-semibold uppercase tracking-wide text-gray-700">
                                         Data Lokasi
                                     </h3>
 
                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                        {/* Provinsi */}
                                         <div>
                                             <InputLabel
                                                 htmlFor="provinsi_id"
@@ -154,7 +182,6 @@ export default function Register() {
                                             />
                                         </div>
 
-                                        {/* Kota */}
                                         <div>
                                             <InputLabel
                                                 htmlFor="kota_id"
@@ -192,7 +219,6 @@ export default function Register() {
                                             />
                                         </div>
 
-                                        {/* Kecamatan */}
                                         <div>
                                             <InputLabel
                                                 htmlFor="kecamatan_id"
@@ -230,7 +256,6 @@ export default function Register() {
                                             />
                                         </div>
 
-                                        {/* Faskes */}
                                         <div>
                                             <InputLabel
                                                 htmlFor="faskes_id"
@@ -269,14 +294,12 @@ export default function Register() {
                                     </div>
                                 </div>
 
-                                {/* Data Pribadi Section */}
                                 <div className="space-y-4">
                                     <h3 className="border-b pb-2 text-sm font-semibold uppercase tracking-wide text-gray-700">
                                         Data Pribadi
                                     </h3>
 
                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                        {/* NIK */}
                                         <div>
                                             <InputLabel
                                                 htmlFor="nik"
@@ -303,7 +326,6 @@ export default function Register() {
                                             />
                                         </div>
 
-                                        {/* Nama */}
                                         <div>
                                             <InputLabel
                                                 htmlFor="name"
@@ -329,7 +351,6 @@ export default function Register() {
                                             />
                                         </div>
 
-                                        {/* Tanggal Lahir */}
                                         <div>
                                             <InputLabel
                                                 htmlFor="tanggal_lahir"
@@ -355,7 +376,6 @@ export default function Register() {
                                             />
                                         </div>
 
-                                        {/* Kelamin */}
                                         <div>
                                             <InputLabel
                                                 htmlFor="kelamin"
@@ -388,7 +408,6 @@ export default function Register() {
                                             />
                                         </div>
 
-                                        {/* No Telp */}
                                         <div className="sm:col-span-2">
                                             <InputLabel
                                                 htmlFor="no_telp"
@@ -414,7 +433,6 @@ export default function Register() {
                                             />
                                         </div>
 
-                                        {/* Alamat */}
                                         <div className="sm:col-span-2">
                                             <InputLabel
                                                 htmlFor="alamat"
@@ -443,14 +461,12 @@ export default function Register() {
                                     </div>
                                 </div>
 
-                                {/* Data Akun Section */}
                                 <div className="space-y-4">
                                     <h3 className="border-b pb-2 text-sm font-semibold uppercase tracking-wide text-gray-700">
                                         Data Akun
                                     </h3>
 
                                     <div className="space-y-4">
-                                        {/* Email */}
                                         <div>
                                             <InputLabel
                                                 htmlFor="email"
@@ -478,7 +494,6 @@ export default function Register() {
                                         </div>
 
                                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                            {/* Password */}
                                             <div>
                                                 <InputLabel
                                                     htmlFor="password"
@@ -505,7 +520,6 @@ export default function Register() {
                                                 />
                                             </div>
 
-                                            {/* Konfirmasi Password */}
                                             <div>
                                                 <InputLabel
                                                     htmlFor="password_confirmation"
@@ -539,7 +553,6 @@ export default function Register() {
                                     </div>
                                 </div>
 
-                                {/* Submit Button */}
                                 <div className="pt-4">
                                     <PrimaryButton
                                         className="w-full justify-center py-3 text-base"
@@ -551,7 +564,6 @@ export default function Register() {
                                     </PrimaryButton>
                                 </div>
 
-                                {/* Login Link */}
                                 <div className="text-center text-sm text-gray-600">
                                     Sudah punya akun?{' '}
                                     <Link

@@ -105,25 +105,37 @@ const generateFetalReferenceData = () => {
     });
 };
 
-export default function GrafikJanin({ growth, pregnant, activeTrimester }: Props) {
+export default function GrafikJanin({
+    growth,
+    pregnant,
+    activeTrimester,
+}: Props) {
     const fetalMeasurements = useMemo(() => {
         if (!pregnant.janin) return [];
 
-        return pregnant.janin.map((janin) => {
-            const ancData = growth.find(g => g.id === janin.pemeriksaan_anc_id);
-            if (!ancData) return null;
+        return pregnant.janin
+            .map((janin) => {
+                const ancData = growth.find(
+                    (g) => g.id === janin.pemeriksaan_anc_id,
+                );
+                if (!ancData) return null;
 
-            const week = calculatePregnancyWeek(pregnant.hpht, ancData.tanggal_checkup);
-            return {
-                week,
-                beratJanin: janin.taksiran_berat_janin,
-                panjangJanin: parseFloat(janin.panjang_janin_cm),
-                detak_jantung: janin.denyut_jantung_janin,
-                posisi: janin.posisi_janin,
-                pergerakan: janin.pergerakan_janin,
-                date: ancData.tanggal_checkup,
-            };
-        }).filter(Boolean).sort((a, b) => a.week - b.week);
+                const week = calculatePregnancyWeek(
+                    pregnant.hpht,
+                    ancData.tanggal_checkup,
+                );
+                return {
+                    week,
+                    beratJanin: janin.taksiran_berat_janin,
+                    panjangJanin: parseFloat(janin.panjang_janin_cm),
+                    detak_jantung: janin.denyut_jantung_janin,
+                    posisi: janin.posisi_janin,
+                    pergerakan: janin.pergerakan_janin,
+                    date: ancData.tanggal_checkup,
+                };
+            })
+            .filter(Boolean)
+            .sort((a, b) => a.week - b.week);
     }, [pregnant.janin, pregnant.hpht, growth]);
 
     const fetalReferenceData = generateFetalReferenceData();
@@ -144,7 +156,7 @@ export default function GrafikJanin({ growth, pregnant, activeTrimester }: Props
         const combinedData = [...referenceData];
 
         actualData.forEach((actual) => {
-            const index = combinedData.findIndex(d => d.week === actual.week);
+            const index = combinedData.findIndex((d) => d.week === actual.week);
             if (index !== -1) {
                 combinedData[index] = {
                     ...combinedData[index],
@@ -163,7 +175,9 @@ export default function GrafikJanin({ growth, pregnant, activeTrimester }: Props
     const FetalTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
-            const actualData = fetalMeasurements.find(m => m.week === data.week);
+            const actualData = fetalMeasurements.find(
+                (m) => m.week === data.week,
+            );
 
             return (
                 <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-lg">
@@ -172,25 +186,28 @@ export default function GrafikJanin({ growth, pregnant, activeTrimester }: Props
                     </p>
                     {actualData && (
                         <>
-                            <p className="text-xs text-gray-500 mb-2">
-                                Tanggal: {new Date(actualData.date).toLocaleDateString('id-ID')}
+                            <p className="mb-2 text-xs text-gray-500">
+                                Tanggal:{' '}
+                                {new Date(actualData.date).toLocaleDateString(
+                                    'id-ID',
+                                )}
                             </p>
-                            <p className="text-sm text-blue-600 font-medium">
+                            <p className="text-sm font-medium text-blue-600">
                                 Berat Janin: {actualData.beratJanin} gram
                             </p>
-                            <p className="text-sm text-green-600 font-medium">
+                            <p className="text-sm font-medium text-green-600">
                                 Panjang Janin: {actualData.panjangJanin} cm
                             </p>
-                            <p className="text-sm text-red-600 font-medium">
+                            <p className="text-sm font-medium text-red-600">
                                 Detak Jantung: {actualData.detak_jantung} bpm
                             </p>
-                            <p className="text-sm text-purple-600 mt-1">
+                            <p className="mt-1 text-sm text-purple-600">
                                 Posisi: {actualData.posisi}
                             </p>
                         </>
                     )}
                     {!actualData && (
-                        <p className="text-xs text-gray-400 italic">
+                        <p className="text-xs italic text-gray-400">
                             Data referensi (belum ada pemeriksaan)
                         </p>
                     )}
@@ -204,7 +221,7 @@ export default function GrafikJanin({ growth, pregnant, activeTrimester }: Props
         return new Date(dateString).toLocaleDateString('id-ID', {
             day: 'numeric',
             month: 'long',
-            year: 'numeric'
+            year: 'numeric',
         });
     };
 
@@ -220,135 +237,138 @@ export default function GrafikJanin({ growth, pregnant, activeTrimester }: Props
                     {activeTrimester === 3 && 'Minggu 28-40'}
                 </p>
                 <p className="mt-1 text-xs text-gray-400">
-                    Garis putus-putus menunjukkan referensi normal, garis solid menunjukkan data pemeriksaan aktual
+                    Garis putus-putus menunjukkan referensi normal, garis solid
+                    menunjukkan data pemeriksaan aktual
                 </p>
             </div>
 
-        <ResponsiveContainer width="100%" height={400}>
-            <LineChart
-                data={filteredFetalData}
-                margin={{
-                    top: 10,
-                    right: 30,
-                    left: 20,
-                    bottom: 30,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-
-                <XAxis
-                    dataKey="week"
-                    label={{
-                        value: 'Minggu Kehamilan',
-                        position: 'insideBottom',
-                        offset: -10,
+            <ResponsiveContainer width="100%" height={400}>
+                <LineChart
+                    data={filteredFetalData}
+                    margin={{
+                        top: 10,
+                        right: 30,
+                        left: 20,
+                        bottom: 30,
                     }}
-                    tick={{ fontSize: 12 }}
-                />
+                >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 
-                <YAxis
-                    yAxisId="left"
-                    label={{
-                        value: 'Berat & Panjang Janin',
-                        angle: -90,
-                        position: 'insideLeft',
-                    }}
-                    tick={{ fontSize: 12 }}
-                />
+                    <XAxis
+                        dataKey="week"
+                        label={{
+                            value: 'Minggu Kehamilan',
+                            position: 'insideBottom',
+                            offset: -10,
+                        }}
+                        tick={{ fontSize: 12 }}
+                    />
 
-                <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    label={{
-                        value: 'Detak Jantung (bpm)',
-                        angle: 90,
-                        position: 'insideRight',
-                    }}
-                    tick={{ fontSize: 12 }}
-                />
+                    <YAxis
+                        yAxisId="left"
+                        label={{
+                            value: 'Berat & Panjang Janin',
+                            angle: -90,
+                            position: 'insideLeft',
+                        }}
+                        tick={{ fontSize: 12 }}
+                    />
 
-                <Tooltip content={<FetalTooltip />} />
-                <Legend wrapperStyle={{ paddingTop: '20px' }} iconType="circle" />
+                    <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        label={{
+                            value: 'Detak Jantung (bpm)',
+                            angle: 90,
+                            position: 'insideRight',
+                        }}
+                        tick={{ fontSize: 12 }}
+                    />
 
-                {/* ============================== */}
-                {/* 🔵 Berat Janin */}
-                {/* ============================== */}
-                <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="actualWeight"
-                    stroke="#3b82f6" // biru
-                    strokeWidth={3}
-                    dot={{ r: 5, fill: '#3b82f6' }}
-                    name="Berat Janin (gram)"
-                    isAnimationActive={true}
-                    connectNulls={true}
-                />
+                    <Tooltip content={<FetalTooltip />} />
+                    <Legend
+                        wrapperStyle={{ paddingTop: '20px' }}
+                        iconType="circle"
+                    />
 
-                {/* ============================== */}
-                {/* 💚 Panjang Janin */}
-                {/* ============================== */}
-                <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="actualLength"
-                    stroke="#10b981" // hijau
-                    strokeWidth={3}
-                    dot={{ r: 5, fill: '#10b981' }}
-                    name="Panjang Janin (cm)"
-                    isAnimationActive={true}
-                    connectNulls={true}
-                />
+                    {/* ============================== */}
+                    {/* 🔵 Berat Janin */}
+                    {/* ============================== */}
+                    <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="actualWeight"
+                        stroke="#3b82f6" // biru
+                        strokeWidth={3}
+                        dot={{ r: 5, fill: '#3b82f6' }}
+                        name="Berat Janin (gram)"
+                        isAnimationActive={true}
+                        connectNulls={true}
+                    />
 
-                {/* ============================== */}
-                {/* ❤️ Detak Jantung */}
-                {/* ============================== */}
-                <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="actualHeartRate"
-                    stroke="#ef4444" // merah
-                    strokeWidth={3}
-                    dot={{ r: 5, fill: '#ef4444' }}
-                    name="Detak Jantung (bpm)"
-                    isAnimationActive={true}
-                    connectNulls={true}
-                />
-            </LineChart>
-        </ResponsiveContainer>
+                    {/* ============================== */}
+                    {/* 💚 Panjang Janin */}
+                    {/* ============================== */}
+                    <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="actualLength"
+                        stroke="#10b981" // hijau
+                        strokeWidth={3}
+                        dot={{ r: 5, fill: '#10b981' }}
+                        name="Panjang Janin (cm)"
+                        isAnimationActive={true}
+                        connectNulls={true}
+                    />
 
+                    {/* ============================== */}
+                    {/* ❤️ Detak Jantung */}
+                    {/* ============================== */}
+                    <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="actualHeartRate"
+                        stroke="#ef4444" // merah
+                        strokeWidth={3}
+                        dot={{ r: 5, fill: '#ef4444' }}
+                        name="Detak Jantung (bpm)"
+                        isAnimationActive={true}
+                        connectNulls={true}
+                    />
+                </LineChart>
+            </ResponsiveContainer>
 
             {/* Tabel Data Janin */}
             {fetalMeasurements.length > 0 && (
                 <div className="mt-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-800">
                         Riwayat Data Janin
                     </h3>
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
                                         Minggu
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
                                         Tanggal
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
                                         Berat Janin
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
                                         Panjang Janin
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
                                         Detak Jantung
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
                                         Posisi
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="divide-y divide-gray-200 bg-white">
                                 {fetalMeasurements.map((m, idx) => (
                                     <tr key={idx} className="hover:bg-gray-50">
                                         <td className="px-4 py-3 text-sm text-gray-900">

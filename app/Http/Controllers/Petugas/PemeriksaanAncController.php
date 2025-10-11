@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Throwable;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PemeriksaanAnc;
+use App\Models\RiwayatSakitKehamilan;
 
 class PemeriksaanAncController extends Controller
 {
@@ -32,13 +33,53 @@ class PemeriksaanAncController extends Controller
             );
 
             return redirect()->back();
-
-
         } catch (Throwable $e) {
-           return response()->json(['err' => $e->getMessage()]);
+            return response()->json(['err' => $e->getMessage()]);
         }
     }
+    public function index($id)
+    {
+        $pregnant = Kehamilan::with(['user', 'janin'])->findOrFail($id);
+        $checkupHistory = PemeriksaanAnc::where('kehamilan_id', $id)
+            ->with([
+                'kehamilan.user',
+                'petugas.faskes',
+                'dataJanin',
+                'hasilLab',
+                'imunisasi',
+            ])
+            ->orderBy('tanggal_checkup', 'desc')
+            ->get()
+            ->toArray();
 
+
+        $growth = PemeriksaanAnc::with([
+            'hasilLab',
+            'petugas.faskes',
+            'riwayatSakitKehamilan',
+            'dataJanin'
+        ])
+            ->where('kehamilan_id', $pregnant->id)
+            ->orderBy('tanggal_checkup', 'asc')
+            ->get()
+            ->toArray();
+
+        $sickHistory = RiwayatSakitKehamilan::where('kehamilan_id', $id)
+            ->with([
+                'kehamilan.user',
+                'pemeriksaan.petugas.faskes',
+            ])
+            ->orderBy('tanggal_diagnosis', 'desc')
+            ->get()
+            ->toArray();
+
+        return Inertia::render('Petugas/Pemeriksaan/Kehamilan/PregnancyCheckupPageRoute', [
+            'pregnant' => $pregnant,
+            'checkupHistory' => $checkupHistory,
+            'sickHistory' => $sickHistory,
+            'growth' => $growth,
+        ]);
+    }
     public function createPemeriksaanKehamilan($id)
     {
         $pregnant = Kehamilan::with('user')->findOrFail($id);
