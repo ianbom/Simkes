@@ -7,6 +7,7 @@ use App\Http\Requests\CreateAnakRequest;
 use App\Models\Anak;
 use App\Models\PemeriksaanAnak;
 use App\Services\AnakService;
+use App\Services\NotifikasiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -15,17 +16,19 @@ use Inertia\Inertia;
 class AnakController extends Controller
 {
     protected AnakService $anakService;
+        protected $notifikasiService;
 
-    public function __construct(AnakService $anakService)
+    public function __construct(AnakService $anakService, NotifikasiService $notifikasiService)
     {
         $this->anakService = $anakService;
+        $this->notifikasiService = $notifikasiService;
     }
 
     public function store(CreateAnakRequest $request)
     {
         try {
             $anak = $this->anakService->createAnak($request);
-
+            $jadwalNotifikasi = $this->notifikasiService->createJadwalNotifikasiAnak($request['tanggal_lahir'], $request['orang_tua_id']);
             return redirect()->back();
         } catch (\Throwable $th) {
             return response()->json([

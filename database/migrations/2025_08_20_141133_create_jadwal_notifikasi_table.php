@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('jadwal_notifikasi', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('notifikasi_id')->nullable()->constrained('notifikasi')->cascadeOnDelete();
             $table->date('tanggal_dijadwalkan')->nullable();
             $table->string('judul');
             $table->text('konten');
