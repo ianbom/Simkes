@@ -7,6 +7,7 @@ use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
 use App\Http\Controllers\Pasien\DashboardController;
 use App\Http\Controllers\Pasien\KehamilanController as PsnKehamilanController;
 use App\Http\Controllers\Pasien\FaskesController as PsnFaskesController;
+use App\Http\Controllers\Pasien\KeluargaController;
 use App\Http\Controllers\Pasien\KonsultasiOnlineController;
 use App\Http\Controllers\Pasien\RiwayatMedisUserController;
 use App\Http\Controllers\Petugas\DashboardController as PtgDashboardController;
@@ -101,11 +102,19 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
 
 
     Route::get('/grafik/perkembangan-anak/{id}', [PsnAnakController::class, 'viewPerkembanganAnak'])->name('view.perkembanganAnak');
-    Route::get('/grafik/perkembangan-janin/{id}', [PsnKehamilanController::class, 'viewPerkembanganKehamilan'])->name('view.perkembanganKehamilan');
+
+    Route::get('/grafik/perkembangan-janin/{id}',[PsnKehamilanController::class, 'viewPerkembanganKehamilan'])->name('view.perkembanganKehamilan');
+
+    Route::get('/keluarga', [KeluargaController::class, 'viewKeluarga'])->name('viewKeluarga');
+    Route::post('/keluarga/create', [KeluargaController::class, 'createKeluarga'])->name('createKeluarga');
+    Route::post('/keluarga/join', [KeluargaController::class, 'joinKeluarga'])->name('joinKeluarga');
+
+
 });
 // Route untuk akses fitur petugas
 Route::prefix('petugas')->as('petugas.')->group(function () {
     Route::get('/dashboard', [PtgDashboardController::class, 'index'])->name('dashboard.index');
+    Route::post('/create/kehamilan', [PtgDashboardController::class, 'createKehamilan'])->name('createKehamilan');
 
     Route::get('/pemeriksaan', function () {
         return Inertia::render('Petugas/Pemeriksaan/CheckupPageRoute');
