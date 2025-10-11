@@ -37,7 +37,7 @@ class PemeriksaanAncController extends Controller
             return response()->json(['err' => $e->getMessage()]);
         }
     }
-    public function index($id)
+    public function createPemeriksaanKehamilan($id)
     {
         $pregnant = Kehamilan::with(['user', 'janin'])->findOrFail($id);
         $checkupHistory = PemeriksaanAnc::where('kehamilan_id', $id)
@@ -80,7 +80,7 @@ class PemeriksaanAncController extends Controller
             'growth' => $growth,
         ]);
     }
-    public function createPemeriksaanKehamilan($id)
+    public function index($id)
     {
         $pregnant = Kehamilan::with('user')->findOrFail($id);
         // return response()->json($pregnant);

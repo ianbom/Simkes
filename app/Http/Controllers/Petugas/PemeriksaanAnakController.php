@@ -23,7 +23,7 @@ class PemeriksaanAnakController extends Controller
     {
         $this->pemeriksaanAnakService = $pemeriksaanAnakService;
     }
-    public function index($id)
+    public function createPemeriksaan($id)
     {
         $child = Anak::with(['kelahiran', 'orangTua'])->findOrFail($id);
         $growth = PemeriksaanAnak::with('riwayatSakit', 'petugas.faskes')->where('anak_id', $child->id)->get();
@@ -61,10 +61,9 @@ class PemeriksaanAnakController extends Controller
         }
     }
 
-    public function createPemeriksaan($id)
+    public function index($id)
     {
         $child = Anak::with('orangTua')->findOrFail($id);
-
 
         return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute', [
             'child' => $child

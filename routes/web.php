@@ -122,12 +122,12 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
     // Route::get('/checkup-anak/{id}', function () {
     //     return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute');
     // });
-    Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'index'])->name('index.pemeriksaanAnak');
-    // Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
+    // Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'index'])->name('index.pemeriksaanAnak');
+    Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
     Route::post('/store-checkup', [PtgPemeriksaanAnakController::class, 'store'])->name('store.pemeriksaanAnak');
 
-    Route::get('/checkup-kehamilan/{id}', [PtgPemeriksaanAncController::class, 'index'])->name('index.pemeriksaanAnc');
-    // Route::get('/checkup-kehamilan/{id}', [PtgPemeriksaanAncController::class, 'createPemeriksaanKehamilan'])->name('create.pemeriksaanAnc');
+    // Route::get('/checkup-kehamilan/{id}', [PtgPemeriksaanAncController::class, 'index'])->name('index.pemeriksaanAnc');
+    Route::get('/checkup-kehamilan/{id}', [PtgPemeriksaanAncController::class, 'createPemeriksaanKehamilan'])->name('create.pemeriksaanAnc');
     Route::post('/store-checkup-kehamilan', [PtgPemeriksaanAncController::class, 'store'])->name('store.pemeriksaanAnc');
 
 
