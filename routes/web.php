@@ -101,8 +101,7 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
 
 
     Route::get('/grafik/perkembangan-anak/{id}', [PsnAnakController::class, 'viewPerkembanganAnak'])->name('view.perkembanganAnak');
-    Route::get('/grafik/perkembangan-janin/{id}',[PsnKehamilanController::class, 'viewPerkembanganKehamilan'])->name('view.perkembanganKehamilan');
-
+    Route::get('/grafik/perkembangan-janin/{id}', [PsnKehamilanController::class, 'viewPerkembanganKehamilan'])->name('view.perkembanganKehamilan');
 });
 // Route untuk akses fitur petugas
 Route::prefix('petugas')->as('petugas.')->group(function () {
@@ -111,13 +110,15 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
     Route::get('/pemeriksaan', function () {
         return Inertia::render('Petugas/Pemeriksaan/CheckupPageRoute');
     });
-    Route::get('/checkup-anak/{id}', function () {
-        return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute');
-    });
-    Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
+    // Route::get('/checkup-anak/{id}', function () {
+    //     return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute');
+    // });
+    Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'index'])->name('index.pemeriksaanAnak');
+    // Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
     Route::post('/store-checkup', [PtgPemeriksaanAnakController::class, 'store'])->name('store.pemeriksaanAnak');
 
-    Route::get('/checkup-kehamilan/{id}', [PtgPemeriksaanAncController::class, 'createPemeriksaanKehamilan'])->name('create.pemeriksaanAnc');
+    Route::get('/checkup-kehamilan/{id}', [PtgPemeriksaanAncController::class, 'index'])->name('index.pemeriksaanAnc');
+    // Route::get('/checkup-kehamilan/{id}', [PtgPemeriksaanAncController::class, 'createPemeriksaanKehamilan'])->name('create.pemeriksaanAnc');
     Route::post('/store-checkup-kehamilan', [PtgPemeriksaanAncController::class, 'store'])->name('store.pemeriksaanAnc');
 
 
