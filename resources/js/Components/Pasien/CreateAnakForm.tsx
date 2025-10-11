@@ -4,9 +4,14 @@ import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { useForm } from '@inertiajs/react';
 
-export default function CreateAnakForm({patient}) {
-    const { data, setData, post, processing, errors } = useForm({
-        orang_tua_id: patient.id,
+interface CreateAnakFormProps {
+    patient: any;
+    onClose: () => void; // ✅ untuk menutup modal setelah sukses
+}
+
+export default function CreateAnakForm({ patient, onClose }: CreateAnakFormProps) {
+    const { data, setData, post, processing, errors, reset } = useForm({
+        orang_tua_id: patient?.id || '',
         kelahiran_id: '',
         nama: '',
         kelamin: '',
@@ -22,7 +27,14 @@ export default function CreateAnakForm({patient}) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('pasien.anak.store'));
+
+        post(route('pasien.anak.store'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                reset(); // ✅ Kosongkan form
+                onClose(); // ✅ Tutup modal otomatis
+            },
+        });
     };
 
     return (
@@ -175,7 +187,7 @@ export default function CreateAnakForm({patient}) {
             {/* Tombol Submit */}
             <div className="flex justify-end">
                 <PrimaryButton disabled={processing}>
-                    Simpan
+                    {processing ? 'Menyimpan...' : 'Simpan'}
                 </PrimaryButton>
             </div>
         </form>
