@@ -14,8 +14,9 @@ export default function CreateAnakForm({ patient, onClose }: CreateAnakFormProps
         orang_tua_id: patient?.id || '',
         kelahiran_id: '',
         nama: '',
+        nik: '',
         kelamin: '',
-        status_hidup: '',
+        status_hidup: 'Hidup',
         tanggal_lahir: '',
         tanggal_meninggal: '',
         berat_lahir_gram: '',
@@ -23,6 +24,7 @@ export default function CreateAnakForm({ patient, onClose }: CreateAnakFormProps
         lingkar_kepala_cm: '',
         urutan_kelahiran: '',
         kondisi: '',
+
     });
 
     const submit = (e: React.FormEvent) => {
@@ -55,6 +57,17 @@ export default function CreateAnakForm({ patient, onClose }: CreateAnakFormProps
                         <InputError message={errors.nama} className="mt-2" />
                     </div>
 
+                    <div>
+                        <InputLabel htmlFor="nik" value="NIK" />
+                        <TextInput
+                            id="nik"
+                            value={data.nik}
+                            className="mt-1 block w-full"
+                            onChange={(e) => setData('nik', e.target.value)}
+                        />
+                        <InputError message={errors.nik} className="mt-2" />
+                    </div>
+
                     {/* Kelamin */}
                     <div>
                         <InputLabel htmlFor="kelamin" value="Jenis Kelamin" />
@@ -71,21 +84,7 @@ export default function CreateAnakForm({ patient, onClose }: CreateAnakFormProps
                         <InputError message={errors.kelamin} className="mt-2" />
                     </div>
 
-                    {/* Status Hidup */}
-                    <div>
-                        <InputLabel htmlFor="status_hidup" value="Status Hidup" />
-                        <select
-                            id="status_hidup"
-                            value={data.status_hidup}
-                            className="mt-1 block w-full border-gray-300 rounded-md"
-                            onChange={(e) => setData('status_hidup', e.target.value)}
-                        >
-                            <option value="">Pilih</option>
-                            <option value="Hidup">Hidup</option>
-                            <option value="Meninggal">Meninggal</option>
-                        </select>
-                        <InputError message={errors.status_hidup} className="mt-2" />
-                    </div>
+
 
                     {/* Tanggal Lahir */}
                     <div>
@@ -101,17 +100,7 @@ export default function CreateAnakForm({ patient, onClose }: CreateAnakFormProps
                     </div>
 
                     {/* Tanggal Meninggal */}
-                    <div>
-                        <InputLabel htmlFor="tanggal_meninggal" value="Tanggal Meninggal" />
-                        <TextInput
-                            id="tanggal_meninggal"
-                            type="date"
-                            value={data.tanggal_meninggal}
-                            className="mt-1 block w-full"
-                            onChange={(e) => setData('tanggal_meninggal', e.target.value)}
-                        />
-                        <InputError message={errors.tanggal_meninggal} className="mt-2" />
-                    </div>
+
                 </div>
 
                 {/* Kolom Kanan */}

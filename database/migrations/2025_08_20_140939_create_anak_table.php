@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('kelahiran_id')->nullable()->constrained('kelahiran')->cascadeOnDelete();
             $table->foreignId('orang_tua_id')->constrained('users')->cascadeOnDelete();
             $table->string('nama')->nullable();
+            $table->string('nik')->nullable();
             $table->enum('kelamin', ['L', 'P']);
             $table->enum('status_hidup', ['Hidup', 'Meninggal']);
             $table->date('tanggal_lahir')->nullable();

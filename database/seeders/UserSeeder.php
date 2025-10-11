@@ -89,6 +89,7 @@ class UserSeeder extends Seeder
                     Anak::create([
                         'orang_tua_id'       => $user->id,
                         'kelahiran_id'       => null,
+                        'nik'               =>  fake()->unique()->numerify('32760##########'),
                         'nama'               => fake()->firstName(),
                         'kelamin'            => fake()->randomElement(['L', 'P']),
                         'status_hidup'       => 'Hidup',

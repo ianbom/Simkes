@@ -24,6 +24,7 @@ class AnakService
             'kelahiran_id'      => $data['kelahiran_id'] ?? null,
             'orang_tua_id'     => $data['orang_tua_id'],
             'nama'              => $data['nama'] ?? null,
+            'nik'              => $data['nik'] ?? null,
             'kelamin'           => $data['kelamin'],
             'status_hidup'      => $data['status_hidup'],
             'tanggal_lahir'     => $data['tanggal_lahir'] ?? null,

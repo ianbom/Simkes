@@ -19,6 +19,7 @@ class CreateAnakRequest extends FormRequest
             'orang_tua_id'       => 'nullable',
             'kelahiran_id'       => 'nullable|exists:kelahiran,id',
             'nama'               => 'nullable|string|max:255',
+            'nik'               => 'nullable|string|max:255',
             'kelamin'            => 'required|in:L,P',
             'status_hidup'       => 'required|in:Hidup,Meninggal',
             'tanggal_lahir'      => 'nullable|date',
