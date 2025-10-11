@@ -9,6 +9,7 @@ use App\Http\Controllers\Pasien\KehamilanController as PsnKehamilanController;
 use App\Http\Controllers\Pasien\FaskesController as PsnFaskesController;
 use App\Http\Controllers\Pasien\KeluargaController;
 use App\Http\Controllers\Pasien\KonsultasiOnlineController;
+use App\Http\Controllers\Pasien\ProfileController as PsnProfileController;
 use App\Http\Controllers\Pasien\RiwayatMedisUserController;
 use App\Http\Controllers\Petugas\DashboardController as PtgDashboardController;
 use App\Http\Controllers\Petugas\OnlineConsultationController as PtgOnlineConsultationController;
@@ -67,9 +68,10 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
 
     Route::get('konsultasi', [KonsultasiOnlineController::class, 'index'])->name('consultation.index');
     Route::post('konsultasi-bookConsult/{id}', [KonsultasiOnlineController::class, 'bookConsult'])->name('consultation.bookConsult');
-    Route::get('/profil', function () {
-        return Inertia::render('Pasien/Profil/ProfilePageRoute');
-    });
+    Route::get('/profil', [PsnProfileController::class, 'myProfile'])->name('myProfile');
+    Route::post('/profil/update', [PsnProfileController::class, 'updateProfile'])->name('updateProfile');
+    Route::post('/riwayat-medis/update', [PsnProfileController::class, 'updateRiwayatMedis'])->name('updateRiwayatMedis');
+
 
     Route::get('/faskes', [PsnFaskesController::class, 'index'])->name('faskes.index');
     Route::get('/faskes-map', [PsnFaskesController::class, 'mapFaskes'])->name('faskes.map');
