@@ -2,7 +2,7 @@ import CardHero from '@/Components/partials/petugas/dashboard/CardHero';
 import OnlinePatientQueueCard from '@/Components/partials/petugas/dashboard/OnlinePatientQueueCard';
 import PatientQueueCard from '@/Components/partials/petugas/dashboard/PatientQueueCard';
 import QuickStats from '@/Components/partials/petugas/dashboard/QuickStats';
-import { Button } from '@/Components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
