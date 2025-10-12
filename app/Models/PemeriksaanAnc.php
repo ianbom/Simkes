@@ -6,34 +6,42 @@ use Illuminate\Database\Eloquent\Model;
 
 class PemeriksaanAnc extends Model
 {
-        protected $guarded = ['id'];
+    protected $guarded = ['id'];
     protected $primaryKey = 'id';
     protected $table = 'pemeriksaan_anc';
 
 
-    public function kehamilan() {
+    public function kehamilan()
+    {
         return $this->belongsTo(Kehamilan::class);
     }
-    public function petugas() {
+    public function petugas()
+    {
         return $this->belongsTo(User::class, 'petugas_faskes_id');
     }
-    public function dataJanin() {
+    public function dataJanin()
+    {
         return $this->hasMany(DataJanin::class);
     }
-    public function media() {
+    public function media()
+    {
         return $this->hasMany(MediaPemeriksaan::class);
     }
-    public function hasilLab() {
+    public function hasilLab()
+    {
         return $this->hasMany(HasilLab::class);
     }
-    public function imunisasi() {
+    public function imunisasi()
+    {
         return $this->hasMany(RiwayatImunisasi::class);
     }
-    public function resep() {
+    public function resep()
+    {
         return $this->hasMany(ResepObatCheckup::class);
     }
 
-    public function riwayatSakitKehamilan(){
+    public function riwayatSakitKehamilan()
+    {
         return $this->hasMany(RiwayatSakitKehamilan::class);
     }
 }

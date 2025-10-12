@@ -18,7 +18,8 @@ class PetugasController extends Controller
     }
 
 
-    public function index(){
+    public function index()
+    {
         $faskesId = Auth::user()->faskes_id;
 
         $petugas = $this->petugasService->getPetugasByFaskedId($faskesId);

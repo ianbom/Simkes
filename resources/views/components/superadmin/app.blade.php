@@ -4,10 +4,10 @@
 <head>
     <meta charset='utf-8' />
     <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-    <title>{{ $title ?? 'Superadmin' }}</title>
+    <title>{{ $title ?? 'Super Admin' }}</title>
 
     <meta name='viewport' content='width=device-width, initial-scale=1' />
-    <link rel="icon" type="image/svg" href="/assets/images/favicon.svg" />
+    <link rel="icon" type="image/png" href="/assets/images/simkesia-logo.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,8 +21,9 @@
     @vite(['resources/css/app.css'])
 </head>
 
-<body x-data="main" class="antialiased relative font-nunito text-sm font-normal overflow-x-hidden"
-    :class="[$store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ?  'dark' : '', $store.app.menu, $store.app.layout, $store.app
+<body x-data="main" class="relative overflow-x-hidden text-sm antialiased font-normal font-nunito"
+    :class="[$store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ? 'dark' : '',
+        $store.app.menu, $store.app.layout, $store.app
         .rtlClass
     ]">
 
@@ -47,12 +48,12 @@
         </svg>
     </div>
 
-    <div class="fixed bottom-6 ltr:right-6 rtl:left-6 z-50" x-data="scrollToTop">
+    <div class="fixed z-50 bottom-6 ltr:right-6 rtl:left-6" x-data="scrollToTop">
         <template x-if="showTopButton">
             <button type="button"
                 class="btn btn-outline-primary rounded-full p-2 animate-pulse bg-[#fafafa] dark:bg-[#060818] dark:hover:bg-primary"
                 @click="goToTop">
-                <svg width="24" height="24" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                <svg width="24" height="24" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd"
                         d="M12 20.75C12.4142 20.75 12.75 20.4142 12.75 20L12.75 10.75L11.25 10.75L11.25 20C11.25 20.4142 11.5858 20.75 12 20.75Z"
@@ -93,20 +94,20 @@
 
     <x-common.theme-customiser />
 
-    <div class="main-container text-black dark:text-white-dark min-h-screen" :class="[$store.app.navbar]">
+    <div class="min-h-screen text-black main-container dark:text-white-dark" :class="[$store.app.navbar]">
 
 
-        <x-superadmin.sidebar/>
+        <x-superadmin.sidebar />
 
-        <div class="main-content flex flex-col min-h-screen">
+        <div class="flex flex-col min-h-screen main-content">
 
-            <x-superadmin.header/>
-            <div class="dvanimation p-6 animate__animated" :class="[$store.app.animation]">
+            <x-superadmin.header />
+            <div class="p-6 dvanimation animate__animated" :class="[$store.app.animation]">
                 {{ $slot }}
             </div>
 
 
-            <x-superadmin.footer/>
+            <x-superadmin.footer />
         </div>
     </div>
     <script src="/assets/js/alpine-collaspe.min.js"></script>

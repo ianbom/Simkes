@@ -105,13 +105,11 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
 
     Route::get('/grafik/perkembangan-anak/{id}', [PsnAnakController::class, 'viewPerkembanganAnak'])->name('view.perkembanganAnak');
 
-    Route::get('/grafik/perkembangan-janin/{id}',[PsnKehamilanController::class, 'viewPerkembanganKehamilan'])->name('view.perkembanganKehamilan');
+    Route::get('/grafik/perkembangan-janin/{id}', [PsnKehamilanController::class, 'viewPerkembanganKehamilan'])->name('view.perkembanganKehamilan');
 
     Route::get('/keluarga', [KeluargaController::class, 'viewKeluarga'])->name('viewKeluarga');
     Route::post('/keluarga/create', [KeluargaController::class, 'createKeluarga'])->name('createKeluarga');
     Route::post('/keluarga/join', [KeluargaController::class, 'joinKeluarga'])->name('joinKeluarga');
-
-
 });
 // Route untuk akses fitur petugas
 Route::prefix('petugas')->as('petugas.')->group(function () {

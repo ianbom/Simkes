@@ -24,7 +24,7 @@ class PemeriksaanAncService
         //
     }
 
-     public function createPemeriksaanAnc(array $data): array
+    public function createPemeriksaanAnc(array $data): array
     {
         DB::beginTransaction();
 
@@ -127,7 +127,6 @@ class PemeriksaanAncService
     private function createMediaPemeriksaan(array $mediaPemeriksaanArray, int $pemeriksaanAncId): void
     {
         foreach ($mediaPemeriksaanArray as $media) {
-            // Jika file_url berupa string URL (bukan UploadedFile)
             $fileUrl = is_string($media['file_url'])
                 ? $media['file_url']
                 : ($media['file_url']->store('media_pemeriksaan', 'public') ?? null);
@@ -211,28 +210,28 @@ class PemeriksaanAncService
         ResepObatCheckup::insert($resepObatData);
     }
 
-     // Create data janin if exists
-        // if (!empty($data['data_janin'])) {
-        //     $this->createDataJanin($data['data_janin'], $pemeriksaanAnc->id);
-        // }
+    // Create data janin if exists
+    // if (!empty($data['data_janin'])) {
+    //     $this->createDataJanin($data['data_janin'], $pemeriksaanAnc->id);
+    // }
 
-        // // Create media pemeriksaan if exists
-        // if (!empty($data['media_pemeriksaan'])) {
-        //     $this->createMediaPemeriksaan($data['media_pemeriksaan'], $pemeriksaanAnc->id);
-        // }
+    // // Create media pemeriksaan if exists
+    // if (!empty($data['media_pemeriksaan'])) {
+    //     $this->createMediaPemeriksaan($data['media_pemeriksaan'], $pemeriksaanAnc->id);
+    // }
 
-        // // Create hasil lab if exists
-        // if (!empty($data['hasil_lab'])) {
-        //     $this->createHasilLab($data['hasil_lab'], $pemeriksaanAnc->id);
-        // }
+    // // Create hasil lab if exists
+    // if (!empty($data['hasil_lab'])) {
+    //     $this->createHasilLab($data['hasil_lab'], $pemeriksaanAnc->id);
+    // }
 
-        // // Create riwayat imunisasi if exists
-        // if (!empty($data['riwayat_imunisasi'])) {
-        //     $this->createRiwayatImunisasi($data['riwayat_imunisasi'], $pemeriksaanAnc->id, $data['kehamilan_id']);
-        // }
+    // // Create riwayat imunisasi if exists
+    // if (!empty($data['riwayat_imunisasi'])) {
+    //     $this->createRiwayatImunisasi($data['riwayat_imunisasi'], $pemeriksaanAnc->id, $data['kehamilan_id']);
+    // }
 
-        // // Create resep obat if exists
-        // if (!empty($data['resep_obat'])) {
-        //     $this->createResepObat($data['resep_obat'], $pemeriksaanAnc->id);
-        // }
+    // // Create resep obat if exists
+    // if (!empty($data['resep_obat'])) {
+    //     $this->createResepObat($data['resep_obat'], $pemeriksaanAnc->id);
+    // }
 }
