@@ -1,0 +1,1 @@
+const e=t=>new Date(t).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}),n=t=>new Date(t).toLocaleString("id-ID",{day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});export{n as a,e as f};
