@@ -9,6 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/Components/ui/select';
+import { formatDate, formatDateTime } from '@/utils/dateFormatter';
 import {
     Activity,
     Calendar,
@@ -22,77 +23,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-interface Kelahiran {
-    id: number;
-    tanggal_lahir: string;
-    berat_lahir: number;
-    panjang_lahir: number;
-}
-
-interface OrangTua {
-    id: number;
-    name: string;
-    email: string;
-}
-
-interface Anak {
-    id: number;
-    nama: string;
-    kelamin: string;
-    kelahiran?: Kelahiran;
-    orangTua?: OrangTua;
-}
-
-interface Faskes {
-    id: number;
-    nama: string;
-    tipe_faskes: string;
-}
-
-interface Petugas {
-    id: number;
-    name: string;
-    email: string;
-    faskes?: Faskes;
-}
-
-interface Skrining {
-    id: number;
-    hasil: string;
-    catatan?: string;
-}
-
-interface PemeriksaanAnak {
-    id: number;
-    anak_id: number;
-    petugas_faskes_id: number;
-    jenis_kunjungan: 'Rutin' | 'Sakit';
-    tanggal_pemeriksaan: string;
-    usia_saat_periksa_bulan: number;
-    berat_badan_kg: number;
-    tinggi_badan_cm: number;
-    lingkar_kepala_cm: number;
-    cara_ukur_tinggi?: string;
-    suhu_tubuh_celsius: number;
-    perkembangan_motorik: string;
-    perkembangan_kognitif: string;
-    perkembangan_emosional: string;
-    frekuensi_napas_per_menit?: number;
-    frekuensi_jantung_per_menit?: number;
-    catatan_pemeriksaan?: string;
-    saturasi_oksigen_persen?: number;
-    keluhan?: string;
-    diagnosis?: string;
-    tindakan?: string;
-    catatan?: string;
-    jadwal_kontrol_berikutnya?: string;
-    anak: Anak;
-    petugas: Petugas;
-    skrining?: Skrining;
-    created_at: string;
-    updated_at: string;
-}
-
+import { PemeriksaanAnak } from '@/types/interface';
 interface Props {
     checkupHistory?: PemeriksaanAnak[];
 }
@@ -116,8 +47,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
 
             const searchText = `
                 ${record.petugas?.name || ''}
-                ${record.diagnosis || ''}
-                ${record.keluhan || ''}
+                ${record.anak?.nama || ''}
                 ${record.petugas?.faskes?.nama || ''}
                 ${record.anak?.nama || ''}
             `.toLowerCase();
@@ -192,24 +122,6 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
         return type.toLowerCase() === 'rutin'
             ? 'Pemeriksaan Rutin'
             : 'Pemeriksaan Sakit';
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
-    };
-
-    const formatDateTime = (dateString: string) => {
-        return new Date(dateString).toLocaleString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
     };
 
     return (
@@ -335,7 +247,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                             <h3 className="mb-1 text-lg font-semibold text-gray-900">
                                                 {record.anak.nama}
                                             </h3>
-                                            {record.diagnosis && (
+                                            {/* {record.diagnosis && (
                                                 <p className="mb-1 text-sm text-gray-700">
                                                     Diagnosis:{' '}
                                                     {record.diagnosis}
@@ -345,7 +257,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                 <p className="mb-2 text-sm text-red-600">
                                                     Keluhan: {record.keluhan}
                                                 </p>
-                                            )}
+                                            )} */}
                                         </div>
 
                                         <div className="flex flex-col gap-2 text-sm text-gray-700">
@@ -506,8 +418,8 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                             </div>
                                         )}
 
-                                        {record.jadwal_kontrol_berikutnya && (
-                                            <div className="mt-4 rounded-md bg-green-50 p-3">
+                                        {/* {record.jadwal_kontrol_berikutnya && (
+                                            <div className="p-3 mt-4 rounded-md bg-green-50">
                                                 <p className="font-medium text-green-900">
                                                     Jadwal Kontrol Berikutnya
                                                 </p>
@@ -517,7 +429,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                     )}
                                                 </p>
                                             </div>
-                                        )}
+                                        )} */}
 
                                         <div className="mt-4 text-xs text-gray-500">
                                             Terakhir diperbarui:{' '}
@@ -552,7 +464,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                         <Button
                             onClick={() => setShowAll(true)}
                             size="lg"
-                            className="min-w-[250px]"
+                            className="min-w-[250px] text-white"
                         >
                             Tampilkan Semua Data ({filteredRecords.length}{' '}
                             total)

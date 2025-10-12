@@ -88,11 +88,13 @@ class PemeriksaanAncController extends Controller
             'pregnant' => $pregnant,
         ]);
     }
+
     public function pregnancyCheckupHistory()
     {
         $user = Auth::user();
+
         $checkupHistory = PemeriksaanAnc::with([
-            'kehamilan.user',
+            'kehamilan',
             'petugas.faskes',
             'dataJanin',
             'media',
@@ -100,11 +102,29 @@ class PemeriksaanAncController extends Controller
             'imunisasi',
             'resep',
         ])
-            ->where('petugas_faskes_id', $user->id)
+            ->whereHas('kehamilan', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
             ->latest('tanggal_checkup')
-            ->get();
+            ->get()
+            ->map(function ($record) {
+                return [
+                    ...$record->toArray(),
+                    'media' => $record->media->map(fn($m) => [
+                        'id' => $m->id,
+                        'pemeriksaan_anc_id' => $m->pemeriksaan_anc_id,
+                        'file_url' => asset('storage/' . $m->file_url),
+                        'created_at' => $m->created_at,
+                        'updated_at' => $m->updated_at,
+                    ]),
+                    'hasilLab' => $record->hasilLab,
+                    'dataJanin' => $record->dataJanin,
+                    'imunisasi' => $record->imunisasi,
+                    'resep' => $record->resep,
+                ];
+            });
 
-        return Inertia::render('Petugas/Riwayat/PregnancyCheckupHistoryPageRoute', [
+        return Inertia::render('Pasien/Riwayat/PregnancyCheckupHistoryPageRoute', [
             'checkupHistory' => $checkupHistory,
         ]);
     }
