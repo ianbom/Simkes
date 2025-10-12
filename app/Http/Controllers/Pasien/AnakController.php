@@ -60,6 +60,8 @@ class AnakController extends Controller
             'anak.orangTua',
             'petugas.faskes',
             'skrining',
+            'riwayatSakit',
+            'mediaPemeriksaanAnak',
         ])
             ->whereHas('anak', function ($query) use ($user) {
                 $query->where('orang_tua_id', $user->id);

@@ -6,9 +6,9 @@ import {
     CardTitle,
 } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import { FormEvent } from 'react';
+import { ChangeEvent, FormEvent } from 'react';
 import { useForm } from '@inertiajs/react';
 
 interface Props {
@@ -16,13 +16,13 @@ interface Props {
         id: number;
         nama: string;
     };
-    petugasFaskesId: number;
+    // petugasFaskesId: number;
 }
 
-export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Props) {
+export default function FormPemeriksaanRutinAnak({ child }: Props) {
     const { data, setData, post, processing, errors, reset } = useForm({
         anak_id: child.id,
-        petugas_faskes_id: petugasFaskesId,
+        // petugas_faskes_id: petugasFaskesId,
         jenis_kunjungan: 'Rutin',
         tanggal_pemeriksaan: new Date().toISOString().split('T')[0],
         usia_saat_periksa_bulan: 0,
@@ -53,7 +53,15 @@ export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Pro
             tindakan_pengobatan: '',
             catatan: '',
         },
+
+        media_pemeriksaan_anak: [] as File[],
     });
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setData('media_pemeriksaan_anak', Array.from(e.target.files));
+        }
+    };
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -338,6 +346,38 @@ export default function FormPemeriksaanRutinAnak({ child, petugasFaskesId }: Pro
                     </div>
                 </CardContent>
             </Card>
+
+            <Card>
+                <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="media">Upload Media Pemeriksaan</Label>
+                        <Input
+                            id="media"
+                            type="file"
+                            multiple
+                            accept=".jpg,.jpeg,.png,.mp4,.pdf,.doc,.docx"
+                            onChange={handleFileChange}
+                        />
+                        {errors['media_pemeriksaan_anak'] && (
+                            <p className="text-xs text-red-500">
+                                {errors['media_pemeriksaan_anak']}
+                            </p>
+                        )}
+                        {errors['media_pemeriksaan_anak.*'] && (
+                            <p className="text-xs text-red-500">
+                                {errors['media_pemeriksaan_anak.*']}
+                            </p>
+                        )}
+                        {data.media_pemeriksaan_anak.length > 0 && (
+                            <p className="text-sm text-gray-500">
+                                {data.media_pemeriksaan_anak.length} file dipilih
+                            </p>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
+
+
 
             {/* Submit Button */}
             <div className="flex justify-end gap-4">

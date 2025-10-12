@@ -13,11 +13,13 @@ class KehamilanController extends Controller
 {
     public function viewPerkembanganKehamilan($id)
     {
+        $allPregnant = Kehamilan::with('user', 'janin')->where('user_id', Auth::id())->get();
         $pregnant = Kehamilan::with('user', 'janin')->findOrFail($id);
         $growth = PemeriksaanAnc::with('hasilLab', 'petugas.faskes', 'riwayatSakitKehamilan')->where('kehamilan_id', $pregnant->id)->get();
         return Inertia::render('Pasien/Grafik/PregnancyGraphPageRoute', [
             'pregnant' => $pregnant,
-            'growth' => $growth
+            'growth' => $growth,
+            'allPregnant' => $allPregnant,
         ]);
     }
     public function pregnancyCheckupHistory()

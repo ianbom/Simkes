@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Anak;
+use App\Models\MediaPemeriksaanAnak;
 use App\Models\PemeriksaanAnak;
 use App\Models\RiwayatImunisasiAnak;
 use App\Models\RiwayatObatAnak;
@@ -38,38 +39,51 @@ class PemeriksaanAnakService
         }
     }
 
-    public function createPemeriksaanAnak(array $data): array
-    {
-        DB::beginTransaction();
+public function createPemeriksaanAnak(array $data): array
+{
+    DB::beginTransaction();
 
-        try {
-            $pemeriksaanAnak = $this->createMainPemeriksaan($data);
-            $this->createRelatedData($data, $pemeriksaanAnak);
-            DB::commit();
-            return [
-                'success' => true,
-                'data' => [
-                    'pemeriksaan_anak_id' => $pemeriksaanAnak->id,
-                    'tanggal_pemeriksaan' => $pemeriksaanAnak->tanggal_pemeriksaan,
-                    'jenis_kunjungan' => $pemeriksaanAnak->jenis_kunjungan,
-                    'usia_saat_periksa_bulan' => $pemeriksaanAnak->usia_saat_periksa_bulan
-                ]
-            ];
+    try {
+        // Buat record utama pemeriksaan
+        $pemeriksaanAnak = $this->createMainPemeriksaan($data);
 
-        } catch (Exception $e) {
-            DB::rollback();
-            throw $e;
+        // Buat relasi data turunan (riwayat sakit & media)
+        $this->createRelatedData($data, $pemeriksaanAnak);
+
+        DB::commit();
+
+        return [
+            'success' => true,
+            'data' => [
+                'pemeriksaan_anak_id' => $pemeriksaanAnak->id,
+                'tanggal_pemeriksaan' => $pemeriksaanAnak->tanggal_pemeriksaan,
+                'jenis_kunjungan' => $pemeriksaanAnak->jenis_kunjungan,
+                'usia_saat_periksa_bulan' => $pemeriksaanAnak->usia_saat_periksa_bulan
+            ]
+        ];
+
+    } catch (Exception $e) {
+        DB::rollBack();
+
+        // Jika error, hapus file upload sementara agar tidak menumpuk
+        if (!empty($data['media_pemeriksaan_anak'])) {
+            foreach ($data['media_pemeriksaan_anak'] as $file) {
+                if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
+                    Storage::disk('public')->delete($file->hashName());
+                }
+            }
         }
+
+        throw $e;
     }
+}
 
-
-
-private function createMainPemeriksaan(array $data): PemeriksaanAnak{
+private function createMainPemeriksaan(array $data): PemeriksaanAnak
+{
     $anak = Anak::findOrFail($data['anak_id']);
     $tanggalPemeriksaan = Carbon::parse($data['tanggal_pemeriksaan'] ?? now());
     $usiaDalamBulan = Carbon::parse($anak->tanggal_lahir)->diffInMonths($tanggalPemeriksaan);
 
-    // Buat record pemeriksaan anak
     return PemeriksaanAnak::create([
         'anak_id' => $data['anak_id'],
         'petugas_faskes_id' => Auth::id(),
@@ -99,13 +113,16 @@ private function createMainPemeriksaan(array $data): PemeriksaanAnak{
 
 private function createRelatedData(array $data, PemeriksaanAnak $pemeriksaanAnak): void
 {
-    // ✅ Hanya buat satu riwayat sakit
     if (!empty($data['riwayat_sakit']) && is_array($data['riwayat_sakit'])) {
         $this->createRiwayatSakit($data['riwayat_sakit'], $pemeriksaanAnak->id, $data['anak_id']);
     }
+    
+    if (!empty($data['media_pemeriksaan_anak'])) {
+        $this->createMediaPemeriksaan($data['media_pemeriksaan_anak'], $pemeriksaanAnak->id);
+    }
 }
 
-private function createRiwayatSakit(array $sakit, int $pemeriksaanAnakId, int $anakId)
+private function createRiwayatSakit(array $sakit, int $pemeriksaanAnakId, int $anakId): void
 {
     if (empty($sakit['diagnosis']) && empty($sakit['tanggal_sakit'])) {
         return;
@@ -120,6 +137,20 @@ private function createRiwayatSakit(array $sakit, int $pemeriksaanAnakId, int $a
         'tindakan_pengobatan' => $sakit['tindakan_pengobatan'] ?? null,
         'catatan' => $sakit['catatan'] ?? null,
     ]);
+}
+
+private function createMediaPemeriksaan(array $files, int $pemeriksaanAnakId): void
+{
+    foreach ($files as $file) {
+        if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
+            $path = $file->store('media_pemeriksaan_anak', 'public');
+
+            MediaPemeriksaanAnak::create([
+                'pemeriksaan_anak_id' => $pemeriksaanAnakId,
+                'file_url' => $path,
+            ]);
+        }
+    }
 }
 
     private function createSkriningPerkembangan(array $skriningArray, int $pemeriksaanAnakId): void

@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Auth/Login', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
@@ -123,6 +123,7 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
     //     return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute');
     // });
     // Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'index'])->name('index.pemeriksaanAnak');
+    
     Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
     Route::post('/store-checkup', [PtgPemeriksaanAnakController::class, 'store'])->name('store.pemeriksaanAnak');
 
@@ -160,7 +161,7 @@ Route::prefix('superadmin')->as('superadmin.')->group(function () {
     Route::resource('/faskes-user', SpmFaskesUserController::class);
 });
 
-Route::view('/', 'index');
+// Route::view('/', 'index');
 Route::view('/analytics', 'analytics');
 Route::view('/finance', 'finance');
 Route::view('/crypto', 'crypto');
