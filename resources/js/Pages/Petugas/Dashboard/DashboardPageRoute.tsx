@@ -10,6 +10,8 @@ export default function DashboardPageRoute({
     patientPregnant,
     patient,
 }) {
+
+     console.log('Patient Pregnant:', lastestPregnantPatients);
     return (
         <PetugasLayout user={user}>
             <DashboardPetugasPage

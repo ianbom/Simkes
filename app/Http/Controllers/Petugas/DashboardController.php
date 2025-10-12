@@ -45,7 +45,6 @@ class DashboardController extends Controller
             $patientPregnant = Kehamilan::where('user_id', $patient->id)->get();
             }
         }
-
         return Inertia::render('Petugas/Dashboard/DashboardPageRoute', [
             'lastestPregnantPatients' => $lastestPregnantPatients,
             'lastestChildPatients' => $lastestChildPatients,
