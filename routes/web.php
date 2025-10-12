@@ -104,7 +104,6 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
 
 
     Route::get('/grafik/perkembangan-anak/{id}', [PsnAnakController::class, 'viewPerkembanganAnak'])->name('view.perkembanganAnak');
-
     Route::get('/grafik/perkembangan-janin/{id}', [PsnKehamilanController::class, 'viewPerkembanganKehamilan'])->name('view.perkembanganKehamilan');
 
     Route::get('/keluarga', [KeluargaController::class, 'viewKeluarga'])->name('viewKeluarga');
@@ -123,7 +122,7 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
     //     return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute');
     // });
     // Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'index'])->name('index.pemeriksaanAnak');
-    
+
     Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
     Route::post('/store-checkup', [PtgPemeriksaanAnakController::class, 'store'])->name('store.pemeriksaanAnak');
 

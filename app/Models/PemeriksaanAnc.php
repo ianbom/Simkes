@@ -23,7 +23,7 @@ class PemeriksaanAnc extends Model
     {
         return $this->hasMany(DataJanin::class);
     }
-    public function media()
+    public function mediaPemeriksaan()
     {
         return $this->hasMany(MediaPemeriksaan::class);
     }
