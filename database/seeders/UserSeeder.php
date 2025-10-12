@@ -105,7 +105,7 @@ class UserSeeder extends Seeder
 
                 // 🤰 Kehamilan hanya untuk warga perempuan
                 if ($user->kelamin === 'P') {
-                    $jumlahKehamilan = rand(1, 9);
+                    $jumlahKehamilan = rand(1, 5);
                     for ($k = 1; $k <= $jumlahKehamilan; $k++) {
                         $hpht = Carbon::now()->subMonths(rand(1, 9));
                         $hpl = (clone $hpht)->addMonths(9);
