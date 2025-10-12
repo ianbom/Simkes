@@ -9,6 +9,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/Components/ui/select';
+import { PemeriksaanAnc } from '@/types/interface';
+import { formatDate, formatDateTime } from '@/utils/dateFormatter';
+
 import {
     Activity,
     AlertCircle,
@@ -17,72 +20,37 @@ import {
     ChevronDown,
     ChevronUp,
     ClipboardList,
+    FileText,
+    FlaskConical,
+    Image,
     RefreshCcw,
     SlidersHorizontal,
     Stethoscope,
     User,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
-
-interface Kehamilan {
-    id: number;
-    user_id: number;
-    status: string;
-    usia_kehamilan_minggu?: number;
-    hpht: string;
-    hpl: string;
-}
-
-interface Faskes {
-    id: number;
-    nama: string;
-    tipe_faskes: string;
-}
-
-interface Petugas {
-    id: number;
-    name: string;
-    email: string;
-    faskes?: Faskes;
-}
-
-interface DataJanin {
-    id: number;
-    detak_jantung_janin?: number;
-    presentasi_janin?: string;
-}
-
-interface PemeriksaanAnc {
-    id: number;
-    kehamilan_id: number;
-    petugas_faskes_id: number;
-    jenis_pemeriksaan: 'Rutin' | 'Sakit';
-    tanggal_checkup: string;
-    berat_badan: number;
-    tekanan_darah_sistolik: number;
-    tekanan_darah_diastolik: number;
-    lila?: number;
-    tinggi_fundus?: number;
-    status_bengkak_kaki?: 'Tidak Ada' | 'Ringan' | 'Berat';
-    keluhan?: string;
-    suhu_tubuh_celsius?: number;
-    frekuensi_napas_per_menit?: number;
-    frekuensi_jantung_per_menit?: number;
-    catatan_petugas?: string;
-    deteksi_resiko?: string;
-    saran_kunjungan_berikutnya?: string;
-    kehamilan?: Kehamilan;
-    petugas?: Petugas;
-    dataJanin?: DataJanin[];
-    created_at: string;
-    updated_at: string;
-}
-
+import { useEffect, useMemo, useState } from 'react';
 interface Props {
     checkupHistory?: PemeriksaanAnc[];
 }
 
 const PregnancyCheckupHistoryPage = ({ checkupHistory }: Props) => {
+    console.log('checkupHistory:', checkupHistory);
+    useEffect(() => {
+        if (checkupHistory && checkupHistory.length > 0) {
+            console.log('Media URLs:', checkupHistory[0].media);
+        }
+    }, [checkupHistory]);
+    useEffect(() => {
+        if (checkupHistory) {
+            checkupHistory.forEach((record, index) => {
+                console.log(`Record ${index}:`, {
+                    id: record.id,
+                    hasilLab: record.hasilLab,
+                    jumlahLab: record.hasilLab?.length,
+                });
+            });
+        }
+    }, [checkupHistory]);
     const [searchQuery, setSearchQuery] = useState('');
     const [typeFilter, setTypeFilter] = useState('all');
     const [expandedItems, setExpandedItems] = useState(new Set<number>());
@@ -177,24 +145,6 @@ const PregnancyCheckupHistoryPage = ({ checkupHistory }: Props) => {
         return type.toLowerCase() === 'rutin'
             ? 'Pemeriksaan Rutin'
             : 'Pemeriksaan Sakit';
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
-    };
-
-    const formatDateTime = (dateString: string) => {
-        return new Date(dateString).toLocaleString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
     };
 
     const getBengkakBadge = (status?: string) => {
@@ -342,9 +292,9 @@ const PregnancyCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                             )}
                                                         </div>
 
-                                                        {record.kehamilan
+                                                        {/* {record.kehamilan
                                                             ?.usia_kehamilan_minggu && (
-                                                            <Badge className="whitespace-nowrap bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700 hover:bg-purple-100">
+                                                            <Badge className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-100 whitespace-nowrap hover:bg-purple-100">
                                                                 {
                                                                     record
                                                                         .kehamilan
@@ -352,7 +302,7 @@ const PregnancyCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                                 }{' '}
                                                                 minggu
                                                             </Badge>
-                                                        )}
+                                                        )} */}
                                                     </div>
                                                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                                         <div className="flex items-center gap-2 rounded-lg bg-white/80 px-3 py-2">
@@ -554,6 +504,214 @@ const PregnancyCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                 </div>
                                             )}
                                         </div>
+                                        {record.hasilLab &&
+                                            record.hasilLab.length > 0 && (
+                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                    <div className="mb-3 flex items-center gap-2">
+                                                        <FlaskConical className="h-5 w-5 text-cyan-600" />
+                                                        <p className="font-semibold text-gray-900">
+                                                            Hasil Laboratorium (
+                                                            {
+                                                                record.hasilLab
+                                                                    .length
+                                                            }
+                                                            )
+                                                        </p>
+                                                    </div>
+                                                    <div className="space-y-3">
+                                                        {record.hasilLab.map(
+                                                            (lab) => {
+                                                                const getStatusBadge =
+                                                                    (
+                                                                        status: string,
+                                                                    ) => {
+                                                                        switch (
+                                                                            status
+                                                                        ) {
+                                                                            case 'Normal':
+                                                                                return 'bg-green-100 text-green-700 border-green-200';
+                                                                            case 'Kurang Normal':
+                                                                                return 'bg-yellow-100 text-yellow-700 border-yellow-200';
+                                                                            case 'Tidak Normal':
+                                                                                return 'bg-red-100 text-red-700 border-red-200';
+                                                                            case 'Perlu Tindak Lanjut':
+                                                                                return 'bg-orange-100 text-orange-700 border-orange-200';
+                                                                            default:
+                                                                                return 'bg-gray-100 text-gray-700 border-gray-200';
+                                                                        }
+                                                                    };
+
+                                                                return (
+                                                                    <div
+                                                                        key={
+                                                                            lab.id
+                                                                        }
+                                                                        className="rounded-lg border border-cyan-200 bg-cyan-50 p-4"
+                                                                    >
+                                                                        <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+                                                                            <h4 className="flex-1 font-semibold text-cyan-900">
+                                                                                {
+                                                                                    lab.nama_tes
+                                                                                }
+                                                                            </h4>
+                                                                            <Badge
+                                                                                className={`border ${getStatusBadge(lab.status)}`}
+                                                                            >
+                                                                                {
+                                                                                    lab.status
+                                                                                }
+                                                                            </Badge>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="text-sm font-medium text-cyan-700">
+                                                                                Hasil:
+                                                                            </span>
+                                                                            <span className="text-base font-bold text-cyan-900">
+                                                                                {
+                                                                                    lab.hasil
+                                                                                }{' '}
+                                                                                {lab.satuan ||
+                                                                                    ''}
+                                                                            </span>
+                                                                        </div>
+                                                                        <p className="mt-2 text-xs text-cyan-600">
+                                                                            Dicatat:{' '}
+                                                                            {formatDateTime(
+                                                                                lab.created_at,
+                                                                            )}
+                                                                        </p>
+                                                                    </div>
+                                                                );
+                                                            },
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        {record.media &&
+                                            record.media.length > 0 && (
+                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                    <div className="mb-3 flex items-center gap-2">
+                                                        <Image className="h-5 w-5 text-purple-600" />
+                                                        <p className="font-semibold text-gray-900">
+                                                            Media Pemeriksaan (
+                                                            {
+                                                                record.media
+                                                                    .length
+                                                            }
+                                                            )
+                                                        </p>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                                                        {record.media.map(
+                                                            (media) => {
+                                                                let mediaUrl =
+                                                                    media.file_url;
+                                                                if (
+                                                                    !mediaUrl.includes(
+                                                                        'storage/',
+                                                                    )
+                                                                ) {
+                                                                    mediaUrl =
+                                                                        'storage/' +
+                                                                        mediaUrl;
+                                                                }
+                                                                if (
+                                                                    !mediaUrl.startsWith(
+                                                                        'http',
+                                                                    )
+                                                                ) {
+                                                                    mediaUrl = `${window.location.origin}/${mediaUrl.replace(/^\/+/, '')}`;
+                                                                }
+
+                                                                console.log(
+                                                                    'Original URL:',
+                                                                    media.file_url,
+                                                                );
+                                                                console.log(
+                                                                    'Fixed URL:',
+                                                                    mediaUrl,
+                                                                );
+
+                                                                const isImage =
+                                                                    /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(
+                                                                        mediaUrl,
+                                                                    );
+                                                                const isVideo =
+                                                                    /\.(mp4|webm|ogg|mov)$/i.test(
+                                                                        mediaUrl,
+                                                                    );
+
+                                                                return (
+                                                                    <div
+                                                                        key={
+                                                                            media.id
+                                                                        }
+                                                                        className="group relative overflow-hidden rounded-lg border border-purple-200 bg-purple-50 transition-shadow hover:shadow-md"
+                                                                    >
+                                                                        {isImage ? (
+                                                                            <a
+                                                                                href={
+                                                                                    mediaUrl
+                                                                                }
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="block"
+                                                                            >
+                                                                                <div className="relative aspect-square overflow-hidden">
+                                                                                    <img
+                                                                                        src={
+                                                                                            mediaUrl
+                                                                                        }
+                                                                                        alt="Media pemeriksaan"
+                                                                                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                                                                    />
+                                                                                    <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10" />
+                                                                                </div>
+                                                                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                                                                                    <Badge className="flex w-fit items-center gap-1 bg-white/90 text-xs text-purple-700">
+                                                                                        <Image className="h-3 w-3" />
+                                                                                        Foto
+                                                                                    </Badge>
+                                                                                </div>
+                                                                            </a>
+                                                                        ) : isVideo ? (
+                                                                            <div className="aspect-square">
+                                                                                <video
+                                                                                    src={
+                                                                                        mediaUrl
+                                                                                    }
+                                                                                    controls
+                                                                                    className="h-full w-full object-cover"
+                                                                                />
+                                                                            </div>
+                                                                        ) : (
+                                                                            <a
+                                                                                href={
+                                                                                    mediaUrl
+                                                                                }
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="flex aspect-square flex-col items-center justify-center p-4"
+                                                                            >
+                                                                                <FileText className="h-12 w-12 text-purple-600" />
+                                                                                <p className="mt-2 text-center text-xs text-purple-700">
+                                                                                    Lihat
+                                                                                    File
+                                                                                </p>
+                                                                            </a>
+                                                                        )}
+                                                                        <p className="p-2 text-xs text-gray-500">
+                                                                            {formatDateTime(
+                                                                                media.created_at,
+                                                                            )}
+                                                                        </p>
+                                                                    </div>
+                                                                );
+                                                            },
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
 
                                         {record.dataJanin &&
                                             record.dataJanin.length > 0 && (
@@ -567,21 +725,61 @@ const PregnancyCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                                 key={index}
                                                                 className="mb-2 rounded-md bg-purple-50 p-3"
                                                             >
-                                                                {janin.detak_jantung_janin && (
+                                                                {janin.urutan_janin && (
+                                                                    <p className="text-sm text-gray-700">
+                                                                        Urutan
+                                                                        Janin:{' '}
+                                                                        {
+                                                                            janin.urutan_janin
+                                                                        }
+                                                                    </p>
+                                                                )}
+                                                                {janin.denyut_jantung_janin && (
                                                                     <p className="text-sm text-gray-700">
                                                                         Detak
                                                                         Jantung:{' '}
                                                                         {
-                                                                            janin.detak_jantung_janin
+                                                                            janin.denyut_jantung_janin
                                                                         }{' '}
                                                                         bpm
                                                                     </p>
                                                                 )}
-                                                                {janin.presentasi_janin && (
+                                                                {janin.posisi_janin && (
                                                                     <p className="text-sm text-gray-700">
-                                                                        Presentasi:{' '}
+                                                                        Posisi
+                                                                        Janin:{' '}
                                                                         {
-                                                                            janin.presentasi_janin
+                                                                            janin.posisi_janin
+                                                                        }
+                                                                    </p>
+                                                                )}
+                                                                {janin.taksiran_berat_janin && (
+                                                                    <p className="text-sm text-gray-700">
+                                                                        Taksiran
+                                                                        Berat
+                                                                        Janin:{' '}
+                                                                        {
+                                                                            janin.taksiran_berat_janin
+                                                                        }{' '}
+                                                                        gram
+                                                                    </p>
+                                                                )}
+                                                                {janin.taksiran_berat_janin && (
+                                                                    <p className="text-sm text-gray-700">
+                                                                        Panjang
+                                                                        Janin:{' '}
+                                                                        {
+                                                                            janin.panjang_janin_cm
+                                                                        }{' '}
+                                                                        cm
+                                                                    </p>
+                                                                )}
+                                                                {janin.pergerakan_janin && (
+                                                                    <p className="text-sm text-gray-700">
+                                                                        Pergerakan
+                                                                        Janin:{' '}
+                                                                        {
+                                                                            janin.pergerakan_janin
                                                                         }
                                                                     </p>
                                                                 )}
@@ -647,7 +845,7 @@ const PregnancyCheckupHistoryPage = ({ checkupHistory }: Props) => {
                         <Button
                             onClick={() => setShowAll(true)}
                             size="lg"
-                            className="min-w-[250px]"
+                            className="min-w-[250px] text-white"
                         >
                             Tampilkan Semua Data ({filteredRecords.length}{' '}
                             total)

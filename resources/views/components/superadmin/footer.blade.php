@@ -1,2 +1,9 @@
-<div class="dark:text-white-dark text-center ltr:sm:text-left rtl:sm:text-right p-6 pt-0 mt-auto">© <span id="footer-year">2022</span>.
-    Vristo All rights reserved.</div>
+<footer class="w-full py-4 border-t border-gray-200 bg-gray-50">
+    <div class="container flex flex-col items-center justify-center mx-auto text-center text-gray-600">
+        <p class="text-sm">
+            © <span id="footer-year">2025</span>
+            <span class="font-semibold text-sky-600">SIMKESIA</span>.
+            All rights reserved.
+        </p>
+    </div>
+</footer>

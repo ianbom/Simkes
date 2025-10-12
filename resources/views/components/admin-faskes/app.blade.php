@@ -7,7 +7,7 @@
     <title>{{ $title ?? 'Admin Faskes' }}</title>
 
     <meta name='viewport' content='width=device-width, initial-scale=1' />
-    <link rel="icon" type="image/svg" href="/assets/images/favicon.svg" />
+    <link rel="icon" type="image/png" href="/assets/images/simkesia-logo.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,16 +21,15 @@
     @vite(['resources/css/app.css'])
 </head>
 
-<body x-data="main" class="antialiased relative font-nunito text-sm font-normal overflow-x-hidden"
-    :class="[$store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ?  'dark' : '', $store.app.menu, $store.app.layout, $store.app
+<body x-data="main" class="relative overflow-x-hidden text-sm antialiased font-normal font-nunito"
+    :class="[$store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ? 'dark' : '',
+        $store.app.menu, $store.app.layout, $store.app
         .rtlClass
     ]">
 
-    <!-- sidebar menu overlay -->
     <div x-cloak class="fixed inset-0 bg-[black]/60 z-50 lg:hidden" :class="{ 'hidden': !$store.app.sidebar }"
         @click="$store.app.toggleSidebar()"></div>
 
-    <!-- screen loader -->
     <div
         class="screen_loader fixed inset-0 bg-[#fafafa] dark:bg-[#060818] z-[60] grid place-content-center animate__animated">
         <svg width="64" height="64" viewBox="0 0 135 135" xmlns="http://www.w3.org/2000/svg" fill="#4361ee">
@@ -47,12 +46,12 @@
         </svg>
     </div>
 
-    <div class="fixed bottom-6 ltr:right-6 rtl:left-6 z-50" x-data="scrollToTop">
+    <div class="fixed z-50 bottom-6 ltr:right-6 rtl:left-6" x-data="scrollToTop">
         <template x-if="showTopButton">
             <button type="button"
                 class="btn btn-outline-primary rounded-full p-2 animate-pulse bg-[#fafafa] dark:bg-[#060818] dark:hover:bg-primary"
                 @click="goToTop">
-                <svg width="24" height="24" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                <svg width="24" height="24" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd"
                         d="M12 20.75C12.4142 20.75 12.75 20.4142 12.75 20L12.75 10.75L11.25 10.75L11.25 20C11.25 20.4142 11.5858 20.75 12 20.75Z"
@@ -91,22 +90,23 @@
         });
     </script>
 
-    <x-common.theme-customiser />
 
-    <div class="main-container text-black dark:text-white-dark min-h-screen" :class="[$store.app.navbar]">
+    {{-- <x-common.theme-customiser /> --}}
+
+    <div class="min-h-screen text-black main-container dark:text-white-dark" :class="[$store.app.navbar]">
 
 
-        <x-admin-faskes.sidebar/>
+        <x-admin-faskes.sidebar />
 
-        <div class="main-content flex flex-col min-h-screen">
+        <div class="flex flex-col min-h-screen main-content">
 
-            <x-admin-faskes.header/>
-            <div class="dvanimation p-6 animate__animated" :class="[$store.app.animation]">
+            <x-admin-faskes.header />
+            <div class="p-6 dvanimation animate__animated" :class="[$store.app.animation]">
                 {{ $slot }}
             </div>
 
 
-            <x-admin-faskes.footer/>
+            <x-admin-faskes.footer />
         </div>
     </div>
     <script src="/assets/js/alpine-collaspe.min.js"></script>
@@ -114,7 +114,18 @@
     <script defer src="/assets/js/alpine-ui.min.js"></script>
     <script defer src="/assets/js/alpine-focus.min.js"></script>
     <script defer src="/assets/js/alpine.min.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('sidebar', () => ({
+                activeDropdown: null,
+                toggleDropdown(name) {
+                    this.activeDropdown = this.activeDropdown === name ? null : name;
+                },
+            }));
+        });
+    </script>
     <script src="/assets/js/custom.js"></script>
+
 </body>
 
 </html>

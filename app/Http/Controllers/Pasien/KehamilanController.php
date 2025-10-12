@@ -37,7 +37,17 @@ class KehamilanController extends Controller
                 $query->where('user_id', $user->id);
             })
             ->latest('tanggal_checkup')
-            ->get(); // ✅ Ambil SEMUA data sekaligus
+            ->get();
+
+        $checkupHistory = $checkupHistory->map(function ($record) {
+            return array_merge($record->toArray(), [
+                'hasilLab' => $record->hasilLab,
+                'dataJanin' => $record->dataJanin,
+                'media' => $record->media,
+                'imunisasi' => $record->imunisasi,
+                'resep' => $record->resep,
+            ]);
+        });
 
         return Inertia::render('Pasien/Riwayat/PregnancyCheckupHistoryPageRoute', [
             'checkupHistory' => $checkupHistory,

@@ -11,7 +11,7 @@ class MediaPemeriksaan extends Model
     protected $primaryKey = 'id';
     protected $table = 'media_pemeriksaan';
       public function pemeriksaan() {
-        return $this->belongsTo(PemeriksaanANC::class);
+        return $this->belongsTo(PemeriksaanAnc::class, 'pemeriksaan_anc_id');
     }
     public function janin() {
         return $this->belongsTo(DataJanin::class);

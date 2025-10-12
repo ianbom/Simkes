@@ -62,7 +62,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Suplemen multivitamin dan mineral yang diformulasikan untuk memenuhi kebutuhan nutrisi ibu hamil dan menyusui. Mengandung asam folat, zat besi, dan vitamin penting lainnya untuk membantu mencegah anemia, menunjang pertumbuhan janin, dan menjaga kesehatan ibu.',
         indication:
@@ -90,7 +89,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Suplemen dengan kandungan vitamin dan mineral lengkap untuk mendukung pertumbuhan janin dan kesehatan ibu selama kehamilan. Dilengkapi dengan kalsium dan vitamin D untuk tulang serta zat besi untuk mencegah anemia.',
         indication: 'Membantu memenuhi kebutuhan nutrisi ibu hamil dan janin.',
@@ -115,7 +113,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Suplemen multivitamin alami untuk ibu hamil dan menyusui yang diformulasikan dengan bahan berkualitas tinggi. Mengandung asam folat, zat besi, kalsium, dan vitamin B kompleks untuk mendukung energi, kesehatan darah, serta perkembangan janin.',
         indication:
@@ -143,7 +140,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Suplemen dengan kombinasi zat besi, asam folat, vitamin B kompleks, dan mineral penting yang diformulasikan untuk memenuhi kebutuhan nutrisi ibu hamil dan menyusui serta mencegah anemia.',
         indication:
@@ -172,7 +168,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Lactabo Drops adalah suplemen makanan untuk bayi yang mengandung kombinasi probiotik Lactobacillus reuteri dan vitamin D3 yang membantu menjaga kesehatan saluran pencernaan serta mendukung penyerapan kalsium untuk pertumbuhan tulang dan gigi bayi. Diformulasikan khusus dengan rasa netral, sehingga aman dan nyaman diberikan langsung atau dicampur dalam susu.',
         indication:
@@ -201,7 +196,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Scott’s Emulsion adalah suplemen minyak ikan kod yang diperkaya vitamin A dan D, membantu pertumbuhan tulang, gigi, dan sistem kekebalan tubuh bayi serta anak. Rasanya yang lembut memudahkan konsumsi harian.',
         indication:
@@ -228,7 +222,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Vitabumin adalah suplemen anak berbasis madu alami yang diperkaya dengan ekstrak ikan gabus, yang kaya albumin dan asam amino untuk membantu pertumbuhan dan memperkuat sistem imun anak.',
         indication:
@@ -254,7 +247,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Stimuno mengandung ekstrak tanaman Phyllanthus niruri (meniran hijau) yang terbukti secara klinis membantu memperkuat sistem kekebalan tubuh anak.',
         indication:
@@ -279,7 +271,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Biolysin Emulsion adalah suplemen multivitamin dengan tambahan minyak ikan yang membantu memenuhi kebutuhan vitamin dan mineral untuk pertumbuhan anak.',
         indication:
@@ -306,7 +297,6 @@ export const medicinesData = [
 
         safety: 'safe',
 
-        // Data detail lengkap
         description:
             'Interlac Baby Drops adalah suplemen probiotik berbentuk cair yang mengandung Lactobacillus reuteri DSM 17938 untuk membantu menjaga kesehatan saluran pencernaan dan imunitas bayi sejak dini.',
         indication:
