@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jadwal_notifikasi', function (Blueprint $table) {
+        Schema::create('media_pemeriksaan_anak', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->date('tanggal_dijadwalkan')->nullable();
-            $table->string('judul');
-            $table->text('konten');
-            $table->string('tipe')->nullable();
+            $table->foreignId('pemeriksaan_anak_id')->constrained('pemeriksaan_anak')->cascadeOnDelete();
+            $table->string('file_url');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jadwal_notifikasi');
+        Schema::dropIfExists('media_pemeriksaan_anak');
     }
 };

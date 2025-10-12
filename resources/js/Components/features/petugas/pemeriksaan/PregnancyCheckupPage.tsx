@@ -1,6 +1,8 @@
+import { PatientKehamilanProfileHeader } from '@/Components/partials/petugas/pemeriksaan/kehamilan/PatientKehamilanProfileHeader';
 import TabsPemeriksaanKehamilan from '@/Components/partials/petugas/pemeriksaan/kehamilan/TabsPemeriksaanKehamilan';
 import TabsPerkembanganKehamilan from '@/Components/partials/petugas/pemeriksaan/kehamilan/TabsPerkembanganKehamilan';
 import TabsRiwayatSakitKehamilan from '@/Components/partials/petugas/pemeriksaan/kehamilan/TabsRiwayatSakitKehamilan';
+import { PatientProfileHeader } from '@/Components/patient-profile-header';
 import { Badge } from '@/Components/ui/badge';
 import {
     Card,
@@ -21,26 +23,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { Activity, Clock, History, Stethoscope } from 'lucide-react';
 import { useState } from 'react';
 
-const mockPatient = {
-    id: '1217979',
-    name: 'Hamil Sarah Johnson',
-    age: 32,
-    isPregnant: true,
-    kelamin: 'P',
-    patientId: 'P-2024-001',
-    phone: '+1234567890',
-    address: 'Surabaya, Jawa Timur, Indonesia',
-    emergencyContact: 'John Johnson - +1234567891',
-    bloodType: 'O+',
-    allergies: ['Penicillin', 'Shellfish'],
-    currentMedications: ['Prenatal vitamins', 'Folic acid'],
-    lastVisit: '2024-01-15',
-    photo: '/assets/images/profile-8.jpeg',
-    appointmentType: 'ANC',
-    appointmentTime: '09:00 AM',
-    pregnancyWeek: '12',
-    chiefComplaint: 'Routine prenatal checkup',
-};
 interface LabTest {
     id: string;
     namaTes: string;
@@ -53,14 +35,16 @@ interface Props {
     checkupHistory: any[];
     sickHistory: any[];
     growth: any[];
+
 }
 const PregnancyCheckupPage = ({
     pregnant,
     checkupHistory,
     growth,
     sickHistory,
+
 }: Props) => {
-    const [patient] = useState(mockPatient);
+
     const [activeTab, setActiveTab] = useState('checkup');
 
     const [labTests, setLabTests] = useState<LabTest[]>([
@@ -78,18 +62,11 @@ const PregnancyCheckupPage = ({
                         </h1>
                     </div>
                 </div>
-                <div className="text-muted-foreground flex items-center gap-4 text-sm">
-                    <span className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {patient.appointmentTime}
-                    </span>
-                    <Badge variant="outline">{patient.appointmentType}</Badge>
-                    <span>Room 1</span>
-                </div>
+              
             </div>
 
             {/* Patient Profile Header */}
-            {/* <PatientProfileHeader patient={patient} patientType="pregnancy" /> */}
+            <PatientKehamilanProfileHeader pregnant={pregnant} />
 
             {/* Tabs Section */}
             <div className="mt-8">

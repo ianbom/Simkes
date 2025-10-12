@@ -10,6 +10,7 @@ use App\Models\PemeriksaanAnak;
 use App\Models\PemeriksaanAnc;
 use App\Models\User;
 use App\Services\DashboardService;
+use App\Services\NotifikasiService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,9 +19,11 @@ use Inertia\Inertia;
 class DashboardController extends Controller
 {
     protected $dashboardService;
+    protected $notifikasiService;
 
-    public function __construct(DashboardService $dashboardService){
+    public function __construct(DashboardService $dashboardService, NotifikasiService $notifikasiService){
         $this->dashboardService = $dashboardService;
+        $this->notifikasiService = $notifikasiService;
     }
 
 
@@ -57,6 +60,8 @@ class DashboardController extends Controller
     {
         try {
             $kehamilan = $this->dashboardService->createKehamilan($request->validated());
+            $jadwalNotifikasi = $this->notifikasiService->createJadwalNotifikasiKehamilan($request['hpht'], $request['user_id']);
+
             return redirect()->route('petugas.dashboard.index')->with('success', 'Data kehamilan berhasil ditambahkan.');
         } catch (Exception $e) {
             return response()->json([

@@ -7,6 +7,8 @@ use App\Models\Kehamilan;
 use App\Models\PemeriksaanAnc;
 use App\Models\DataJanin;
 use App\Models\HasilLab;
+use App\Models\RiwayatSakitKehamilan;
+use App\Models\User;
 use Carbon\Carbon;
 
 class PemeriksaanAncSeeder extends Seeder
@@ -41,6 +43,7 @@ class PemeriksaanAncSeeder extends Seeder
 
                 $this->createAncRecord($kehamilan, $tanggalCheckup, $trimester);
             }
+            $this->createRiwayatSakitKehamilan($kehamilan);
         }
 
         $this->command->info('✅ Seeder Pemeriksaan ANC, Data Janin & Hasil Lab berhasil dibuat.');
@@ -48,6 +51,7 @@ class PemeriksaanAncSeeder extends Seeder
 
     private function createAncRecord(Kehamilan $kehamilan, Carbon $tanggal, int $trimester): void
     {
+        $petugasFaskes = User::where('role', 'Petugas Faskes')->first();
         // Nilai fisiologis normal berdasarkan trimester
         $beratBadan = $this->estimasiBeratBadan($trimester);
         $tekananSistolik = $this->estimasiTekananDarah('sistolik');
@@ -59,7 +63,7 @@ class PemeriksaanAncSeeder extends Seeder
         // Buat data pemeriksaan ANC
         $anc = PemeriksaanAnc::create([
             'kehamilan_id'             => $kehamilan->id,
-            'petugas_faskes_id'        => 1,
+            'petugas_faskes_id'        => $petugasFaskes->id,
             'jenis_pemeriksaan'        => fake()->randomElement(['Rutin', 'Rutin', 'Sakit']),
             'tanggal_checkup'          => $tanggal->format('Y-m-d'),
             'berat_badan'              => $beratBadan,
@@ -255,6 +259,38 @@ class PemeriksaanAncSeeder extends Seeder
             3 => 'Menjelang persalinan, edukasi tanda bahaya diberikan.',
             default => 'Kondisi normal.',
         };
+    }
+
+     private function createRiwayatSakitKehamilan(Kehamilan $kehamilan): void
+    {
+        $anc = PemeriksaanAnc::where('kehamilan_id', $kehamilan->id)->inRandomOrder()->first();
+        if (!$anc) return;
+
+        RiwayatSakitKehamilan::create([
+            'kehamilan_id' => $kehamilan->id,
+            'pemeriksaan_anc_id' => $anc->id,
+            'tanggal_diagnosis' => Carbon::parse($anc->tanggal_checkup)->subDays(rand(0, 14)),
+            'diagnosis' => fake()->randomElement([
+                'Anemia ringan',
+                'Hipertensi dalam kehamilan',
+                'Infeksi saluran kemih',
+                'Preeklamsia ringan',
+                'Tidak ada keluhan berarti',
+            ]),
+            'gejala' => fake()->randomElement([
+                'Pusing, lemas',
+                'Tekanan darah tinggi',
+                'Demam ringan dan nyeri saat buang air kecil',
+                'Bengkak pada kaki dan tangan',
+            ]),
+            'tindakan_pengobatan' => fake()->randomElement([
+                'Diberikan tablet Fe dan dianjurkan istirahat cukup.',
+                'Kontrol tekanan darah rutin tiap minggu.',
+                'Pemberian antibiotik ringan sesuai resep dokter.',
+                'Edukasi tanda bahaya dan rujukan ke faskes tingkat lanjut bila perlu.',
+            ]),
+            'status_penyakit' => fake()->randomElement(['Aktif', 'Sembuh', 'Terkontrol']),
+        ]);
     }
 
     private function deteksiResikoTrimester(int $trimester): ?string

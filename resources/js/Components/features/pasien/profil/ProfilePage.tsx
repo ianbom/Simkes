@@ -1,4 +1,5 @@
 import { User } from '@/types/user/interface';
+import { useForm } from '@inertiajs/react';
 import {
     Activity,
     Calendar,
@@ -7,104 +8,239 @@ import {
     Save,
     User as UserIcon,
     X,
+    CheckCircle,
+    Heart,
 } from 'lucide-react';
-import { useState } from 'react';
+import { FormEventHandler, useState, useEffect } from 'react';
+
+interface Provinsi {
+    id: number;
+    nama: string;
+}
+
+interface RiwayatMedis {
+    golongan_darah?: string | null;
+    rhesus?: string | null;
+    jumlah_keguguran?: number | null;
+    riwayat_alergi?: string | null;
+}
+
+interface Kota {
+    id: number;
+    nama: string;
+    provinsi_id: number;
+}
+
+interface Kecamatan {
+    id: number;
+    nama: string;
+    kota_id: number;
+}
 
 interface ProfilePageProps {
     user: User;
+    provinsi: Provinsi[];
+    kota: Kota[];
+    kecamatan: Kecamatan[];
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    riwayatMedis?: RiwayatMedis | null;
 }
 
-export default function ProfilePage({ user }: ProfilePageProps) {
-    const [isEditing, setIsEditing] = useState(false);
+export default function ProfilePage({
+    user,
+    provinsi,
+    kota,
+    kecamatan,
+    flash,
+    riwayatMedis
+}: ProfilePageProps) {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const [filteredKota, setFilteredKota] = useState<Kota[]>([]);
+    const [filteredKecamatan, setFilteredKecamatan] = useState<Kecamatan[]>([]);
+    const [showSuccess, setShowSuccess] = useState(false);
 
-    // Form state dengan dummy data
-    const [formData, setFormData] = useState({
-        name: user?.name || 'Ahmad Wijaya',
-        email: user?.email || 'ahmad.wijaya@email.com',
-        nik: user?.nik || '3578012345670001',
-        tanggal_lahir: user?.tanggal_lahir || '1990-05-15',
+    const { data, setData, post, processing, errors, isDirty, reset } = useForm({
+        name: user?.name || '',
+        email: user?.email || '',
+        nik: user?.nik || '',
+        tanggal_lahir: user?.tanggal_lahir || '',
         kelamin: user?.kelamin || 'L',
-        no_telp: user?.no_telp || '081234567890',
-        alamat: user?.alamat || 'Jl. Raya Darmo No. 123, Surabaya',
-        provinsi: 'Jawa Timur',
-        kota: 'Surabaya',
-        kecamatan: 'Wonokromo',
-        faskes: 'Puskesmas Wonokromo',
+        no_telp: user?.no_telp || '',
+        alamat: user?.alamat || '',
+        provinsi_id: user?.provinsi_id?.toString() || '',
+        kota_id: user?.kota_id?.toString() || '',
+        kecamatan_id: user?.kecamatan_id?.toString() || '',
+        faskes_id: user?.faskes_id?.toString() || '',
+        profile_pic_url: null as File | null,
     });
 
-    const handleInputChange = (
-        e: React.ChangeEvent<
-            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-        >,
-    ) => {
-        setIsEditing(true);
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
+    const {
+        data: medisData,
+        setData: setMedisData,
+        post: postMedis,
+        processing: processingMedis,
+        errors: errorsMedis,
+        isDirty: isDirtyMedis,
+        reset: resetMedis
+    } = useForm({
+        golongan_darah: riwayatMedis?.golongan_darah || '',
+        rhesus: riwayatMedis?.rhesus || '',
+        jumlah_keguguran: riwayatMedis?.jumlah_keguguran?.toString() || '0',
+        riwayat_alergi: riwayatMedis?.riwayat_alergi || '',
+    });
+
+    // Filter kota berdasarkan provinsi
+    useEffect(() => {
+        if (data.provinsi_id) {
+            const filtered = kota.filter(
+                (k) => k.provinsi_id.toString() === data.provinsi_id
+            );
+            setFilteredKota(filtered);
+
+            // Reset kota dan kecamatan jika provinsi berubah
+            if (!filtered.find(k => k.id.toString() === data.kota_id)) {
+                setData(prev => ({
+                    ...prev,
+                    kota_id: '',
+                    kecamatan_id: ''
+                }));
+            }
+        } else {
+            setFilteredKota([]);
+        }
+    }, [data.provinsi_id]);
+
+    // Filter kecamatan berdasarkan kota
+    useEffect(() => {
+        if (data.kota_id) {
+            const filtered = kecamatan.filter(
+                (kec) => kec.kota_id.toString() === data.kota_id
+            );
+            setFilteredKecamatan(filtered);
+
+            // Reset kecamatan jika kota berubah
+            if (!filtered.find(k => k.id.toString() === data.kecamatan_id)) {
+                setData('kecamatan_id', '');
+            }
+        } else {
+            setFilteredKecamatan([]);
+        }
+    }, [data.kota_id]);
+
+    // Show success message
+    useEffect(() => {
+        if (flash?.success) {
+            setShowSuccess(true);
+            const timer = setTimeout(() => {
+                setShowSuccess(false);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [flash?.success]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran file maksimal 2MB');
+                return;
+            }
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('File harus berupa gambar');
+                return;
+            }
+
+            setData('profile_pic_url', file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImage(reader.result as string);
-                setIsEditing(true);
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        // Handle form submission with Inertia.js
-        // Inertia.post(route('profile.update'), formData);
-        console.log('Form submitted:', formData);
-        setIsEditing(false);
+        post(route('pasien.updateProfile'), {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                setPreviewImage(null);
+                reset('profile_pic_url');
+            },
+            onError: (errors) => {
+                console.error('Update profile errors:', errors);
+            }
+        });
+    };
+
+    const handleSubmitRiwayatMedis: FormEventHandler = (e) => {
+        e.preventDefault();
+        postMedis(route('pasien.updateRiwayatMedis'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                console.log('Riwayat medis berhasil diperbarui');
+            },
+            onError: (errors) => {
+                console.error('Update riwayat medis errors:', errors);
+            }
+        });
     };
 
     const handleCancel = () => {
-        setIsEditing(false);
         setPreviewImage(null);
         // Reset form data to original user data
+        setData({
+            name: user?.name || '',
+            email: user?.email || '',
+            nik: user?.nik || '',
+            tanggal_lahir: user?.tanggal_lahir || '',
+            kelamin: user?.kelamin || 'L',
+            no_telp: user?.no_telp || '',
+            alamat: user?.alamat || '',
+            provinsi_id: user?.provinsi_id?.toString() || '',
+            kota_id: user?.kota_id?.toString() || '',
+            kecamatan_id: user?.kecamatan_id?.toString() || '',
+            faskes_id: user?.faskes_id?.toString() || '',
+            profile_pic_url: null,
+        });
     };
 
-    // Dummy medical history data
-    const medicalHistory = [
-        {
-            id: 1,
-            date: '2024-10-05',
-            type: 'Konsultasi',
-            doctor: 'dr. Sarah Wijaya, Sp.A',
-            diagnosis: 'Pemeriksaan Rutin Kehamilan',
-            notes: 'Kondisi ibu dan janin sehat, tidak ada keluhan berarti',
-            faskes: 'Puskesmas Wonokromo',
-        },
-        {
-            id: 2,
-            date: '2024-09-15',
-            type: 'Imunisasi',
-            doctor: 'dr. Ahmad Ridwan',
-            diagnosis: 'Imunisasi Tetanus',
-            notes: 'Imunisasi berjalan lancar, tidak ada efek samping',
-            faskes: 'Puskesmas Wonokromo',
-        },
-        {
-            id: 3,
-            date: '2024-08-20',
-            type: 'Pemeriksaan Lab',
-            doctor: 'dr. Lisa Kartika',
-            diagnosis: 'Cek Darah Lengkap',
-            notes: 'Hasil lab normal, hemoglobin 12.5 g/dL',
-            faskes: 'Puskesmas Gubeng',
-        },
-    ];
+    const handleCancelRiwayatMedis = () => {
+        resetMedis();
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
             <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                {/* Success Message */}
+                {showSuccess && flash?.success && (
+                    <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                        <p className="text-sm text-green-800">{flash.success}</p>
+                        <button
+                            onClick={() => setShowSuccess(false)}
+                            className="ml-auto text-green-600 hover:text-green-800"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                    </div>
+                )}
+
+                {/* Error Message */}
+                {flash?.error && (
+                    <div className="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 flex items-center gap-3">
+                        <X className="h-5 w-5 text-red-600 flex-shrink-0" />
+                        <p className="text-sm text-red-800">{flash.error}</p>
+                    </div>
+                )}
+
                 <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
                     {/* Header */}
                     <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-8 text-white">
@@ -125,14 +261,14 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                             <img
                                                 src={
                                                     previewImage ||
-                                                    user?.profile_pic_url
+                                                    `/storage/${user?.profile_pic_url}`
                                                 }
                                                 alt="Profile"
                                                 className="h-full w-full object-cover"
                                             />
                                         ) : (
                                             <div className="flex h-full w-full items-center justify-center bg-blue-100 text-4xl font-bold text-blue-600">
-                                                {formData.name
+                                                {data.name
                                                     .charAt(0)
                                                     .toUpperCase()}
                                             </div>
@@ -153,8 +289,13 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                     </label>
                                 </div>
                                 <p className="mt-3 text-sm text-gray-500">
-                                    Klik ikon kamera untuk mengubah foto profil
+                                    Klik ikon kamera untuk mengubah foto profil (Max 2MB)
                                 </p>
+                                {errors.profile_pic_url && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.profile_pic_url}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Form Fields */}
@@ -168,11 +309,18 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                     <input
                                         type="text"
                                         name="name"
-                                        value={formData.name}
-                                        onChange={handleInputChange}
+                                        value={data.name}
+                                        onChange={(e) =>
+                                            setData('name', e.target.value)
+                                        }
                                         className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
+                                    {errors.name && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.name}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* NIK */}
@@ -184,12 +332,19 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                     <input
                                         type="text"
                                         name="nik"
-                                        value={formData.nik}
-                                        onChange={handleInputChange}
+                                        value={data.nik}
+                                        onChange={(e) =>
+                                            setData('nik', e.target.value)
+                                        }
                                         maxLength={16}
                                         className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
+                                    {errors.nik && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.nik}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Email */}
@@ -201,11 +356,18 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                     <input
                                         type="email"
                                         name="email"
-                                        value={formData.email}
-                                        onChange={handleInputChange}
+                                        value={data.email}
+                                        onChange={(e) =>
+                                            setData('email', e.target.value)
+                                        }
                                         className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
+                                    {errors.email && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.email}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Tanggal Lahir */}
@@ -217,11 +379,21 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                     <input
                                         type="date"
                                         name="tanggal_lahir"
-                                        value={formData.tanggal_lahir}
-                                        onChange={handleInputChange}
+                                        value={data.tanggal_lahir}
+                                        onChange={(e) =>
+                                            setData(
+                                                'tanggal_lahir',
+                                                e.target.value,
+                                            )
+                                        }
                                         className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
+                                    {errors.tanggal_lahir && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.tanggal_lahir}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Jenis Kelamin */}
@@ -232,14 +404,21 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                     </label>
                                     <select
                                         name="kelamin"
-                                        value={formData.kelamin}
-                                        onChange={handleInputChange}
+                                        value={data.kelamin}
+                                        onChange={(e) =>
+                                            setData('kelamin', e.target.value)
+                                        }
                                         className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     >
                                         <option value="L">Laki-laki</option>
                                         <option value="P">Perempuan</option>
                                     </select>
+                                    {errors.kelamin && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.kelamin}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* No Telp */}
@@ -251,11 +430,18 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                     <input
                                         type="tel"
                                         name="no_telp"
-                                        value={formData.no_telp}
-                                        onChange={handleInputChange}
+                                        value={data.no_telp}
+                                        onChange={(e) =>
+                                            setData('no_telp', e.target.value)
+                                        }
                                         className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
+                                    {errors.no_telp && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.no_telp}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Faskes */}
@@ -265,76 +451,102 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                     </label>
                                     <input
                                         type="text"
-                                        name="faskes"
-                                        value={formData.faskes}
+                                        value={user?.faskes?.nama_faskes || '-'}
                                         className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2"
                                         disabled
                                     />
+                                    <p className="mt-1 text-xs text-gray-500">
+                                        Hubungi admin untuk mengubah faskes
+                                    </p>
                                 </div>
 
                                 {/* Provinsi */}
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-gray-700">
-                                        Provinsi
+                                        Provinsi{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <select
-                                        name="provinsi"
-                                        value={formData.provinsi}
-                                        onChange={handleInputChange}
+                                        name="provinsi_id"
+                                        value={data.provinsi_id}
+                                        onChange={(e) =>
+                                            setData('provinsi_id', e.target.value)
+                                        }
                                         className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        required
                                     >
-                                        <option value="Jawa Timur">
-                                            Jawa Timur
-                                        </option>
-                                        <option value="Jawa Tengah">
-                                            Jawa Tengah
-                                        </option>
-                                        <option value="Jawa Barat">
-                                            Jawa Barat
-                                        </option>
+                                        <option value="">Pilih Provinsi</option>
+                                        {provinsi.map((prov) => (
+                                            <option key={prov.id} value={prov.id}>
+                                                {prov.nama}
+                                            </option>
+                                        ))}
                                     </select>
+                                    {errors.provinsi_id && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.provinsi_id}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Kota */}
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-gray-700">
-                                        Kota/Kabupaten
+                                        Kota/Kabupaten{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <select
-                                        name="kota"
-                                        value={formData.kota}
-                                        onChange={handleInputChange}
+                                        name="kota_id"
+                                        value={data.kota_id}
+                                        onChange={(e) =>
+                                            setData('kota_id', e.target.value)
+                                        }
                                         className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        disabled={!data.provinsi_id}
+                                        required
                                     >
-                                        <option value="Surabaya">
-                                            Surabaya
-                                        </option>
-                                        <option value="Sidoarjo">
-                                            Sidoarjo
-                                        </option>
-                                        <option value="Gresik">Gresik</option>
+                                        <option value="">Pilih Kota</option>
+                                        {filteredKota.map((k) => (
+                                            <option key={k.id} value={k.id}>
+                                                {k.nama}
+                                            </option>
+                                        ))}
                                     </select>
+                                    {errors.kota_id && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.kota_id}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Kecamatan */}
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-gray-700">
-                                        Kecamatan
+                                        Kecamatan{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <select
-                                        name="kecamatan"
-                                        value={formData.kecamatan}
-                                        onChange={handleInputChange}
+                                        name="kecamatan_id"
+                                        value={data.kecamatan_id}
+                                        onChange={(e) =>
+                                            setData('kecamatan_id', e.target.value)
+                                        }
                                         className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        disabled={!data.kota_id}
+                                        required
                                     >
-                                        <option value="Wonokromo">
-                                            Wonokromo
-                                        </option>
-                                        <option value="Gubeng">Gubeng</option>
-                                        <option value="Tegalsari">
-                                            Tegalsari
-                                        </option>
+                                        <option value="">Pilih Kecamatan</option>
+                                        {filteredKecamatan.map((kec) => (
+                                            <option key={kec.id} value={kec.id}>
+                                                {kec.nama}
+                                            </option>
+                                        ))}
                                     </select>
+                                    {errors.kecamatan_id && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.kecamatan_id}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Alamat */}
@@ -344,32 +556,43 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                                     </label>
                                     <textarea
                                         name="alamat"
-                                        value={formData.alamat}
-                                        onChange={handleInputChange}
+                                        value={data.alamat}
+                                        onChange={(e) =>
+                                            setData('alamat', e.target.value)
+                                        }
                                         rows={3}
                                         className="w-full resize-none rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         placeholder="Masukkan alamat lengkap Anda"
                                     />
+                                    {errors.alamat && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.alamat}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
                             {/* Action Buttons */}
-                            {isEditing && (
+                            {isDirty && (
                                 <div className="mt-8 flex justify-end gap-4">
                                     <button
                                         type="button"
                                         onClick={handleCancel}
-                                        className="flex items-center gap-2 rounded-lg border border-gray-300 px-6 py-2 text-gray-700 transition-colors hover:bg-gray-50"
+                                        disabled={processing}
+                                        className="flex items-center gap-2 rounded-lg border border-gray-300 px-6 py-2 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
                                     >
                                         <X className="h-4 w-4" />
                                         Batal
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex items-center gap-2 rounded-lg bg-blue-500 px-6 py-2 text-white transition-colors hover:bg-blue-600"
+                                        disabled={processing}
+                                        className="flex items-center gap-2 rounded-lg bg-blue-500 px-6 py-2 text-white transition-colors hover:bg-blue-600 disabled:opacity-50"
                                     >
                                         <Save className="h-4 w-4" />
-                                        Simpan Perubahan
+                                        {processing
+                                            ? 'Menyimpan...'
+                                            : 'Simpan Perubahan'}
                                     </button>
                                 </div>
                             )}
@@ -377,106 +600,129 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                     </form>
                 </div>
 
-                {/* Medical History Card */}
-                <div className="mt-8 overflow-hidden rounded-2xl bg-white shadow-sm">
-                    {/* Header */}
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-6 py-6 text-white">
+                <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <div className="bg-gradient-to-r from-red-500 to-pink-500 px-6 py-4">
                         <div className="flex items-center gap-3">
-                            <Activity className="h-8 w-8" />
-                            <div>
-                                <h2 className="text-2xl font-bold">
-                                    Riwayat Medis
-                                </h2>
-                                <p className="mt-1 text-green-100">
-                                    Catatan kunjungan dan pemeriksaan kesehatan
-                                    Anda
-                                </p>
-                            </div>
+                            <Heart className="h-6 w-6 text-white" />
+                            <h2 className="text-xl font-bold text-white">
+                                Riwayat Medis
+                            </h2>
                         </div>
                     </div>
 
-                    {/* Content */}
-                    <div className="p-6">
-                        {medicalHistory.length > 0 ? (
-                            <div className="space-y-4">
-                                {medicalHistory.map((record) => (
-                                    <div
-                                        key={record.id}
-                                        className="rounded-xl border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
-                                    >
-                                        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                                            {/* Left Side - Main Info */}
-                                            <div className="flex-1 space-y-3">
-                                                {/* Type Badge & Date */}
-                                                <div className="flex flex-wrap items-center gap-3">
-                                                    <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
-                                                        {record.type}
-                                                    </span>
-                                                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                                                        <Calendar className="h-4 w-4" />
-                                                        {new Date(
-                                                            record.date,
-                                                        ).toLocaleDateString(
-                                                            'id-ID',
-                                                            {
-                                                                day: 'numeric',
-                                                                month: 'long',
-                                                                year: 'numeric',
-                                                            },
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                {/* Doctor */}
-                                                <div className="flex items-center gap-2 text-gray-700">
-                                                    <UserIcon className="h-4 w-4 text-gray-400" />
-                                                    <span className="font-medium">
-                                                        {record.doctor}
-                                                    </span>
-                                                </div>
-
-                                                {/* Diagnosis */}
-                                                <div>
-                                                    <h4 className="mb-1 font-semibold text-gray-900">
-                                                        {record.diagnosis}
-                                                    </h4>
-                                                    <p className="text-sm text-gray-600">
-                                                        {record.notes}
-                                                    </p>
-                                                </div>
-
-                                                {/* Faskes */}
-                                                <div className="flex items-center gap-2 text-sm text-gray-500">
-                                                    <FileText className="h-4 w-4" />
-                                                    <span>{record.faskes}</span>
-                                                </div>
-                                            </div>
-
-                                            {/* Right Side - Action Button */}
-                                            <div className="flex items-start">
-                                                <button className="rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-100">
-                                                    Lihat Detail
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                    <form onSubmit={handleSubmitRiwayatMedis} className="p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Golongan Darah */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Golongan Darah
+                                </label>
+                                <select
+                                    value={medisData.golongan_darah}
+                                    onChange={(e) => setMedisData('golongan_darah', e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                >
+                                    <option value="">Pilih Golongan Darah</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="AB">AB</option>
+                                    <option value="O">O</option>
+                                </select>
+                                {errorsMedis.golongan_darah && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errorsMedis.golongan_darah}
+                                    </p>
+                                )}
                             </div>
-                        ) : (
-                            <div className="py-12 text-center">
-                                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                                    <FileText className="h-8 w-8 text-gray-400" />
+
+                            {/* Rhesus */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Rhesus
+                                </label>
+                                <select
+                                    value={medisData.rhesus}
+                                    onChange={(e) => setMedisData('rhesus', e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                >
+                                    <option value="">Pilih Rhesus</option>
+                                    <option value="+">Positif (+)</option>
+                                    <option value="-">Negatif (-)</option>
+                                </select>
+                                {errorsMedis.rhesus && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errorsMedis.rhesus}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Jumlah Keguguran */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Jumlah Keguguran
+                                </label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    value={medisData.jumlah_keguguran}
+                                    onChange={(e) => setMedisData('jumlah_keguguran', e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                    placeholder="0"
+                                />
+                                {errorsMedis.jumlah_keguguran && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errorsMedis.jumlah_keguguran}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Riwayat Alergi */}
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Riwayat Alergi
+                                </label>
+                                <textarea
+                                    value={medisData.riwayat_alergi}
+                                    onChange={(e) => setMedisData('riwayat_alergi', e.target.value)}
+                                    rows={3}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                    placeholder="Tuliskan riwayat alergi jika ada..."
+                                />
+                                {errorsMedis.riwayat_alergi && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errorsMedis.riwayat_alergi}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex justify-end gap-3 mt-6">
+                            <button
+                                type="button"
+                                onClick={handleCancelRiwayatMedis}
+                                disabled={processingMedis || !isDirtyMedis}
+                                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <X className="h-4 w-4" />
+                                    <span>Batal</span>
                                 </div>
-                                <h3 className="mb-2 text-lg font-semibold text-gray-900">
-                                    Belum Ada Riwayat Medis
-                                </h3>
-                                <p className="text-gray-600">
-                                    Riwayat kunjungan dan pemeriksaan Anda akan
-                                    muncul di sini
-                                </p>
-                            </div>
-                        )}
-                    </div>
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={processingMedis || !isDirtyMedis}
+                                className="px-6 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Save className="h-4 w-4" />
+                                    <span>
+                                        {processingMedis ? 'Menyimpan...' : 'Simpan Riwayat Medis'}
+                                    </span>
+                                </div>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

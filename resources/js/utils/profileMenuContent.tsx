@@ -11,6 +11,7 @@ import {
     SquareActivity,
     Stethoscope,
     User as UserIcon,
+    UsersIcon,
     Video,
 } from 'lucide-react';
 import { router } from '@inertiajs/react';
@@ -61,6 +62,15 @@ export function getProfileMenuContent({
                 <UserIcon className="h-4 w-4" />
                 <span>Profil Saya</span>
             </DropdownMenuItem>
+
+            <DropdownMenuItem
+                onClick={() => (location.href = `/pasien/keluarga`)}
+                className="flex cursor-pointer items-center gap-2"
+            >
+                <UsersIcon className="h-4 w-4" />
+                <span>Keluarga</span>
+            </DropdownMenuItem>
+
 
             <DropdownMenuLabel className="px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-gray-500">
                 Riwayat

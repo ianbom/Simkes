@@ -26,4 +26,8 @@ class PemeriksaanAnak extends Model
     public function riwayatSakit(){
         return $this->hasMany(RiwayatSakitAnak::class);
     }
+
+    public function mediaPemeriksaanAnak(){
+        return $this->hasMany(MediaPemeriksaanAnak::class);
+    }
 }

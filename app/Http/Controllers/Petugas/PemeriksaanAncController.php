@@ -39,7 +39,7 @@ class PemeriksaanAncController extends Controller
     }
     public function createPemeriksaanKehamilan($id)
     {
-        $pregnant = Kehamilan::with(['user', 'janin'])->findOrFail($id);
+        $pregnant = Kehamilan::with(['user.riwayatMedis', 'janin'])->findOrFail($id);
         $checkupHistory = PemeriksaanAnc::where('kehamilan_id', $id)
             ->with([
                 'kehamilan.user',
@@ -52,6 +52,7 @@ class PemeriksaanAncController extends Controller
             ->get()
             ->toArray();
 
+        // return response()->json(['pregnant' => $pregnant]);
 
         $growth = PemeriksaanAnc::with([
             'hasilLab',
@@ -78,6 +79,7 @@ class PemeriksaanAncController extends Controller
             'checkupHistory' => $checkupHistory,
             'sickHistory' => $sickHistory,
             'growth' => $growth,
+
         ]);
     }
     public function index($id)
