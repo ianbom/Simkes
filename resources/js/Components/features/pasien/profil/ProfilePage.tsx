@@ -1,17 +1,7 @@
 import { User } from '@/types/user/interface';
 import { useForm } from '@inertiajs/react';
-import {
-    Activity,
-    Calendar,
-    Camera,
-    FileText,
-    Save,
-    User as UserIcon,
-    X,
-    CheckCircle,
-    Heart,
-} from 'lucide-react';
-import { FormEventHandler, useState, useEffect } from 'react';
+import { Camera, CheckCircle, Heart, Save, X } from 'lucide-react';
+import { FormEventHandler, useEffect, useState } from 'react';
 
 interface Provinsi {
     id: number;
@@ -55,27 +45,29 @@ export default function ProfilePage({
     kota,
     kecamatan,
     flash,
-    riwayatMedis
+    riwayatMedis,
 }: ProfilePageProps) {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [filteredKota, setFilteredKota] = useState<Kota[]>([]);
     const [filteredKecamatan, setFilteredKecamatan] = useState<Kecamatan[]>([]);
     const [showSuccess, setShowSuccess] = useState(false);
 
-    const { data, setData, post, processing, errors, isDirty, reset } = useForm({
-        name: user?.name || '',
-        email: user?.email || '',
-        nik: user?.nik || '',
-        tanggal_lahir: user?.tanggal_lahir || '',
-        kelamin: user?.kelamin || 'L',
-        no_telp: user?.no_telp || '',
-        alamat: user?.alamat || '',
-        provinsi_id: user?.provinsi_id?.toString() || '',
-        kota_id: user?.kota_id?.toString() || '',
-        kecamatan_id: user?.kecamatan_id?.toString() || '',
-        faskes_id: user?.faskes_id?.toString() || '',
-        profile_pic_url: null as File | null,
-    });
+    const { data, setData, post, processing, errors, isDirty, reset } = useForm(
+        {
+            name: user?.name || '',
+            email: user?.email || '',
+            nik: user?.nik || '',
+            tanggal_lahir: user?.tanggal_lahir || '',
+            kelamin: user?.kelamin || 'L',
+            no_telp: user?.no_telp || '',
+            alamat: user?.alamat || '',
+            provinsi_id: user?.provinsi_id?.toString() || '',
+            kota_id: user?.kota_id?.toString() || '',
+            kecamatan_id: user?.kecamatan_id?.toString() || '',
+            faskes_id: user?.faskes_id?.toString() || '',
+            profile_pic_url: null as File | null,
+        },
+    );
 
     const {
         data: medisData,
@@ -84,7 +76,7 @@ export default function ProfilePage({
         processing: processingMedis,
         errors: errorsMedis,
         isDirty: isDirtyMedis,
-        reset: resetMedis
+        reset: resetMedis,
     } = useForm({
         golongan_darah: riwayatMedis?.golongan_darah || '',
         rhesus: riwayatMedis?.rhesus || '',
@@ -96,16 +88,16 @@ export default function ProfilePage({
     useEffect(() => {
         if (data.provinsi_id) {
             const filtered = kota.filter(
-                (k) => k.provinsi_id.toString() === data.provinsi_id
+                (k) => k.provinsi_id.toString() === data.provinsi_id,
             );
             setFilteredKota(filtered);
 
             // Reset kota dan kecamatan jika provinsi berubah
-            if (!filtered.find(k => k.id.toString() === data.kota_id)) {
-                setData(prev => ({
+            if (!filtered.find((k) => k.id.toString() === data.kota_id)) {
+                setData((prev) => ({
                     ...prev,
                     kota_id: '',
-                    kecamatan_id: ''
+                    kecamatan_id: '',
                 }));
             }
         } else {
@@ -117,12 +109,12 @@ export default function ProfilePage({
     useEffect(() => {
         if (data.kota_id) {
             const filtered = kecamatan.filter(
-                (kec) => kec.kota_id.toString() === data.kota_id
+                (kec) => kec.kota_id.toString() === data.kota_id,
             );
             setFilteredKecamatan(filtered);
 
             // Reset kecamatan jika kota berubah
-            if (!filtered.find(k => k.id.toString() === data.kecamatan_id)) {
+            if (!filtered.find((k) => k.id.toString() === data.kecamatan_id)) {
                 setData('kecamatan_id', '');
             }
         } else {
@@ -176,7 +168,7 @@ export default function ProfilePage({
             },
             onError: (errors) => {
                 console.error('Update profile errors:', errors);
-            }
+            },
         });
     };
 
@@ -189,7 +181,7 @@ export default function ProfilePage({
             },
             onError: (errors) => {
                 console.error('Update riwayat medis errors:', errors);
-            }
+            },
         });
     };
 
@@ -217,33 +209,35 @@ export default function ProfilePage({
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
-            <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen py-8 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+            <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 {/* Success Message */}
                 {showSuccess && flash?.success && (
-                    <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 flex items-center gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                        <p className="text-sm text-green-800">{flash.success}</p>
+                    <div className="flex items-center gap-3 p-4 mb-6 border border-green-200 rounded-lg bg-green-50">
+                        <CheckCircle className="flex-shrink-0 w-5 h-5 text-green-600" />
+                        <p className="text-sm text-green-800">
+                            {flash.success}
+                        </p>
                         <button
                             onClick={() => setShowSuccess(false)}
                             className="ml-auto text-green-600 hover:text-green-800"
                         >
-                            <X className="h-4 w-4" />
+                            <X className="w-4 h-4" />
                         </button>
                     </div>
                 )}
 
                 {/* Error Message */}
                 {flash?.error && (
-                    <div className="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 flex items-center gap-3">
-                        <X className="h-5 w-5 text-red-600 flex-shrink-0" />
+                    <div className="flex items-center gap-3 p-4 mb-6 border border-red-200 rounded-lg bg-red-50">
+                        <X className="flex-shrink-0 w-5 h-5 text-red-600" />
                         <p className="text-sm text-red-800">{flash.error}</p>
                     </div>
                 )}
 
-                <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
+                <div className="overflow-hidden bg-white shadow-sm rounded-2xl">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-8 text-white">
+                    <div className="px-6 py-8 text-white bg-gradient-to-r from-blue-500 to-blue-600">
                         <h1 className="text-3xl font-bold">Profil Saya</h1>
                         <p className="mt-2 text-blue-100">
                             Kelola informasi profil Anda
@@ -253,9 +247,9 @@ export default function ProfilePage({
                     <form onSubmit={handleSubmit}>
                         <div className="p-6">
                             {/* Profile Picture Section */}
-                            <div className="mb-8 flex flex-col items-center">
+                            <div className="flex flex-col items-center mb-8">
                                 <div className="relative">
-                                    <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-white bg-gray-200 shadow-lg">
+                                    <div className="w-32 h-32 overflow-hidden bg-gray-200 border-4 border-white rounded-full shadow-lg">
                                         {previewImage ||
                                         user?.profile_pic_url ? (
                                             <img
@@ -264,10 +258,10 @@ export default function ProfilePage({
                                                     `/storage/${user?.profile_pic_url}`
                                                 }
                                                 alt="Profile"
-                                                className="h-full w-full object-cover"
+                                                className="object-cover w-full h-full"
                                             />
                                         ) : (
-                                            <div className="flex h-full w-full items-center justify-center bg-blue-100 text-4xl font-bold text-blue-600">
+                                            <div className="flex items-center justify-center w-full h-full text-4xl font-bold text-blue-600 bg-blue-100">
                                                 {data.name
                                                     .charAt(0)
                                                     .toUpperCase()}
@@ -276,9 +270,9 @@ export default function ProfilePage({
                                     </div>
                                     <label
                                         htmlFor="profile-upload"
-                                        className="absolute bottom-0 right-0 cursor-pointer rounded-full bg-blue-500 p-2 text-white shadow-lg transition-colors hover:bg-blue-600"
+                                        className="absolute bottom-0 right-0 p-2 text-white transition-colors bg-blue-500 rounded-full shadow-lg cursor-pointer hover:bg-blue-600"
                                     >
-                                        <Camera className="h-5 w-5" />
+                                        <Camera className="w-5 h-5" />
                                         <input
                                             id="profile-upload"
                                             type="file"
@@ -289,7 +283,8 @@ export default function ProfilePage({
                                     </label>
                                 </div>
                                 <p className="mt-3 text-sm text-gray-500">
-                                    Klik ikon kamera untuk mengubah foto profil (Max 2MB)
+                                    Klik ikon kamera untuk mengubah foto profil
+                                    (Max 2MB)
                                 </p>
                                 {errors.profile_pic_url && (
                                     <p className="mt-1 text-sm text-red-600">
@@ -302,7 +297,7 @@ export default function ProfilePage({
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 {/* Nama Lengkap */}
                                 <div className="md:col-span-2">
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Nama Lengkap{' '}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -313,7 +308,7 @@ export default function ProfilePage({
                                         onChange={(e) =>
                                             setData('name', e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
                                     {errors.name && (
@@ -325,7 +320,7 @@ export default function ProfilePage({
 
                                 {/* NIK */}
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         NIK{' '}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -337,7 +332,7 @@ export default function ProfilePage({
                                             setData('nik', e.target.value)
                                         }
                                         maxLength={16}
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
                                     {errors.nik && (
@@ -349,7 +344,7 @@ export default function ProfilePage({
 
                                 {/* Email */}
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Email{' '}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -360,7 +355,7 @@ export default function ProfilePage({
                                         onChange={(e) =>
                                             setData('email', e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
                                     {errors.email && (
@@ -372,7 +367,7 @@ export default function ProfilePage({
 
                                 {/* Tanggal Lahir */}
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Tanggal Lahir{' '}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -386,7 +381,7 @@ export default function ProfilePage({
                                                 e.target.value,
                                             )
                                         }
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
                                     {errors.tanggal_lahir && (
@@ -398,7 +393,7 @@ export default function ProfilePage({
 
                                 {/* Jenis Kelamin */}
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Jenis Kelamin{' '}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -408,7 +403,7 @@ export default function ProfilePage({
                                         onChange={(e) =>
                                             setData('kelamin', e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     >
                                         <option value="L">Laki-laki</option>
@@ -423,7 +418,7 @@ export default function ProfilePage({
 
                                 {/* No Telp */}
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         No. Telepon{' '}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -434,7 +429,7 @@ export default function ProfilePage({
                                         onChange={(e) =>
                                             setData('no_telp', e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
                                     {errors.no_telp && (
@@ -446,13 +441,13 @@ export default function ProfilePage({
 
                                 {/* Faskes */}
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Faskes Terdaftar
                                     </label>
                                     <input
                                         type="text"
                                         value={user?.faskes?.nama_faskes || '-'}
-                                        className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
                                         disabled
                                     />
                                     <p className="mt-1 text-xs text-gray-500">
@@ -462,7 +457,7 @@ export default function ProfilePage({
 
                                 {/* Provinsi */}
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Provinsi{' '}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -470,14 +465,20 @@ export default function ProfilePage({
                                         name="provinsi_id"
                                         value={data.provinsi_id}
                                         onChange={(e) =>
-                                            setData('provinsi_id', e.target.value)
+                                            setData(
+                                                'provinsi_id',
+                                                e.target.value,
+                                            )
                                         }
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         required
                                     >
                                         <option value="">Pilih Provinsi</option>
                                         {provinsi.map((prov) => (
-                                            <option key={prov.id} value={prov.id}>
+                                            <option
+                                                key={prov.id}
+                                                value={prov.id}
+                                            >
                                                 {prov.nama}
                                             </option>
                                         ))}
@@ -491,7 +492,7 @@ export default function ProfilePage({
 
                                 {/* Kota */}
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Kota/Kabupaten{' '}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -501,7 +502,7 @@ export default function ProfilePage({
                                         onChange={(e) =>
                                             setData('kota_id', e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         disabled={!data.provinsi_id}
                                         required
                                     >
@@ -521,7 +522,7 @@ export default function ProfilePage({
 
                                 {/* Kecamatan */}
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Kecamatan{' '}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -529,13 +530,18 @@ export default function ProfilePage({
                                         name="kecamatan_id"
                                         value={data.kecamatan_id}
                                         onChange={(e) =>
-                                            setData('kecamatan_id', e.target.value)
+                                            setData(
+                                                'kecamatan_id',
+                                                e.target.value,
+                                            )
                                         }
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         disabled={!data.kota_id}
                                         required
                                     >
-                                        <option value="">Pilih Kecamatan</option>
+                                        <option value="">
+                                            Pilih Kecamatan
+                                        </option>
                                         {filteredKecamatan.map((kec) => (
                                             <option key={kec.id} value={kec.id}>
                                                 {kec.nama}
@@ -551,7 +557,7 @@ export default function ProfilePage({
 
                                 {/* Alamat */}
                                 <div className="md:col-span-2">
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Alamat Lengkap
                                     </label>
                                     <textarea
@@ -561,7 +567,7 @@ export default function ProfilePage({
                                             setData('alamat', e.target.value)
                                         }
                                         rows={3}
-                                        className="w-full resize-none rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg resize-none focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         placeholder="Masukkan alamat lengkap Anda"
                                     />
                                     {errors.alamat && (
@@ -574,22 +580,22 @@ export default function ProfilePage({
 
                             {/* Action Buttons */}
                             {isDirty && (
-                                <div className="mt-8 flex justify-end gap-4">
+                                <div className="flex justify-end gap-4 mt-8">
                                     <button
                                         type="button"
                                         onClick={handleCancel}
                                         disabled={processing}
-                                        className="flex items-center gap-2 rounded-lg border border-gray-300 px-6 py-2 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
+                                        className="flex items-center gap-2 px-6 py-2 text-gray-700 transition-colors border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
                                     >
-                                        <X className="h-4 w-4" />
+                                        <X className="w-4 h-4" />
                                         Batal
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="flex items-center gap-2 rounded-lg bg-blue-500 px-6 py-2 text-white transition-colors hover:bg-blue-600 disabled:opacity-50"
+                                        className="flex items-center gap-2 px-6 py-2 text-white transition-colors bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50"
                                     >
-                                        <Save className="h-4 w-4" />
+                                        <Save className="w-4 h-4" />
                                         {processing
                                             ? 'Menyimpan...'
                                             : 'Simpan Perubahan'}
@@ -600,10 +606,10 @@ export default function ProfilePage({
                     </form>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                    <div className="bg-gradient-to-r from-red-500 to-pink-500 px-6 py-4">
+                <div className="overflow-hidden bg-white shadow-xl rounded-2xl">
+                    <div className="px-6 py-4 bg-gradient-to-r from-red-500 to-pink-500">
                         <div className="flex items-center gap-3">
-                            <Heart className="h-6 w-6 text-white" />
+                            <Heart className="w-6 h-6 text-white" />
                             <h2 className="text-xl font-bold text-white">
                                 Riwayat Medis
                             </h2>
@@ -611,18 +617,25 @@ export default function ProfilePage({
                     </div>
 
                     <form onSubmit={handleSubmitRiwayatMedis} className="p-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {/* Golongan Darah */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block mb-2 text-sm font-medium text-gray-700">
                                     Golongan Darah
                                 </label>
                                 <select
                                     value={medisData.golongan_darah}
-                                    onChange={(e) => setMedisData('golongan_darah', e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                    onChange={(e) =>
+                                        setMedisData(
+                                            'golongan_darah',
+                                            e.target.value,
+                                        )
+                                    }
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-red-500"
                                 >
-                                    <option value="">Pilih Golongan Darah</option>
+                                    <option value="">
+                                        Pilih Golongan Darah
+                                    </option>
                                     <option value="A">A</option>
                                     <option value="B">B</option>
                                     <option value="AB">AB</option>
@@ -637,13 +650,15 @@ export default function ProfilePage({
 
                             {/* Rhesus */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block mb-2 text-sm font-medium text-gray-700">
                                     Rhesus
                                 </label>
                                 <select
                                     value={medisData.rhesus}
-                                    onChange={(e) => setMedisData('rhesus', e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                    onChange={(e) =>
+                                        setMedisData('rhesus', e.target.value)
+                                    }
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-red-500"
                                 >
                                     <option value="">Pilih Rhesus</option>
                                     <option value="+">Positif (+)</option>
@@ -658,15 +673,20 @@ export default function ProfilePage({
 
                             {/* Jumlah Keguguran */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block mb-2 text-sm font-medium text-gray-700">
                                     Jumlah Keguguran
                                 </label>
                                 <input
                                     type="number"
                                     min="0"
                                     value={medisData.jumlah_keguguran}
-                                    onChange={(e) => setMedisData('jumlah_keguguran', e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                    onChange={(e) =>
+                                        setMedisData(
+                                            'jumlah_keguguran',
+                                            e.target.value,
+                                        )
+                                    }
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-red-500"
                                     placeholder="0"
                                 />
                                 {errorsMedis.jumlah_keguguran && (
@@ -678,14 +698,19 @@ export default function ProfilePage({
 
                             {/* Riwayat Alergi */}
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block mb-2 text-sm font-medium text-gray-700">
                                     Riwayat Alergi
                                 </label>
                                 <textarea
                                     value={medisData.riwayat_alergi}
-                                    onChange={(e) => setMedisData('riwayat_alergi', e.target.value)}
+                                    onChange={(e) =>
+                                        setMedisData(
+                                            'riwayat_alergi',
+                                            e.target.value,
+                                        )
+                                    }
                                     rows={3}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-transparent focus:ring-2 focus:ring-red-500"
                                     placeholder="Tuliskan riwayat alergi jika ada..."
                                 />
                                 {errorsMedis.riwayat_alergi && (
@@ -702,22 +727,24 @@ export default function ProfilePage({
                                 type="button"
                                 onClick={handleCancelRiwayatMedis}
                                 disabled={processingMedis || !isDirtyMedis}
-                                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="px-6 py-2 text-gray-700 transition-colors border border-gray-300 rounded-lg hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 <div className="flex items-center gap-2">
-                                    <X className="h-4 w-4" />
+                                    <X className="w-4 h-4" />
                                     <span>Batal</span>
                                 </div>
                             </button>
                             <button
                                 type="submit"
                                 disabled={processingMedis || !isDirtyMedis}
-                                className="px-6 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                className="px-6 py-2 text-white transition-all rounded-lg bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 <div className="flex items-center gap-2">
-                                    <Save className="h-4 w-4" />
+                                    <Save className="w-4 h-4" />
                                     <span>
-                                        {processingMedis ? 'Menyimpan...' : 'Simpan Riwayat Medis'}
+                                        {processingMedis
+                                            ? 'Menyimpan...'
+                                            : 'Simpan Riwayat Medis'}
                                     </span>
                                 </div>
                             </button>

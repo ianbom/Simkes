@@ -95,7 +95,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                 ${record.petugas?.name || ''}
                 ${record.anak?.nama || ''}
                 ${record.petugas?.faskes?.nama || ''}
-                ${record.riwayat_sakit?.map(r => r.diagnosis).join(' ') || ''}
+                ${record.riwayat_sakit?.map((r) => r.diagnosis).join(' ') || ''}
             `.toLowerCase();
 
             const matchesSearch =
@@ -114,8 +114,8 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
 
     if (!checkupHistory || checkupHistory.length === 0) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen py-8 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+                <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="mb-8">
                         <h1 className="mb-1 text-2xl font-bold text-gray-900 sm:text-3xl">
                             Riwayat Checkup Anak
@@ -126,7 +126,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                     </div>
                     <Card className="shadow-sm">
                         <CardContent className="flex flex-col items-center py-12 text-center">
-                            <ClipboardList className="mb-3 h-12 w-12 text-gray-400" />
+                            <ClipboardList className="w-12 h-12 mb-3 text-gray-400" />
                             <p className="text-lg font-medium text-gray-900">
                                 Tidak ada data pemeriksaan
                             </p>
@@ -171,9 +171,9 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="min-h-screen py-8 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+            <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="flex flex-col justify-between gap-4 mb-8 sm:flex-row sm:items-center">
                     <div>
                         <h1 className="mb-1 text-2xl font-bold text-gray-900 sm:text-3xl">
                             Riwayat Checkup Anak
@@ -184,7 +184,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="inline-flex items-center gap-1.5 rounded-md bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-800">
-                            <Activity className="h-4 w-4 text-purple-600" />
+                            <Activity className="w-4 h-4 text-purple-600" />
                             Total: {checkupHistory?.length || 0}
                         </div>
                     </div>
@@ -202,7 +202,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                     Filter Pemeriksaan
                                 </div>
                                 {hasActiveFilters && (
-                                    <span className="rounded-full bg-emerald-100 px-2 py-1 text-xs text-emerald-600">
+                                    <span className="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-600">
                                         Aktif
                                     </span>
                                 )}
@@ -213,7 +213,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                 onClick={resetFilters}
                                 disabled={!hasActiveFilters}
                             >
-                                <RefreshCcw className="mr-2 h-4 w-4" />
+                                <RefreshCcw className="w-4 h-4 mr-2" />
                                 Reset Filter
                             </Button>
                         </div>
@@ -266,11 +266,11 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                     {displayedRecords.map((record) => (
                         <Card
                             key={record.id}
-                            className="bg-white shadow-sm transition-shadow hover:shadow-md"
+                            className="transition-shadow bg-white shadow-sm hover:shadow-md"
                         >
                             <CardContent className="p-6">
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                                    <div className="flex flex-1 flex-col gap-3">
+                                    <div className="flex flex-col flex-1 gap-3">
                                         <div className="flex flex-wrap items-center gap-3">
                                             <Badge
                                                 className={getTypeBadge(
@@ -282,23 +282,32 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                 )}
                                             </Badge>
                                             <div className="flex items-center gap-2 text-sm text-gray-600">
-                                                <Calendar className="h-4 w-4" />
+                                                <Calendar className="w-4 h-4" />
                                                 {formatDate(
                                                     record.tanggal_pemeriksaan,
                                                 )}
                                             </div>
-                                            {record.riwayat_sakit && record.riwayat_sakit.length > 0 && (
-                                                <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">
-                                                    <AlertCircle className="mr-1 h-3 w-3" />
-                                                    Ada Riwayat Sakit
-                                                </Badge>
-                                            )}
-                                            {record.media_pemeriksaan_anak && record.media_pemeriksaan_anak.length > 0 && (
-                                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
-                                                    <ImageIcon className="mr-1 h-3 w-3" />
-                                                    {record.media_pemeriksaan_anak.length} Foto
-                                                </Badge>
-                                            )}
+                                            {record.riwayat_sakit &&
+                                                record.riwayat_sakit.length >
+                                                    0 && (
+                                                    <Badge className="text-orange-700 bg-orange-100 hover:bg-orange-100">
+                                                        <AlertCircle className="w-3 h-3 mr-1" />
+                                                        Ada Riwayat Sakit
+                                                    </Badge>
+                                                )}
+                                            {record.media_pemeriksaan_anak &&
+                                                record.media_pemeriksaan_anak
+                                                    .length > 0 && (
+                                                    <Badge className="text-blue-700 bg-blue-100 hover:bg-blue-100">
+                                                        <ImageIcon className="w-3 h-3 mr-1" />
+                                                        {
+                                                            record
+                                                                .media_pemeriksaan_anak
+                                                                .length
+                                                        }{' '}
+                                                        Foto
+                                                    </Badge>
+                                                )}
                                         </div>
 
                                         <div>
@@ -309,14 +318,14 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
 
                                         <div className="flex flex-col gap-2 text-sm text-gray-700">
                                             <div className="flex items-center gap-2">
-                                                <User className="h-4 w-4 text-gray-400" />
+                                                <User className="w-4 h-4 text-gray-400" />
                                                 <span>
                                                     {record.petugas.name}
                                                 </span>
                                             </div>
                                             {record.petugas.faskes && (
                                                 <div className="flex items-center gap-2">
-                                                    <Stethoscope className="h-4 w-4 text-gray-400" />
+                                                    <Stethoscope className="w-4 h-4 text-gray-400" />
                                                     <span>
                                                         {
                                                             record.petugas
@@ -338,12 +347,12 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                         >
                                             {expandedItems.has(record.id) ? (
                                                 <>
-                                                    <ChevronUp className="mr-2 h-4 w-4" />
+                                                    <ChevronUp className="w-4 h-4 mr-2" />
                                                     Tutup Detail
                                                 </>
                                             ) : (
                                                 <>
-                                                    <ChevronDown className="mr-2 h-4 w-4" />
+                                                    <ChevronDown className="w-4 h-4 mr-2" />
                                                     Lihat Detail
                                                 </>
                                             )}
@@ -353,7 +362,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                 {expandedItems.has(record.id) && (
                                     <div className="mt-4 space-y-4">
                                         {/* Data Pemeriksaan */}
-                                        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm shadow-sm">
+                                        <div className="p-4 text-sm border border-blue-200 rounded-lg shadow-sm bg-blue-50">
                                             <h3 className="mb-4 text-base font-semibold text-gray-800">
                                                 Detail Pemeriksaan
                                             </h3>
@@ -375,7 +384,9 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                         Suhu Tubuh
                                                     </p>
                                                     <p className="text-gray-600">
-                                                        {record.suhu_tubuh_celsius}
+                                                        {
+                                                            record.suhu_tubuh_celsius
+                                                        }
                                                         °C
                                                     </p>
                                                 </div>
@@ -384,7 +395,8 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                         Berat Badan
                                                     </p>
                                                     <p className="text-gray-600">
-                                                        {record.berat_badan_kg} kg
+                                                        {record.berat_badan_kg}{' '}
+                                                        kg
                                                     </p>
                                                 </div>
                                                 <div>
@@ -392,7 +404,8 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                         Tinggi Badan
                                                     </p>
                                                     <p className="text-gray-600">
-                                                        {record.tinggi_badan_cm} cm
+                                                        {record.tinggi_badan_cm}{' '}
+                                                        cm
                                                     </p>
                                                 </div>
                                                 <div>
@@ -400,7 +413,9 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                         Lingkar Kepala
                                                     </p>
                                                     <p className="text-gray-600">
-                                                        {record.lingkar_kepala_cm}{' '}
+                                                        {
+                                                            record.lingkar_kepala_cm
+                                                        }{' '}
                                                         cm
                                                     </p>
                                                 </div>
@@ -420,7 +435,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                             </div>
 
                                             {record.perkembangan_motorik && (
-                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <div className="pt-4 mt-4 border-t border-gray-200">
                                                     <p className="font-medium text-gray-900">
                                                         Perkembangan Motorik:
                                                     </p>
@@ -432,7 +447,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                 </div>
                                             )}
                                             {record.perkembangan_kognitif && (
-                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <div className="pt-4 mt-4 border-t border-gray-200">
                                                     <p className="font-medium text-gray-900">
                                                         Perkembangan Kognitif:
                                                     </p>
@@ -444,7 +459,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                 </div>
                                             )}
                                             {record.perkembangan_emosional && (
-                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <div className="pt-4 mt-4 border-t border-gray-200">
                                                     <p className="font-medium text-gray-900">
                                                         Perkembangan Emosional:
                                                     </p>
@@ -457,114 +472,160 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                             )}
 
                                             {record.catatan_pemeriksaan && (
-                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                <div className="pt-4 mt-4 border-t border-gray-200">
                                                     <p className="font-medium text-gray-900">
                                                         Catatan Pemeriksaan:
                                                     </p>
                                                     <p className="mt-1 text-gray-600">
-                                                        {record.catatan_pemeriksaan}
+                                                        {
+                                                            record.catatan_pemeriksaan
+                                                        }
                                                     </p>
                                                 </div>
                                             )}
 
                                             <div className="mt-4 text-xs text-gray-500">
                                                 Terakhir diperbarui:{' '}
-                                                {formatDateTime(record.updated_at)}
+                                                {formatDateTime(
+                                                    record.updated_at,
+                                                )}
                                             </div>
                                         </div>
 
                                         {/* Riwayat Sakit */}
-                                        {record.riwayat_sakit && record.riwayat_sakit.length > 0 && (
-                                            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm shadow-sm">
-                                                <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-gray-800">
-                                                    <FileText className="h-5 w-5 text-red-600" />
-                                                    Riwayat Sakit
-                                                </h3>
+                                        {record.riwayat_sakit &&
+                                            record.riwayat_sakit.length > 0 && (
+                                                <div className="p-4 text-sm border border-red-200 rounded-lg shadow-sm bg-red-50">
+                                                    <h3 className="flex items-center gap-2 mb-3 text-base font-semibold text-gray-800">
+                                                        <FileText className="w-5 h-5 text-red-600" />
+                                                        Riwayat Sakit
+                                                    </h3>
 
-                                                <div className="space-y-4">
-                                                    {record.riwayat_sakit.map((sakit, index) => (
-                                                        <div key={sakit.id} className="rounded-md border border-red-300 bg-white p-3">
-                                                            {record.riwayat_sakit.length > 1 && (
-                                                                <p className="mb-2 text-xs font-semibold text-red-700">
-                                                                    Riwayat {index + 1}
-                                                                </p>
-                                                            )}
-                                                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                                                                <div>
-                                                                    <p className="font-medium text-gray-900">
-                                                                        Tanggal Sakit
-                                                                    </p>
-                                                                    <p className="text-gray-600">
-                                                                        {formatDate(sakit.tanggal_sakit)}
-                                                                    </p>
+                                                    <div className="space-y-4">
+                                                        {record.riwayat_sakit.map(
+                                                            (sakit, index) => (
+                                                                <div
+                                                                    key={
+                                                                        sakit.id
+                                                                    }
+                                                                    className="p-3 bg-white border border-red-300 rounded-md"
+                                                                >
+                                                                    {record
+                                                                        .riwayat_sakit
+                                                                        .length >
+                                                                        1 && (
+                                                                        <p className="mb-2 text-xs font-semibold text-red-700">
+                                                                            Riwayat{' '}
+                                                                            {index +
+                                                                                1}
+                                                                        </p>
+                                                                    )}
+                                                                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                                        <div>
+                                                                            <p className="font-medium text-gray-900">
+                                                                                Tanggal
+                                                                                Sakit
+                                                                            </p>
+                                                                            <p className="text-gray-600">
+                                                                                {formatDate(
+                                                                                    sakit.tanggal_sakit,
+                                                                                )}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p className="font-medium text-gray-900">
+                                                                                Diagnosis
+                                                                            </p>
+                                                                            <p className="text-gray-600">
+                                                                                {
+                                                                                    sakit.diagnosis
+                                                                                }
+                                                                            </p>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p className="font-medium text-gray-900">
+                                                                                Gejala
+                                                                            </p>
+                                                                            <p className="text-gray-600">
+                                                                                {
+                                                                                    sakit.gejala
+                                                                                }
+                                                                            </p>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p className="font-medium text-gray-900">
+                                                                                Tindakan
+                                                                                Pengobatan
+                                                                            </p>
+                                                                            <p className="text-gray-600">
+                                                                                {
+                                                                                    sakit.tindakan_pengobatan
+                                                                                }
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    {sakit.catatan && (
+                                                                        <div className="pt-3 mt-3 border-t border-gray-200">
+                                                                            <p className="font-medium text-gray-900">
+                                                                                Catatan
+                                                                            </p>
+                                                                            <p className="text-gray-600">
+                                                                                {
+                                                                                    sakit.catatan
+                                                                                }
+                                                                            </p>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
-                                                                <div>
-                                                                    <p className="font-medium text-gray-900">
-                                                                        Diagnosis
-                                                                    </p>
-                                                                    <p className="text-gray-600">
-                                                                        {sakit.diagnosis}
-                                                                    </p>
-                                                                </div>
-                                                                <div>
-                                                                    <p className="font-medium text-gray-900">
-                                                                        Gejala
-                                                                    </p>
-                                                                    <p className="text-gray-600">
-                                                                        {sakit.gejala}
-                                                                    </p>
-                                                                </div>
-                                                                <div>
-                                                                    <p className="font-medium text-gray-900">
-                                                                        Tindakan Pengobatan
-                                                                    </p>
-                                                                    <p className="text-gray-600">
-                                                                        {sakit.tindakan_pengobatan}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                            {sakit.catatan && (
-                                                                <div className="mt-3 border-t border-gray-200 pt-3">
-                                                                    <p className="font-medium text-gray-900">
-                                                                        Catatan
-                                                                    </p>
-                                                                    <p className="text-gray-600">
-                                                                        {sakit.catatan}
-                                                                    </p>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ))}
+                                                            ),
+                                                        )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
 
                                         {/* Media Pemeriksaan */}
-                                        {record.media_pemeriksaan_anak && record.media_pemeriksaan_anak.length > 0 && (
-                                            <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 text-sm shadow-sm">
-                                                <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-gray-800">
-                                                    <ImageIcon className="h-5 w-5 text-purple-600" />
-                                                    Dokumentasi Pemeriksaan ({record.media_pemeriksaan_anak.length} foto)
-                                                </h3>
+                                        {record.media_pemeriksaan_anak &&
+                                            record.media_pemeriksaan_anak
+                                                .length > 0 && (
+                                                <div className="p-4 text-sm border border-purple-200 rounded-lg shadow-sm bg-purple-50">
+                                                    <h3 className="flex items-center gap-2 mb-3 text-base font-semibold text-gray-800">
+                                                        <ImageIcon className="w-5 h-5 text-purple-600" />
+                                                        Dokumentasi Pemeriksaan
+                                                        (
+                                                        {
+                                                            record
+                                                                .media_pemeriksaan_anak
+                                                                .length
+                                                        }{' '}
+                                                        foto)
+                                                    </h3>
 
-                                                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                                                    {record.media_pemeriksaan_anak.map((media) => (
-                                                        <div
-                                                            key={media.id}
-                                                            className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-purple-300 bg-white shadow-sm transition-all hover:shadow-md"
-                                                            onClick={() => setSelectedImage(`/storage/${media.file_url}`)}
-                                                        >
-                                                            <img
-                                                                src={`/storage/${media.file_url}`}
-                                                                alt={`Foto pemeriksaan ${record.anak.nama}`}
-                                                                className="h-full w-full object-cover transition-transform group-hover:scale-110"
-                                                            />
-                                                            <div className="absolute inset-0 bg-black opacity-0 transition-opacity group-hover:opacity-20" />
-                                                        </div>
-                                                    ))}
+                                                    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                                                        {record.media_pemeriksaan_anak.map(
+                                                            (media) => (
+                                                                <div
+                                                                    key={
+                                                                        media.id
+                                                                    }
+                                                                    className="relative overflow-hidden transition-all bg-white border border-purple-300 rounded-lg shadow-sm cursor-pointer group aspect-square hover:shadow-md"
+                                                                    onClick={() =>
+                                                                        setSelectedImage(
+                                                                            `/storage/${media.file_url}`,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <img
+                                                                        src={`/storage/${media.file_url}`}
+                                                                        alt={`Foto pemeriksaan ${record.anak.nama}`}
+                                                                        className="object-cover w-full h-full transition-transform group-hover:scale-110"
+                                                                    />
+                                                                    <div className="absolute inset-0 transition-opacity bg-black opacity-0 group-hover:opacity-20" />
+                                                                </div>
+                                                            ),
+                                                        )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
                                     </div>
                                 )}
                             </CardContent>
@@ -574,7 +635,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                     {filteredRecords.length === 0 && (
                         <Card className="bg-white shadow-sm">
                             <CardContent className="flex flex-col items-center py-12 text-center">
-                                <ClipboardList className="mb-3 h-12 w-12 text-gray-400" />
+                                <ClipboardList className="w-12 h-12 mb-3 text-gray-400" />
                                 <p className="text-lg font-medium text-gray-900">
                                     Tidak ada data pemeriksaan
                                 </p>
@@ -590,7 +651,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
 
                 {/* Show More Button */}
                 {!showAll && hasMoreRecords && (
-                    <div className="mt-8 flex flex-col items-center gap-3">
+                    <div className="flex flex-col items-center gap-3 mt-8">
                         <Button
                             onClick={() => setShowAll(true)}
                             size="lg"
@@ -608,13 +669,13 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
 
                 {/* Show Less Button */}
                 {showAll && hasMoreRecords && (
-                    <div className="mt-8 flex justify-center">
+                    <div className="flex justify-center mt-8">
                         <Button
                             onClick={() => setShowAll(false)}
                             variant="outline"
                             size="lg"
                         >
-                            <ChevronUp className="mr-2 h-4 w-4" />
+                            <ChevronUp className="w-4 h-4 mr-2" />
                             Tampilkan Lebih Sedikit
                         </Button>
                     </div>
@@ -624,7 +685,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
             {/* Image Modal */}
             {selectedImage && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75"
                     onClick={() => setSelectedImage(null)}
                 >
                     <div className="relative max-h-[90vh] max-w-[90vw]">
@@ -635,10 +696,20 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                         />
                         <button
                             onClick={() => setSelectedImage(null)}
-                            className="absolute right-2 top-2 rounded-full bg-white p-2 shadow-lg hover:bg-gray-100"
+                            className="absolute p-2 bg-white rounded-full shadow-lg right-2 top-2 hover:bg-gray-100"
                         >
-                            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            <svg
+                                className="w-6 h-6"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
                             </svg>
                         </button>
                     </div>

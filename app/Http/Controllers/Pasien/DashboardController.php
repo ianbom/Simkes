@@ -10,11 +10,12 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function chatbot(){
+    public function chatbot()
+    {
 
         $chatLogs = ChatLog::where('user_id', Auth::id())
-        ->orderBy('created_at', 'asc')
-        ->get();
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         return Inertia::render('Pasien/ChatBot/ChatBotPageRoute', [
             'chatLogs' => $chatLogs

@@ -13,7 +13,7 @@ const ChildGraphPage = ({ child, growth, allChilds }) => {
     };
 
     return (
-        <div className="min-h-screen p-8 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+        <div className="min-h-screen py-8 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
             <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 {/* Header Section */}
                 <div className="p-6 mb-6 bg-white shadow-sm rounded-2xl">

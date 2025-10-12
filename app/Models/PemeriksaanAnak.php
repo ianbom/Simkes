@@ -23,11 +23,13 @@ class PemeriksaanAnak extends Model
         return $this->hasOne(SkriningPerkembangan::class);
     }
 
-    public function riwayatSakit(){
+    public function riwayatSakit()
+    {
         return $this->hasMany(RiwayatSakitAnak::class);
     }
 
-    public function mediaPemeriksaanAnak(){
+    public function mediaPemeriksaanAnak()
+    {
         return $this->hasMany(MediaPemeriksaanAnak::class);
     }
 }
