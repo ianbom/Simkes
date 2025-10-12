@@ -9,6 +9,13 @@ class RiwayatSakitKehamilan extends Model
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
     protected $table = 'riwayat_sakit_kehamilan';
+
+     protected $casts = [
+        'diagnosis' => 'encrypted',
+        'gejala' => 'encrypted',
+        'tindakan_pengobatan' => 'encrypted',
+    ];
+    
     public function kehamilan()
     {
         return $this->belongsTo(Kehamilan::class);

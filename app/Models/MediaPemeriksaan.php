@@ -10,6 +10,12 @@ class MediaPemeriksaan extends Model
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
     protected $table = 'media_pemeriksaan';
+
+    protected $casts = [
+        'file_url' => 'encrypted',
+    ];
+
+
       public function pemeriksaan() {
         return $this->belongsTo(PemeriksaanAnc::class, 'pemeriksaan_anc_id');
     }

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pemeriksaan_anc_id')->constrained('pemeriksaan_anc')->cascadeOnDelete();
             $table->string('nama_tes');
-            $table->string('hasil', 50);
-            $table->string('satuan', 20)->nullable();
+            $table->string('hasil', 255);
+            $table->string('satuan', 255)->nullable();
             $table->enum('status', ['Normal', 'Kurang Normal', 'Tidak Normal', 'Perlu Tindak Lanjut']);
             $table->timestamps();
         });

@@ -10,6 +10,13 @@ class HasilLab extends Model
     protected $primaryKey = 'id';
     protected $table = 'hasil_lab';
 
+     protected $casts = [
+        'nama_tes' => 'encrypted',
+        'hasil' => 'encrypted',
+        'satuan' => 'encrypted',
+        // 'status' => 'encrypted',
+    ];
+
     public function pemeriksaan()
     {
         return $this->belongsTo(PemeriksaanAnc::class, 'pemeriksaan_anc_id');

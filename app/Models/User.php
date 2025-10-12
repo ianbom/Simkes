@@ -42,6 +42,11 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+              'nik' => 'encrypted',
+    'tanggal_lahir' => 'encrypted:date',
+    'no_telp' => 'encrypted',
+    'alamat' => 'encrypted',
+    'profile_pic_url' => 'encrypted',
         ];
     }
 

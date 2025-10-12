@@ -11,6 +11,12 @@ class Anak extends Model
     protected $primaryKey = 'id';
     protected $table = 'anak';
 
+    protected $casts = [
+        'nama' => 'encrypted',
+        'nik' => 'encrypted',
+        'kondisi' => 'encrypted',
+    ];
+
     public function kelahiran()
     {
         return $this->belongsTo(Kelahiran::class);

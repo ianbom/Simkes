@@ -10,6 +10,13 @@ class PemeriksaanAnak extends Model
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
     protected $table = 'pemeriksaan_anak';
+
+       protected $casts = [
+        'perkembangan_motorik'   => 'encrypted',
+        'perkembangan_kognitif'  => 'encrypted',
+        'perkembangan_emosional' => 'encrypted',
+        'catatan_pemeriksaan'    => 'encrypted',
+    ];
     public function anak()
     {
         return $this->belongsTo(Anak::class);

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('anak_id')->constrained('anak')->cascadeOnDelete();
             $table->foreignId('pemeriksaan_anak_id')->nullable()->constrained('pemeriksaan_anak')->cascadeOnDelete();
             $table->date('tanggal_sakit');
-            $table->string('diagnosis', 255);
+            $table->text('diagnosis');
             $table->text('gejala')->nullable();
             $table->text('tindakan_pengobatan')->nullable();
             $table->text('catatan')->nullable();

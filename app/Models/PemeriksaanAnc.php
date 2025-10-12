@@ -10,6 +10,12 @@ class PemeriksaanAnc extends Model
     protected $primaryKey = 'id';
     protected $table = 'pemeriksaan_anc';
 
+        protected $casts = [
+        'keluhan' => 'encrypted',
+        'catatan_petugas' => 'encrypted',
+        'deteksi_resiko' => 'encrypted',
+    ];
+
 
     public function kehamilan()
     {
@@ -44,4 +50,6 @@ class PemeriksaanAnc extends Model
     {
         return $this->hasMany(RiwayatSakitKehamilan::class);
     }
+
+
 }

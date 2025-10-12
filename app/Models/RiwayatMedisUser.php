@@ -12,4 +12,10 @@ class RiwayatMedisUser extends Model
      public function user() {
         return $this->belongsTo(User::class);
     }
+
+        protected $casts = [
+        'golongan_darah' => 'encrypted',
+        'rhesus' => 'encrypted',
+        'riwayat_alergi' => 'encrypted',
+    ];
 }
