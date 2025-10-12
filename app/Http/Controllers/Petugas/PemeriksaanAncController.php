@@ -126,7 +126,7 @@ class PemeriksaanAncController extends Controller
                 ];
             });
 
-        return Inertia::render('Pasien/Riwayat/PregnancyCheckupHistoryPageRoute', [
+        return Inertia::render('Petugas/Riwayat/PregnancyCheckupHistoryPageRoute', [
             'checkupHistory' => $checkupHistory,
         ]);
     }

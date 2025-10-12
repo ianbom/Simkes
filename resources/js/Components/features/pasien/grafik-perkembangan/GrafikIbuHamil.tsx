@@ -37,6 +37,14 @@ interface Janin {
     created_at: string;
 }
 
+interface MediaPemeriksaan {
+    id: number;
+    pemeriksaan_anc_id: number;
+    file_url: string;
+    created_at: string;
+    updated_at: string;
+}
+
 interface PemeriksaanAnc {
     id: number;
     kehamilan_id: number;
@@ -47,6 +55,7 @@ interface PemeriksaanAnc {
     tekanan_darah_sistolik: number;
     tekanan_darah_diastolik: number;
     lila: string;
+    media_pemeriksaan?: MediaPemeriksaan[];
 }
 
 interface Props {
@@ -63,53 +72,14 @@ const calculatePregnancyWeek = (hpht: string, checkupDate: string): number => {
     return Math.floor(diffDays / 7);
 };
 
-const generateFetalReferenceData = () => {
-    const weeks = Array.from({ length: 40 }, (_, i) => i + 1);
-    return weeks.map((week) => {
-        let weight = 0;
-        let length = 0;
-        let heartRate = 0;
-
-        if (week <= 8) {
-            weight = week * 0.15;
-        } else if (week <= 20) {
-            weight = Math.pow(week - 8, 2.5) * 2;
-        } else {
-            weight = Math.pow(week - 8, 2.8) * 2.2;
-        }
-
-        if (week <= 12) {
-            length = week * 0.8;
-        } else if (week <= 28) {
-            length = 5 + (week - 12) * 1.5;
-        } else {
-            length = 29 + (week - 28) * 1.0;
-        }
-
-        if (week <= 6) {
-            heartRate = 80 + week * 15;
-        } else if (week <= 9) {
-            heartRate = 170 + (week - 6) * 5;
-        } else if (week <= 14) {
-            heartRate = 185 - (week - 9) * 2;
-        } else {
-            heartRate = 170 - (week - 14) * 2;
-        }
-
-        return {
-            week,
-            refWeight: parseFloat(weight.toFixed(1)),
-            refLength: parseFloat(length.toFixed(1)),
-            refHeartRate: Math.round(heartRate),
-        };
-    });
-};
-
 export default function GrafikIbuHamil({
     pregnant,
     growth,
     activeTrimester,
 }: Props) {
+    const [openRows, setOpenRows] = useState<number[]>([]);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
     // Data Pemeriksaan ANC (Ibu)
     const ancMeasurements = useMemo(() => {
         return growth
@@ -142,6 +112,14 @@ export default function GrafikIbuHamil({
 
     const filteredAncData = getFilteredAncData();
 
+    const toggleRow = (index: number) => {
+        setOpenRows((prev) =>
+            prev.includes(index)
+                ? prev.filter((i) => i !== index)
+                : [...prev, index],
+        );
+    };
+
     const AncTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
@@ -171,14 +149,6 @@ export default function GrafikIbuHamil({
             );
         }
         return null;
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
     };
 
     return (
@@ -314,27 +284,13 @@ export default function GrafikIbuHamil({
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
                                 {growth.map((pemeriksaan: any, idx: number) => {
-                                    const [openRows, setOpenRows] = useState<
-                                        number[]
-                                    >([]);
-
-                                    const toggleRow = (index: number) => {
-                                        setOpenRows((prev) =>
-                                            prev.includes(index)
-                                                ? prev.filter(
-                                                      (i) => i !== index,
-                                                  )
-                                                : [...prev, index],
-                                        );
-                                    };
-
                                     const isOpen = openRows.includes(idx);
 
-                                    const hasilLab =
-                                        pemeriksaan.hasil_lab || [];
+                                    const hasilLab = pemeriksaan.hasil_lab || [];
                                     const riwayatSakit =
-                                        pemeriksaan.riwayat_sakit_kehamilan ||
-                                        [];
+                                        pemeriksaan.riwayat_sakit_kehamilan || [];
+                                    const mediaPemeriksaan =
+                                        pemeriksaan.media_pemeriksaan || [];
                                     const petugas = pemeriksaan.petugas;
                                     const faskes = petugas?.faskes;
                                     const weekNumber = calculatePregnancyWeek(
@@ -345,6 +301,7 @@ export default function GrafikIbuHamil({
                                     return (
                                         <>
                                             <tr
+                                                key={`row-${idx}`}
                                                 className="cursor-pointer transition hover:bg-gray-50"
                                                 onClick={() => toggleRow(idx)}
                                             >
@@ -354,28 +311,20 @@ export default function GrafikIbuHamil({
                                                 <td className="px-4 py-3 text-sm text-gray-900">
                                                     {new Date(
                                                         pemeriksaan.tanggal_checkup,
-                                                    ).toLocaleDateString(
-                                                        'id-ID',
-                                                    )}
+                                                    ).toLocaleDateString('id-ID')}
                                                 </td>
                                                 <td className="px-4 py-3 text-sm text-blue-600">
                                                     {pemeriksaan.berat_badan} kg
                                                 </td>
-                                                <td className="px-4 py-3 text-sm text-green-600">
-                                                    {pemeriksaan.tinggi_fundus}{' '}
-                                                    cm
-                                                </td>
                                                 <td className="px-4 py-3 text-sm text-purple-600">
                                                     {pemeriksaan.lila} cm
                                                 </td>
+                                                <td className="px-4 py-3 text-sm text-green-600">
+                                                    {pemeriksaan.tinggi_fundus} cm
+                                                </td>
                                                 <td className="px-4 py-3 text-sm text-gray-900">
-                                                    {
-                                                        pemeriksaan.tekanan_darah_sistolik
-                                                    }
-                                                    /
-                                                    {
-                                                        pemeriksaan.tekanan_darah_diastolik
-                                                    }{' '}
+                                                    {pemeriksaan.tekanan_darah_sistolik}
+                                                    /{pemeriksaan.tekanan_darah_diastolik}{' '}
                                                     mmHg
                                                 </td>
                                                 <td className="px-4 py-3 text-center">
@@ -383,31 +332,27 @@ export default function GrafikIbuHamil({
                                                         type="button"
                                                         className="text-sm font-medium text-blue-600 hover:underline focus:outline-none"
                                                     >
-                                                        {isOpen
-                                                            ? 'Tutup'
-                                                            : 'Lihat'}
+                                                        {isOpen ? 'Tutup' : 'Lihat'}
                                                     </button>
                                                 </td>
                                             </tr>
 
                                             {isOpen && (
-                                                <tr>
+                                                <tr key={`detail-${idx}`}>
                                                     <td
-                                                        colSpan={6}
+                                                        colSpan={7}
                                                         className="bg-gray-50 px-6 py-4"
                                                     >
                                                         <div className="space-y-6">
                                                             {/* 🧍‍♀️ Data Pemeriksaan Ibu */}
                                                             <div className="rounded-lg border bg-white p-4 shadow-sm">
                                                                 <h4 className="mb-2 font-semibold text-gray-800">
-                                                                    📋 Detail
-                                                                    Pemeriksaan
+                                                                    📋 Detail Pemeriksaan
                                                                 </h4>
                                                                 <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-700 md:grid-cols-3">
                                                                     <p>
                                                                         <strong>
-                                                                            Jenis
-                                                                            Pemeriksaan:
+                                                                            Jenis Pemeriksaan:
                                                                         </strong>{' '}
                                                                         {
                                                                             pemeriksaan.jenis_pemeriksaan
@@ -415,18 +360,14 @@ export default function GrafikIbuHamil({
                                                                     </p>
                                                                     <p>
                                                                         <strong>
-                                                                            Berat
-                                                                            Badan:
+                                                                            Berat Badan:
                                                                         </strong>{' '}
-                                                                        {
-                                                                            pemeriksaan.berat_badan
-                                                                        }{' '}
+                                                                        {pemeriksaan.berat_badan}{' '}
                                                                         kg
                                                                     </p>
                                                                     <p>
                                                                         <strong>
-                                                                            Tinggi
-                                                                            Fundus:
+                                                                            Tinggi Fundus:
                                                                         </strong>{' '}
                                                                         {
                                                                             pemeriksaan.tinggi_fundus
@@ -434,18 +375,12 @@ export default function GrafikIbuHamil({
                                                                         cm
                                                                     </p>
                                                                     <p>
-                                                                        <strong>
-                                                                            LILA:
-                                                                        </strong>{' '}
-                                                                        {
-                                                                            pemeriksaan.lila
-                                                                        }{' '}
-                                                                        cm
+                                                                        <strong>LILA:</strong>{' '}
+                                                                        {pemeriksaan.lila} cm
                                                                     </p>
                                                                     <p>
                                                                         <strong>
-                                                                            Tekanan
-                                                                            Darah:
+                                                                            Tekanan Darah:
                                                                         </strong>{' '}
                                                                         {
                                                                             pemeriksaan.tekanan_darah_sistolik
@@ -458,8 +393,7 @@ export default function GrafikIbuHamil({
                                                                     </p>
                                                                     <p>
                                                                         <strong>
-                                                                            Suhu
-                                                                            Tubuh:
+                                                                            Suhu Tubuh:
                                                                         </strong>{' '}
                                                                         {
                                                                             pemeriksaan.suhu_tubuh_celsius
@@ -468,8 +402,7 @@ export default function GrafikIbuHamil({
                                                                     </p>
                                                                     <p>
                                                                         <strong>
-                                                                            Frekuensi
-                                                                            Napas:
+                                                                            Frekuensi Napas:
                                                                         </strong>{' '}
                                                                         {
                                                                             pemeriksaan.frekuensi_napas_per_menit
@@ -478,8 +411,7 @@ export default function GrafikIbuHamil({
                                                                     </p>
                                                                     <p>
                                                                         <strong>
-                                                                            Denyut
-                                                                            Jantung:
+                                                                            Denyut Jantung:
                                                                         </strong>{' '}
                                                                         {
                                                                             pemeriksaan.frekuensi_jantung_per_menit
@@ -488,24 +420,19 @@ export default function GrafikIbuHamil({
                                                                     </p>
                                                                     <p>
                                                                         <strong>
-                                                                            Status
-                                                                            Bengkak:
+                                                                            Status Bengkak:
                                                                         </strong>{' '}
                                                                         {
                                                                             pemeriksaan.status_bengkak_kaki
                                                                         }
                                                                     </p>
                                                                     <p>
-                                                                        <strong>
-                                                                            Keluhan:
-                                                                        </strong>{' '}
-                                                                        {pemeriksaan.keluhan ||
-                                                                            '-'}
+                                                                        <strong>Keluhan:</strong>{' '}
+                                                                        {pemeriksaan.keluhan || '-'}
                                                                     </p>
                                                                     <p>
                                                                         <strong>
-                                                                            Catatan
-                                                                            Petugas:
+                                                                            Catatan Petugas:
                                                                         </strong>{' '}
                                                                         {
                                                                             pemeriksaan.catatan_petugas
@@ -513,8 +440,7 @@ export default function GrafikIbuHamil({
                                                                     </p>
                                                                     <p>
                                                                         <strong>
-                                                                            Deteksi
-                                                                            Risiko:
+                                                                            Deteksi Risiko:
                                                                         </strong>{' '}
                                                                         {pemeriksaan.deteksi_resiko ||
                                                                             '-'}
@@ -522,20 +448,55 @@ export default function GrafikIbuHamil({
                                                                 </div>
                                                             </div>
 
+                                                            {/* 📸 Media Pemeriksaan */}
+                                                            {mediaPemeriksaan.length > 0 && (
+                                                                <div className="rounded-lg border bg-white p-4 shadow-sm">
+                                                                    <h4 className="mb-3 font-semibold text-gray-800">
+                                                                        📸 Foto Pemeriksaan
+                                                                    </h4>
+                                                                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                                                                        {mediaPemeriksaan.map(
+                                                                            (
+                                                                                media: MediaPemeriksaan,
+                                                                            ) => (
+                                                                                <div
+                                                                                    key={media.id}
+                                                                                    className="group relative cursor-pointer overflow-hidden rounded-lg border border-gray-200 transition hover:shadow-lg"
+                                                                                    onClick={() =>
+                                                                                        setSelectedImage(
+                                                                                            `/storage/${media.file_url}`,
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <img
+                                                                                        src={`/storage/${media.file_url}`}
+                                                                                        alt={`Pemeriksaan ${idx + 1}`}
+                                                                                        className="h-32 w-full object-cover transition group-hover:scale-110"
+                                                                                    />
+                                                                                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 transition group-hover:bg-opacity-40">
+                                                                                        <span className="text-sm font-medium text-white opacity-0 transition group-hover:opacity-100">
+                                                                                            Klik untuk
+                                                                                            memperbesar
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            ),
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
                                                             {/* 🧪 Hasil Lab */}
-                                                            {hasilLab.length >
-                                                                0 && (
+                                                            {hasilLab.length > 0 && (
                                                                 <div className="rounded-lg border bg-white p-4 shadow-sm">
                                                                     <h4 className="mb-2 font-semibold text-gray-800">
-                                                                        🧪 Hasil
-                                                                        Laboratorium
+                                                                        🧪 Hasil Laboratorium
                                                                     </h4>
                                                                     <table className="min-w-full rounded-lg border border-gray-200 text-sm">
                                                                         <thead className="bg-gray-100">
                                                                             <tr>
                                                                                 <th className="px-3 py-2 text-left">
-                                                                                    Nama
-                                                                                    Tes
+                                                                                    Nama Tes
                                                                                 </th>
                                                                                 <th className="px-3 py-2 text-left">
                                                                                     Hasil
@@ -555,9 +516,7 @@ export default function GrafikIbuHamil({
                                                                                     i: number,
                                                                                 ) => (
                                                                                     <tr
-                                                                                        key={
-                                                                                            i
-                                                                                        }
+                                                                                        key={i}
                                                                                         className="border-t hover:bg-gray-50"
                                                                                     >
                                                                                         <td className="px-3 py-2">
@@ -566,14 +525,10 @@ export default function GrafikIbuHamil({
                                                                                             }
                                                                                         </td>
                                                                                         <td className="px-3 py-2">
-                                                                                            {
-                                                                                                lab.hasil
-                                                                                            }
+                                                                                            {lab.hasil}
                                                                                         </td>
                                                                                         <td className="px-3 py-2">
-                                                                                            {
-                                                                                                lab.satuan
-                                                                                            }
+                                                                                            {lab.satuan}
                                                                                         </td>
                                                                                         <td
                                                                                             className={`px-3 py-2 font-medium ${
@@ -586,9 +541,7 @@ export default function GrafikIbuHamil({
                                                                                                       : 'text-red-600'
                                                                                             }`}
                                                                                         >
-                                                                                            {
-                                                                                                lab.status
-                                                                                            }
+                                                                                            {lab.status}
                                                                                         </td>
                                                                                     </tr>
                                                                                 ),
@@ -599,21 +552,16 @@ export default function GrafikIbuHamil({
                                                             )}
 
                                                             {/* 🤒 Riwayat Sakit Kehamilan */}
-                                                            {riwayatSakit.length >
-                                                                0 && (
+                                                            {riwayatSakit.length > 0 && (
                                                                 <div className="rounded-lg border bg-white p-4 shadow-sm">
                                                                     <h4 className="mb-2 font-semibold text-gray-800">
-                                                                        🤒
-                                                                        Riwayat
-                                                                        Sakit
-                                                                        Kehamilan
+                                                                        🤒 Riwayat Sakit Kehamilan
                                                                     </h4>
                                                                     <table className="min-w-full rounded-lg border border-gray-200 text-sm">
                                                                         <thead className="bg-gray-100">
                                                                             <tr>
                                                                                 <th className="px-3 py-2 text-left">
-                                                                                    Tanggal
-                                                                                    Diagnosis
+                                                                                    Tanggal Diagnosis
                                                                                 </th>
                                                                                 <th className="px-3 py-2 text-left">
                                                                                     Diagnosis
@@ -636,9 +584,7 @@ export default function GrafikIbuHamil({
                                                                                     i: number,
                                                                                 ) => (
                                                                                     <tr
-                                                                                        key={
-                                                                                            i
-                                                                                        }
+                                                                                        key={i}
                                                                                         className="border-t hover:bg-gray-50"
                                                                                     >
                                                                                         <td className="px-3 py-2">
@@ -649,14 +595,10 @@ export default function GrafikIbuHamil({
                                                                                             )}
                                                                                         </td>
                                                                                         <td className="px-3 py-2">
-                                                                                            {
-                                                                                                r.diagnosis
-                                                                                            }
+                                                                                            {r.diagnosis}
                                                                                         </td>
                                                                                         <td className="px-3 py-2">
-                                                                                            {
-                                                                                                r.gejala
-                                                                                            }
+                                                                                            {r.gejala}
                                                                                         </td>
                                                                                         <td className="px-3 py-2">
                                                                                             {
@@ -680,10 +622,7 @@ export default function GrafikIbuHamil({
                                                             {petugas && (
                                                                 <div className="rounded-lg border bg-white p-4 shadow-sm">
                                                                     <h4 className="mb-2 font-semibold text-gray-800">
-                                                                        🏥
-                                                                        Petugas
-                                                                        &
-                                                                        Fasilitas
+                                                                        🏥 Petugas & Fasilitas
                                                                         Kesehatan
                                                                     </h4>
                                                                     <div className="space-y-1 text-sm text-gray-700">
@@ -691,31 +630,18 @@ export default function GrafikIbuHamil({
                                                                             <strong>
                                                                                 Petugas:
                                                                             </strong>{' '}
-                                                                            {
-                                                                                petugas.name
-                                                                            }{' '}
-                                                                            (
-                                                                            {
-                                                                                petugas.role
-                                                                            }
-                                                                            )
+                                                                            {petugas.name} (
+                                                                            {petugas.role})
+                                                                        </p>
+                                                                        <p>
+                                                                            <strong>Email:</strong>{' '}
+                                                                            {petugas.email}
                                                                         </p>
                                                                         <p>
                                                                             <strong>
-                                                                                Email:
+                                                                                Nomor Telepon:
                                                                             </strong>{' '}
-                                                                            {
-                                                                                petugas.email
-                                                                            }
-                                                                        </p>
-                                                                        <p>
-                                                                            <strong>
-                                                                                Nomor
-                                                                                Telepon:
-                                                                            </strong>{' '}
-                                                                            {
-                                                                                petugas.no_telp
-                                                                            }
+                                                                            {petugas.no_telp}
                                                                         </p>
                                                                         {faskes && (
                                                                             <>
@@ -723,23 +649,17 @@ export default function GrafikIbuHamil({
                                                                                     <strong>
                                                                                         Faskes:
                                                                                     </strong>{' '}
-                                                                                    {
-                                                                                        faskes.nama
-                                                                                    }{' '}
-                                                                                    (
+                                                                                    {faskes.nama} (
                                                                                     {
                                                                                         faskes.tipe_faskes
                                                                                     }
-
                                                                                     )
                                                                                 </p>
                                                                                 <p>
                                                                                     <strong>
                                                                                         Alamat:
                                                                                     </strong>{' '}
-                                                                                    {
-                                                                                        faskes.alamat
-                                                                                    }
+                                                                                    {faskes.alamat}
                                                                                 </p>
                                                                             </>
                                                                         )}
@@ -758,6 +678,32 @@ export default function GrafikIbuHamil({
                     </div>
                 </div>
             )}
+
+            {/* 🖼️ Image Modal (Zoom Foto Pemeriksaan) */}
+            {selectedImage && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 p-4"
+                    onClick={() => setSelectedImage(null)}
+                >
+                    <div
+                        className="relative max-h-[90vh] max-w-[90vw]"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            className="absolute -top-10 right-0 text-3xl text-white hover:text-gray-300"
+                            onClick={() => setSelectedImage(null)}
+                        >
+                            ✕
+                        </button>
+                        <img
+                            src={selectedImage}
+                            alt="Foto Pemeriksaan"
+                            className="max-h-[80vh] max-w-full rounded-lg shadow-lg object-contain"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
+

@@ -416,7 +416,7 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
 
     // Tentukan jenis kelamin anak (asumsi field: child.jenis_kelamin atau child.gender)
     // Sesuaikan dengan struktur data Anda: 'L' untuk laki-laki, 'P' untuk perempuan
-    const isMale = child?.jenis_kelamin === 'L' || child?.gender === 'male' || child?.gender === 'L';
+    const isMale = child?.kelamin === 'L' || child?.gender === 'male' || child?.gender === 'L';
 
     // Fungsi untuk mendapatkan data percentile berdasarkan gender
     const getPercentileData = (type: 'weight' | 'height' | 'headCircumference') => {
