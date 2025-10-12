@@ -128,39 +128,7 @@ const PatientQueueCard = ({
                                 </div>
                             </div>
 
-                            {/* Bagian kanan */}
-                            <div className="flex items-center gap-2">
-                                {getStatusBadge(patient.status)}
-                                {patient.status === 'waiting' && (
-                                    <Button
-                                        size="sm"
-                                        onClick={() =>
-                                            onStartExamination(patient.id)
-                                        }
-                                        className="bg-blue-500 text-white hover:bg-blue-600"
-                                    >
-                                        Periksa →
-                                    </Button>
-                                )}
-                                {patient.status === 'in-progress' && (
-                                    <Button
-                                        size="sm"
-                                        disabled
-                                        className="bg-gray-100 text-gray-400"
-                                    >
-                                        Periksa
-                                    </Button>
-                                )}
-                                {patient.status === 'completed' && (
-                                    <Button
-                                        size="sm"
-                                        disabled
-                                        className="bg-gray-100 text-gray-400"
-                                    >
-                                        Selesai
-                                    </Button>
-                                )}
-                            </div>
+
                         </div>
                     ))}
                 </div>

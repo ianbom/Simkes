@@ -9,6 +9,7 @@ use App\Http\Controllers\Pasien\KehamilanController as PsnKehamilanController;
 use App\Http\Controllers\Pasien\FaskesController as PsnFaskesController;
 use App\Http\Controllers\Pasien\KeluargaController;
 use App\Http\Controllers\Pasien\KonsultasiOnlineController;
+use App\Http\Controllers\Pasien\ProfileController as PsnProfileController;
 use App\Http\Controllers\Pasien\RiwayatMedisUserController;
 use App\Http\Controllers\Petugas\DashboardController as PtgDashboardController;
 use App\Http\Controllers\Petugas\OnlineConsultationController as PtgOnlineConsultationController;
@@ -24,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Auth/Login', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
@@ -67,9 +68,10 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
 
     Route::get('konsultasi', [KonsultasiOnlineController::class, 'index'])->name('consultation.index');
     Route::post('konsultasi-bookConsult/{id}', [KonsultasiOnlineController::class, 'bookConsult'])->name('consultation.bookConsult');
-    Route::get('/profil', function () {
-        return Inertia::render('Pasien/Profil/ProfilePageRoute');
-    });
+    Route::get('/profil', [PsnProfileController::class, 'myProfile'])->name('myProfile');
+    Route::post('/profil/update', [PsnProfileController::class, 'updateProfile'])->name('updateProfile');
+    Route::post('/riwayat-medis/update', [PsnProfileController::class, 'updateRiwayatMedis'])->name('updateRiwayatMedis');
+
 
     Route::get('/faskes', [PsnFaskesController::class, 'index'])->name('faskes.index');
     Route::get('/faskes-map', [PsnFaskesController::class, 'mapFaskes'])->name('faskes.map');
@@ -103,13 +105,11 @@ Route::prefix('pasien')->as('pasien.')->group(function () {
 
     Route::get('/grafik/perkembangan-anak/{id}', [PsnAnakController::class, 'viewPerkembanganAnak'])->name('view.perkembanganAnak');
 
-    Route::get('/grafik/perkembangan-janin/{id}',[PsnKehamilanController::class, 'viewPerkembanganKehamilan'])->name('view.perkembanganKehamilan');
+    Route::get('/grafik/perkembangan-janin/{id}', [PsnKehamilanController::class, 'viewPerkembanganKehamilan'])->name('view.perkembanganKehamilan');
 
     Route::get('/keluarga', [KeluargaController::class, 'viewKeluarga'])->name('viewKeluarga');
     Route::post('/keluarga/create', [KeluargaController::class, 'createKeluarga'])->name('createKeluarga');
     Route::post('/keluarga/join', [KeluargaController::class, 'joinKeluarga'])->name('joinKeluarga');
-
-
 });
 // Route untuk akses fitur petugas
 Route::prefix('petugas')->as('petugas.')->group(function () {
@@ -123,6 +123,7 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
     //     return Inertia::render('Petugas/Pemeriksaan/Anak/ChildCheckupPageRoute');
     // });
     // Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'index'])->name('index.pemeriksaanAnak');
+    
     Route::get('/checkup-anak/{id}', [PtgPemeriksaanAnakController::class, 'createPemeriksaan'])->name('create.pemeriksaanAnak');
     Route::post('/store-checkup', [PtgPemeriksaanAnakController::class, 'store'])->name('store.pemeriksaanAnak');
 
@@ -160,7 +161,7 @@ Route::prefix('superadmin')->as('superadmin.')->group(function () {
     Route::resource('/faskes-user', SpmFaskesUserController::class);
 });
 
-Route::view('/', 'index');
+// Route::view('/', 'index');
 Route::view('/analytics', 'analytics');
 Route::view('/finance', 'finance');
 Route::view('/crypto', 'crypto');

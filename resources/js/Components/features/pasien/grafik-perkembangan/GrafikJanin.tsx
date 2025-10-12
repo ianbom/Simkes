@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
     CartesianGrid,
     Legend,
@@ -110,10 +110,23 @@ export default function GrafikJanin({
     pregnant,
     activeTrimester,
 }: Props) {
+    // Dapatkan daftar urutan janin yang unik
+    const availableFetuses = useMemo(() => {
+        if (!pregnant.janin) return [];
+        const uniqueOrders = [...new Set(pregnant.janin.map(j => j.urutan_janin))];
+        return uniqueOrders.sort((a, b) => a - b);
+    }, [pregnant.janin]);
+
+    // State untuk janin yang sedang dipilih
+    const [selectedFetus, setSelectedFetus] = useState<number>(
+        availableFetuses[0] || 1
+    );
+
     const fetalMeasurements = useMemo(() => {
         if (!pregnant.janin) return [];
 
         return pregnant.janin
+            .filter(janin => janin.urutan_janin === selectedFetus)
             .map((janin) => {
                 const ancData = growth.find(
                     (g) => g.id === janin.pemeriksaan_anc_id,
@@ -136,7 +149,7 @@ export default function GrafikJanin({
             })
             .filter(Boolean)
             .sort((a, b) => a.week - b.week);
-    }, [pregnant.janin, pregnant.hpht, growth]);
+    }, [pregnant.janin, pregnant.hpht, growth, selectedFetus]);
 
     const fetalReferenceData = generateFetalReferenceData();
 
@@ -225,18 +238,55 @@ export default function GrafikJanin({
         });
     };
 
+    if (availableFetuses.length === 0) {
+        return (
+            <div className="mb-6 rounded-2xl bg-white p-8 shadow-sm">
+                <p className="text-center text-gray-500">Belum ada data janin</p>
+            </div>
+        );
+    }
+
     return (
         <div className="mb-6 rounded-2xl bg-white p-8 shadow-sm">
             <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">
-                    📊 Grafik Perkembangan Janin - Trimester {activeTrimester}
-                </h2>
-                <p className="mt-1 text-sm text-gray-500">
-                    {activeTrimester === 1 && 'Minggu 1-13'}
-                    {activeTrimester === 2 && 'Minggu 14-27'}
-                    {activeTrimester === 3 && 'Minggu 28-40'}
-                </p>
-                <p className="mt-1 text-xs text-gray-400">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-800">
+                            📊 Grafik Perkembangan Janin - Trimester {activeTrimester}
+                        </h2>
+                        <p className="mt-1 text-sm text-gray-500">
+                            {activeTrimester === 1 && 'Minggu 1-13'}
+                            {activeTrimester === 2 && 'Minggu 14-27'}
+                            {activeTrimester === 3 && 'Minggu 28-40'}
+                        </p>
+                    </div>
+
+                    {/* Selector Janin */}
+                    {availableFetuses.length > 1 && (
+                        <div className="flex items-center gap-2">
+                            <label className="text-sm font-medium text-gray-700">
+                                Pilih Janin:
+                            </label>
+                            <div className="flex gap-2">
+                                {availableFetuses.map((fetusOrder) => (
+                                    <button
+                                        key={fetusOrder}
+                                        onClick={() => setSelectedFetus(fetusOrder)}
+                                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                                            selectedFetus === fetusOrder
+                                                ? 'bg-blue-600 text-white shadow-md'
+                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        }`}
+                                    >
+                                        Janin {fetusOrder}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <p className="mt-2 text-xs text-gray-400">
                     Garis putus-putus menunjukkan referensi normal, garis solid
                     menunjukkan data pemeriksaan aktual
                 </p>
@@ -291,14 +341,11 @@ export default function GrafikJanin({
                         iconType="circle"
                     />
 
-                    {/* ============================== */}
-                    {/* 🔵 Berat Janin */}
-                    {/* ============================== */}
                     <Line
                         yAxisId="left"
                         type="monotone"
                         dataKey="actualWeight"
-                        stroke="#3b82f6" // biru
+                        stroke="#3b82f6"
                         strokeWidth={3}
                         dot={{ r: 5, fill: '#3b82f6' }}
                         name="Berat Janin (gram)"
@@ -306,14 +353,11 @@ export default function GrafikJanin({
                         connectNulls={true}
                     />
 
-                    {/* ============================== */}
-                    {/* 💚 Panjang Janin */}
-                    {/* ============================== */}
                     <Line
                         yAxisId="left"
                         type="monotone"
                         dataKey="actualLength"
-                        stroke="#10b981" // hijau
+                        stroke="#10b981"
                         strokeWidth={3}
                         dot={{ r: 5, fill: '#10b981' }}
                         name="Panjang Janin (cm)"
@@ -321,14 +365,11 @@ export default function GrafikJanin({
                         connectNulls={true}
                     />
 
-                    {/* ============================== */}
-                    {/* ❤️ Detak Jantung */}
-                    {/* ============================== */}
                     <Line
                         yAxisId="right"
                         type="monotone"
                         dataKey="actualHeartRate"
-                        stroke="#ef4444" // merah
+                        stroke="#ef4444"
                         strokeWidth={3}
                         dot={{ r: 5, fill: '#ef4444' }}
                         name="Detak Jantung (bpm)"
@@ -342,7 +383,7 @@ export default function GrafikJanin({
             {fetalMeasurements.length > 0 && (
                 <div className="mt-6">
                     <h3 className="mb-3 text-lg font-semibold text-gray-800">
-                        Riwayat Data Janin
+                        Riwayat Data Janin {availableFetuses.length > 1 ? selectedFetus : ''}
                     </h3>
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">

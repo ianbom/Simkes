@@ -9,12 +9,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/Components/ui/select';
+import { formatDate, formatDateTime } from '@/utils/dateFormatter';
 import {
     Activity,
+    AlertCircle,
     Calendar,
     ChevronDown,
     ChevronUp,
     ClipboardList,
+    FileText,
+    Image as ImageIcon,
     RefreshCcw,
     SlidersHorizontal,
     Stethoscope,
@@ -22,75 +26,47 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-interface Kelahiran {
+interface RiwayatSakit {
     id: number;
-    tanggal_lahir: string;
-    berat_lahir: number;
-    panjang_lahir: number;
+    tanggal_sakit: string;
+    diagnosis: string;
+    gejala: string;
+    tindakan_pengobatan: string;
+    catatan: string;
 }
 
-interface OrangTua {
+interface MediaPemeriksaan {
     id: number;
-    name: string;
-    email: string;
-}
-
-interface Anak {
-    id: number;
-    nama: string;
-    kelamin: string;
-    kelahiran?: Kelahiran;
-    orangTua?: OrangTua;
-}
-
-interface Faskes {
-    id: number;
-    nama: string;
-    tipe_faskes: string;
-}
-
-interface Petugas {
-    id: number;
-    name: string;
-    email: string;
-    faskes?: Faskes;
-}
-
-interface Skrining {
-    id: number;
-    hasil: string;
-    catatan?: string;
+    file_url: string;
+    created_at: string;
 }
 
 interface PemeriksaanAnak {
     id: number;
-    anak_id: number;
-    petugas_faskes_id: number;
-    jenis_kunjungan: 'Rutin' | 'Sakit';
+    jenis_kunjungan: string;
     tanggal_pemeriksaan: string;
     usia_saat_periksa_bulan: number;
-    berat_badan_kg: number;
-    tinggi_badan_cm: number;
-    lingkar_kepala_cm: number;
-    cara_ukur_tinggi?: string;
-    suhu_tubuh_celsius: number;
-    perkembangan_motorik: string;
-    perkembangan_kognitif: string;
-    perkembangan_emosional: string;
-    frekuensi_napas_per_menit?: number;
-    frekuensi_jantung_per_menit?: number;
-    catatan_pemeriksaan?: string;
+    berat_badan_kg: string;
+    tinggi_badan_cm: string;
+    lingkar_kepala_cm: string;
+    suhu_tubuh_celsius: string;
     saturasi_oksigen_persen?: number;
-    keluhan?: string;
-    diagnosis?: string;
-    tindakan?: string;
-    catatan?: string;
-    jadwal_kontrol_berikutnya?: string;
-    anak: Anak;
-    petugas: Petugas;
-    skrining?: Skrining;
-    created_at: string;
+    perkembangan_motorik?: string;
+    perkembangan_kognitif?: string;
+    perkembangan_emosional?: string;
+    catatan_pemeriksaan?: string;
     updated_at: string;
+    anak: {
+        nama: string;
+    };
+    petugas: {
+        name: string;
+        faskes?: {
+            nama: string;
+        };
+    };
+    riwayat_sakit: RiwayatSakit[];
+    media_pemeriksaan_anak: MediaPemeriksaan[];
 }
 
 interface Props {
@@ -102,6 +78,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
     const [typeFilter, setTypeFilter] = useState('all');
     const [expandedItems, setExpandedItems] = useState(new Set<number>());
     const [showAll, setShowAll] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const INITIAL_DISPLAY = 10;
 
@@ -116,10 +93,9 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
 
             const searchText = `
                 ${record.petugas?.name || ''}
-                ${record.diagnosis || ''}
-                ${record.keluhan || ''}
-                ${record.petugas?.faskes?.nama || ''}
                 ${record.anak?.nama || ''}
+                ${record.petugas?.faskes?.nama || ''}
+                ${record.riwayat_sakit?.map(r => r.diagnosis).join(' ') || ''}
             `.toLowerCase();
 
             const matchesSearch =
@@ -192,24 +168,6 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
         return type.toLowerCase() === 'rutin'
             ? 'Pemeriksaan Rutin'
             : 'Pemeriksaan Sakit';
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
-    };
-
-    const formatDateTime = (dateString: string) => {
-        return new Date(dateString).toLocaleString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
     };
 
     return (
@@ -329,23 +287,24 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                                     record.tanggal_pemeriksaan,
                                                 )}
                                             </div>
+                                            {record.riwayat_sakit && record.riwayat_sakit.length > 0 && (
+                                                <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">
+                                                    <AlertCircle className="mr-1 h-3 w-3" />
+                                                    Ada Riwayat Sakit
+                                                </Badge>
+                                            )}
+                                            {record.media_pemeriksaan_anak && record.media_pemeriksaan_anak.length > 0 && (
+                                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+                                                    <ImageIcon className="mr-1 h-3 w-3" />
+                                                    {record.media_pemeriksaan_anak.length} Foto
+                                                </Badge>
+                                            )}
                                         </div>
 
                                         <div>
                                             <h3 className="mb-1 text-lg font-semibold text-gray-900">
                                                 {record.anak.nama}
                                             </h3>
-                                            {record.diagnosis && (
-                                                <p className="mb-1 text-sm text-gray-700">
-                                                    Diagnosis:{' '}
-                                                    {record.diagnosis}
-                                                </p>
-                                            )}
-                                            {record.keluhan && (
-                                                <p className="mb-2 text-sm text-red-600">
-                                                    Keluhan: {record.keluhan}
-                                                </p>
-                                            )}
                                         </div>
 
                                         <div className="flex flex-col gap-2 text-sm text-gray-700">
@@ -392,137 +351,220 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                                     </div>
                                 </div>
                                 {expandedItems.has(record.id) && (
-                                    <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm shadow-sm">
-                                        <h3 className="mb-4 text-base font-semibold text-gray-800">
-                                            Detail Pemeriksaan
-                                        </h3>
+                                    <div className="mt-4 space-y-4">
+                                        {/* Data Pemeriksaan */}
+                                        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm shadow-sm">
+                                            <h3 className="mb-4 text-base font-semibold text-gray-800">
+                                                Detail Pemeriksaan
+                                            </h3>
 
-                                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                            <div>
-                                                <p className="font-medium text-gray-900">
-                                                    Usia Saat Periksa
-                                                </p>
-                                                <p className="text-gray-600">
-                                                    {
-                                                        record.usia_saat_periksa_bulan
-                                                    }{' '}
-                                                    bulan
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-gray-900">
-                                                    Suhu Tubuh
-                                                </p>
-                                                <p className="text-gray-600">
-                                                    {record.suhu_tubuh_celsius}
-                                                    °C
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-gray-900">
-                                                    Berat Badan
-                                                </p>
-                                                <p className="text-gray-600">
-                                                    {record.berat_badan_kg} kg
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-gray-900">
-                                                    Tinggi Badan
-                                                </p>
-                                                <p className="text-gray-600">
-                                                    {record.tinggi_badan_cm} cm
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-gray-900">
-                                                    Lingkar Kepala
-                                                </p>
-                                                <p className="text-gray-600">
-                                                    {record.lingkar_kepala_cm}{' '}
-                                                    cm
-                                                </p>
-                                            </div>
-                                            {record.saturasi_oksigen_persen && (
+                                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                 <div>
                                                     <p className="font-medium text-gray-900">
-                                                        Saturasi Oksigen
+                                                        Usia Saat Periksa
                                                     </p>
                                                     <p className="text-gray-600">
                                                         {
-                                                            record.saturasi_oksigen_persen
+                                                            record.usia_saat_periksa_bulan
+                                                        }{' '}
+                                                        bulan
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-gray-900">
+                                                        Suhu Tubuh
+                                                    </p>
+                                                    <p className="text-gray-600">
+                                                        {record.suhu_tubuh_celsius}
+                                                        °C
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-gray-900">
+                                                        Berat Badan
+                                                    </p>
+                                                    <p className="text-gray-600">
+                                                        {record.berat_badan_kg} kg
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-gray-900">
+                                                        Tinggi Badan
+                                                    </p>
+                                                    <p className="text-gray-600">
+                                                        {record.tinggi_badan_cm} cm
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-gray-900">
+                                                        Lingkar Kepala
+                                                    </p>
+                                                    <p className="text-gray-600">
+                                                        {record.lingkar_kepala_cm}{' '}
+                                                        cm
+                                                    </p>
+                                                </div>
+                                                {record.saturasi_oksigen_persen && (
+                                                    <div>
+                                                        <p className="font-medium text-gray-900">
+                                                            Saturasi Oksigen
+                                                        </p>
+                                                        <p className="text-gray-600">
+                                                            {
+                                                                record.saturasi_oksigen_persen
+                                                            }
+                                                            %
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {record.perkembangan_motorik && (
+                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                    <p className="font-medium text-gray-900">
+                                                        Perkembangan Motorik:
+                                                    </p>
+                                                    <p className="mt-1 text-gray-600">
+                                                        {
+                                                            record.perkembangan_motorik
                                                         }
-                                                        %
                                                     </p>
                                                 </div>
                                             )}
+                                            {record.perkembangan_kognitif && (
+                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                    <p className="font-medium text-gray-900">
+                                                        Perkembangan Kognitif:
+                                                    </p>
+                                                    <p className="mt-1 text-gray-600">
+                                                        {
+                                                            record.perkembangan_kognitif
+                                                        }
+                                                    </p>
+                                                </div>
+                                            )}
+                                            {record.perkembangan_emosional && (
+                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                    <p className="font-medium text-gray-900">
+                                                        Perkembangan Emosional:
+                                                    </p>
+                                                    <p className="mt-1 text-gray-600">
+                                                        {
+                                                            record.perkembangan_emosional
+                                                        }
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {record.catatan_pemeriksaan && (
+                                                <div className="mt-4 border-t border-gray-200 pt-4">
+                                                    <p className="font-medium text-gray-900">
+                                                        Catatan Pemeriksaan:
+                                                    </p>
+                                                    <p className="mt-1 text-gray-600">
+                                                        {record.catatan_pemeriksaan}
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            <div className="mt-4 text-xs text-gray-500">
+                                                Terakhir diperbarui:{' '}
+                                                {formatDateTime(record.updated_at)}
+                                            </div>
                                         </div>
 
-                                        {record.perkembangan_motorik && (
-                                            <div className="mt-4 border-t border-gray-200 pt-4">
-                                                <p className="font-medium text-gray-900">
-                                                    Perkembangan Motorik:
-                                                </p>
-                                                <p className="mt-1 text-gray-600">
-                                                    {
-                                                        record.perkembangan_motorik
-                                                    }
-                                                </p>
-                                            </div>
-                                        )}
-                                        {record.perkembangan_kognitif && (
-                                            <div className="mt-4 border-t border-gray-200 pt-4">
-                                                <p className="font-medium text-gray-900">
-                                                    Perkembangan Kognitif:
-                                                </p>
-                                                <p className="mt-1 text-gray-600">
-                                                    {
-                                                        record.perkembangan_kognitif
-                                                    }
-                                                </p>
-                                            </div>
-                                        )}
-                                        {record.perkembangan_emosional && (
-                                            <div className="mt-4 border-t border-gray-200 pt-4">
-                                                <p className="font-medium text-gray-900">
-                                                    Perkembangan Emosional:
-                                                </p>
-                                                <p className="mt-1 text-gray-600">
-                                                    {
-                                                        record.perkembangan_emosional
-                                                    }
-                                                </p>
+                                        {/* Riwayat Sakit */}
+                                        {record.riwayat_sakit && record.riwayat_sakit.length > 0 && (
+                                            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm shadow-sm">
+                                                <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-gray-800">
+                                                    <FileText className="h-5 w-5 text-red-600" />
+                                                    Riwayat Sakit
+                                                </h3>
+
+                                                <div className="space-y-4">
+                                                    {record.riwayat_sakit.map((sakit, index) => (
+                                                        <div key={sakit.id} className="rounded-md border border-red-300 bg-white p-3">
+                                                            {record.riwayat_sakit.length > 1 && (
+                                                                <p className="mb-2 text-xs font-semibold text-red-700">
+                                                                    Riwayat {index + 1}
+                                                                </p>
+                                                            )}
+                                                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                                <div>
+                                                                    <p className="font-medium text-gray-900">
+                                                                        Tanggal Sakit
+                                                                    </p>
+                                                                    <p className="text-gray-600">
+                                                                        {formatDate(sakit.tanggal_sakit)}
+                                                                    </p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-medium text-gray-900">
+                                                                        Diagnosis
+                                                                    </p>
+                                                                    <p className="text-gray-600">
+                                                                        {sakit.diagnosis}
+                                                                    </p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-medium text-gray-900">
+                                                                        Gejala
+                                                                    </p>
+                                                                    <p className="text-gray-600">
+                                                                        {sakit.gejala}
+                                                                    </p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-medium text-gray-900">
+                                                                        Tindakan Pengobatan
+                                                                    </p>
+                                                                    <p className="text-gray-600">
+                                                                        {sakit.tindakan_pengobatan}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            {sakit.catatan && (
+                                                                <div className="mt-3 border-t border-gray-200 pt-3">
+                                                                    <p className="font-medium text-gray-900">
+                                                                        Catatan
+                                                                    </p>
+                                                                    <p className="text-gray-600">
+                                                                        {sakit.catatan}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         )}
 
-                                        {record.catatan_pemeriksaan && (
-                                            <div className="mt-4 border-t border-gray-200 pt-4">
-                                                <p className="font-medium text-gray-900">
-                                                    Catatan Pemeriksaan:
-                                                </p>
-                                                <p className="mt-1 text-gray-600">
-                                                    {record.catatan_pemeriksaan}
-                                                </p>
+                                        {/* Media Pemeriksaan */}
+                                        {record.media_pemeriksaan_anak && record.media_pemeriksaan_anak.length > 0 && (
+                                            <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 text-sm shadow-sm">
+                                                <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-gray-800">
+                                                    <ImageIcon className="h-5 w-5 text-purple-600" />
+                                                    Dokumentasi Pemeriksaan ({record.media_pemeriksaan_anak.length} foto)
+                                                </h3>
+
+                                                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                                                    {record.media_pemeriksaan_anak.map((media) => (
+                                                        <div
+                                                            key={media.id}
+                                                            className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-purple-300 bg-white shadow-sm transition-all hover:shadow-md"
+                                                            onClick={() => setSelectedImage(`/storage/${media.file_url}`)}
+                                                        >
+                                                            <img
+                                                                src={`/storage/${media.file_url}`}
+                                                                alt={`Foto pemeriksaan ${record.anak.nama}`}
+                                                                className="h-full w-full object-cover transition-transform group-hover:scale-110"
+                                                            />
+                                                            <div className="absolute inset-0 bg-black opacity-0 transition-opacity group-hover:opacity-20" />
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         )}
-
-                                        {record.jadwal_kontrol_berikutnya && (
-                                            <div className="mt-4 rounded-md bg-green-50 p-3">
-                                                <p className="font-medium text-green-900">
-                                                    Jadwal Kontrol Berikutnya
-                                                </p>
-                                                <p className="text-green-700">
-                                                    {formatDate(
-                                                        record.jadwal_kontrol_berikutnya,
-                                                    )}
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        <div className="mt-4 text-xs text-gray-500">
-                                            Terakhir diperbarui:{' '}
-                                            {formatDateTime(record.updated_at)}
-                                        </div>
                                     </div>
                                 )}
                             </CardContent>
@@ -552,7 +594,7 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                         <Button
                             onClick={() => setShowAll(true)}
                             size="lg"
-                            className="min-w-[250px]"
+                            className="min-w-[250px] text-white"
                         >
                             Tampilkan Semua Data ({filteredRecords.length}{' '}
                             total)
@@ -578,6 +620,30 @@ const ChildCheckupHistoryPage = ({ checkupHistory }: Props) => {
                     </div>
                 )}
             </div>
+
+            {/* Image Modal */}
+            {selectedImage && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+                    onClick={() => setSelectedImage(null)}
+                >
+                    <div className="relative max-h-[90vh] max-w-[90vw]">
+                        <img
+                            src={selectedImage}
+                            alt="Preview"
+                            className="max-h-[90vh] max-w-full rounded-lg"
+                        />
+                        <button
+                            onClick={() => setSelectedImage(null)}
+                            className="absolute right-2 top-2 rounded-full bg-white p-2 shadow-lg hover:bg-gray-100"
+                        >
+                            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

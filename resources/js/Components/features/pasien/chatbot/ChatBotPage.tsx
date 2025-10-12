@@ -186,9 +186,7 @@ export default function ChatBotPage({ chatLogs = [] }: Props) {
                                     </p>
                                 </div>
                             </div>
-                            <div className="hidden sm:block text-xs text-blue-500 font-medium shrink-0">
-                                gemini-2.5-flash
-                            </div>
+
                         </div>
                     </div>
                 </header>

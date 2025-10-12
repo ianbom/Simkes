@@ -6,6 +6,7 @@ interface Props {
     checkupHistory: any[];
     sickHistory: any[];
     growth: any[];
+    patient: any[];
 }
 export default function PregnancyCheckupPageRoute({
     user,
@@ -13,6 +14,7 @@ export default function PregnancyCheckupPageRoute({
     checkupHistory,
     sickHistory,
     growth,
+    patient
 }: Props) {
     return (
         <PetugasLayout user={user}>
@@ -21,6 +23,7 @@ export default function PregnancyCheckupPageRoute({
                 checkupHistory={checkupHistory}
                 sickHistory={sickHistory}
                 growth={growth}
+
             />
         </PetugasLayout>
     );

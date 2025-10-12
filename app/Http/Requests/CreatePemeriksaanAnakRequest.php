@@ -13,7 +13,7 @@ class CreatePemeriksaanAnakRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+         return [
             // ✅ Pemeriksaan Anak (data utama)
             'anak_id' => 'nullable|integer|exists:anak,id',
             'petugas_faskes_id' => 'nullable|integer|exists:users,id',
@@ -25,7 +25,7 @@ class CreatePemeriksaanAnakRequest extends FormRequest
             'berat_badan_kg' => 'nullable|numeric|between:0,999.99',
             'tinggi_badan_cm' => 'nullable|numeric|between:0,999.9',
             'lingkar_kepala_cm' => 'nullable|numeric|between:0,99.9',
-            'cara_ukur_tinggi' => 'nullable',
+            'cara_ukur_tinggi' => 'nullable|string|max:255',
 
             // ✅ Data Tanda Vital
             'suhu_tubuh_celsius' => 'nullable|numeric|between:0,99.9',
@@ -45,6 +45,10 @@ class CreatePemeriksaanAnakRequest extends FormRequest
             'riwayat_sakit.gejala' => 'nullable|string',
             'riwayat_sakit.tindakan_pengobatan' => 'nullable|string',
             'riwayat_sakit.catatan' => 'nullable|string',
+
+            // ✅ Media Pemeriksaan Anak (multiple upload)
+            'media_pemeriksaan_anak' => 'nullable|array',
+            'media_pemeriksaan_anak.*' => 'file|mimes:jpg,jpeg,png,mp4,pdf,doc,docx|max:5120', // maks 5 MB per file
         ];
     }
 

@@ -108,7 +108,7 @@ export default function PasienLayout({ children }: Props) {
         // Inertia.visit(route('profile.show'));
     };
     const handleLogoutClick = () => {
-        // Inertia.post(route('logout'));
+        router.post('/logout');
     };
     const currentPage = window.location.pathname;
 

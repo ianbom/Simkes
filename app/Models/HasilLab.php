@@ -10,7 +10,8 @@ class HasilLab extends Model
     protected $primaryKey = 'id';
     protected $table = 'hasil_lab';
 
-    public function pemeriksaan() {
-        return $this->belongsTo(PemeriksaanANC::class);
+    public function pemeriksaan()
+    {
+        return $this->belongsTo(PemeriksaanAnc::class, 'pemeriksaan_anc_id');
     }
 }

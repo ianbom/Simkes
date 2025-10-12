@@ -64,6 +64,7 @@ export default function DashboardPetugasPage({
     const [isCreateAnakOpen, setIsCreateAnakOpen] = useState(false);
      const [isCreateKehamilanOpen, setIsCreateKehamilanOpen] = useState(false);
 
+
     const handleSearch = () => {
         if (!searchQuery.trim()) return;
         router.get(
@@ -89,7 +90,7 @@ export default function DashboardPetugasPage({
     // 🔹 Data Pasien Hamil
     const pregnantPatients = lastestPregnantPatients.map((p) => ({
         id: `pregnant-${p.id}`,
-        name: `Ibu ${p.id}`,
+        name: `Ibu ${p.kehamilan.user.name}`,
         time: p.tanggal_checkup,
         type: `ANC - ${p.jenis_pemeriksaan}`,
         status: 'waiting' as const,
@@ -100,7 +101,7 @@ export default function DashboardPetugasPage({
     // 🔹 Data Anak
     const childPatients = lastestChildPatients.map((c) => ({
         id: `child-${c.id}`,
-        name: `Anak ${c.id}`,
+        name: `${c.anak.nama}`,
         time: c.tanggal_pemeriksaan,
         type: `Kunjungan - ${c.jenis_kunjungan}`,
         status: 'waiting' as const,
@@ -197,17 +198,24 @@ export default function DashboardPetugasPage({
             {/* 🔹 Modal hasil pencarian pasien */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <DialogContent className="w-[90vw] max-w-6xl max-h-[85vh] rounded-2xl border border-gray-200 bg-white text-black shadow-xl flex flex-col">
-                    <DialogHeader className="flex-shrink-0">
-                        <DialogTitle className="text-2xl font-bold text-black">
-                            Hasil Pencarian Pasien
-                        </DialogTitle>
-                        <DialogDescription className="text-base text-gray-600">
-                            Menampilkan hasil pencarian berdasarkan NIK:{' '}
-                            <span className="font-semibold text-black">
-                                {searchQuery}
-                            </span>
-                        </DialogDescription>
-                    </DialogHeader>
+                        <DialogHeader className="flex-shrink-0">
+                            <DialogTitle className="text-2xl font-bold text-black">
+                                Hasil Pencarian Pasien
+                            </DialogTitle>
+                            <DialogDescription className="text-base text-gray-600">
+                                {patient ? (
+                                    <>
+                                        Nama: <span className="font-semibold text-black">{patient.name}</span>
+                                        <br />
+                                        NIK: <span className="font-semibold text-black">{patient.nik}</span>
+                                    </>
+                                ) : (
+                                    <span className="text-red-600">
+                                        Pasien dengan NIK <span className="font-semibold">{searchQuery}</span> tidak ditemukan
+                                    </span>
+                                )}
+                            </DialogDescription>
+                        </DialogHeader>
 
                     <div className="mt-4 flex-1 overflow-y-auto px-1">
                         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -231,11 +239,15 @@ export default function DashboardPetugasPage({
 
                             {patientPregnant && patientPregnant.length > 0 ? (
                                 patientPregnant.map((p) => {
-                                    const createdAt = parseISO(p.created_at);
+                                    const hpht = parseISO(p.hpht); // ✅ Parse HPHT dari data kehamilan
                                     const usiaHari = differenceInDays(
                                         new Date(),
-                                        createdAt,
+                                        hpht, // ✅ Hitung dari HPHT, bukan created_at
                                     );
+
+                                    // ✅ Konversi ke minggu dan hari untuk format yang lebih readable
+                                    const usiaMinggu = Math.floor(usiaHari / 7);
+                                    const sisaHari = usiaHari % 7;
 
                                     return (
                                         <div
@@ -276,9 +288,9 @@ export default function DashboardPetugasPage({
                                             </p>
                                             <p>
                                                 <span className="font-medium">
-                                                    Usia:{' '}
+                                                    Usia Kehamilan:{' '}
                                                 </span>
-                                                {usiaHari} hari sejak pencatatan
+                                                {usiaMinggu} minggu {sisaHari} hari ({usiaHari} hari)
                                             </p>
                                         </div>
                                     );
@@ -308,13 +320,29 @@ export default function DashboardPetugasPage({
                                 </Button>
                             </div>
 
-                            {childPatient && childPatient.length > 0 ? (
+                           {childPatient && childPatient.length > 0 ? (
                                 childPatient.map((c) => {
-                                    const createdAt = parseISO(c.created_at);
+                                    const tanggalLahir = parseISO(c.tanggal_lahir); // ✅ Parse tanggal lahir anak
                                     const usiaHari = differenceInDays(
                                         new Date(),
-                                        createdAt,
+                                        tanggalLahir, // ✅ Hitung dari tanggal lahir
                                     );
+
+                                    // ✅ Konversi ke tahun, bulan, dan hari
+                                    const usiaTahun = Math.floor(usiaHari / 365);
+                                    const sisaHariSetelahTahun = usiaHari % 365;
+                                    const usiaBulan = Math.floor(sisaHariSetelahTahun / 30);
+                                    const sisaHari = sisaHariSetelahTahun % 30;
+
+                                    // ✅ Format usia yang lebih readable
+                                    let usiaText = '';
+                                    if (usiaTahun > 0) {
+                                        usiaText = `${usiaTahun} tahun ${usiaBulan} bulan`;
+                                    } else if (usiaBulan > 0) {
+                                        usiaText = `${usiaBulan} bulan ${sisaHari} hari`;
+                                    } else {
+                                        usiaText = `${usiaHari} hari`;
+                                    }
 
                                     return (
                                         <div
@@ -351,8 +379,7 @@ export default function DashboardPetugasPage({
                                                         <span className="font-medium">
                                                             Usia:{' '}
                                                         </span>
-                                                        {usiaHari} hari sejak
-                                                        pencatatan
+                                                        {usiaText}
                                                     </p>
                                                 </div>
                                             </div>

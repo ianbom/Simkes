@@ -102,6 +102,7 @@ export interface PemeriksaanAnak {
     usia_saat_periksa_bulan: number;
     berat_badan_kg: number;
     tinggi_badan_cm: number;
+    lingkar_kepala_cm: number;
     cara_ukur_tinggi?: 'Berbaring' | 'Berdiri';
     suhu_tubuh_celsius: number;
     frekuensi_napas_per_menit?: number;
@@ -116,6 +117,23 @@ export interface PemeriksaanAnak {
     petugas: Petugas;
     anak: Anak;
 }
+export interface HasilLab {
+    id: number;
+    pemeriksaan_anc_id: number;
+    nama_tes: string;
+    hasil: string;
+    satuan?: string;
+    status: 'Normal' | 'Kurang Normal' | 'Tidak Normal' | 'Perlu Tindak Lanjut';
+    created_at: string;
+    updated_at: string;
+}
+interface MediaPemeriksaan {
+    id: number;
+    pemeriksaan_anc_id: number;
+    file_url: string;
+    created_at: string;
+    updated_at: string;
+}
 export interface PemeriksaanAnc {
     id: number;
     kehamilan_id: number;
@@ -128,7 +146,7 @@ export interface PemeriksaanAnc {
     lila: string;
     tinggi_fundus: string;
     status_bengkak_kaki: 'Tidak Ada' | 'Ringan' | 'Berat';
-    keluahan?: string;
+    keluhan?: string;
     suhu_tubuh_celsius?: number;
     frekuensi_napas_per_menit?: number;
     frekuensi_jantung_per_menit?: number;
@@ -139,7 +157,9 @@ export interface PemeriksaanAnc {
     updated_at: string;
     petugas: Petugas;
     kehamilan: Kehamilan;
+    hasilLab?: HasilLab[];
     dataJanin?: DataJanin[];
+    media?: MediaPemeriksaan[];
 }
 
 export interface RiwayatSakitAnak {

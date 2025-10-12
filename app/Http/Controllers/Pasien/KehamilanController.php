@@ -13,11 +13,13 @@ class KehamilanController extends Controller
 {
     public function viewPerkembanganKehamilan($id)
     {
+        $allPregnant = Kehamilan::with('user', 'janin')->where('user_id', Auth::id())->get();
         $pregnant = Kehamilan::with('user', 'janin')->findOrFail($id);
         $growth = PemeriksaanAnc::with('hasilLab', 'petugas.faskes', 'riwayatSakitKehamilan')->where('kehamilan_id', $pregnant->id)->get();
         return Inertia::render('Pasien/Grafik/PregnancyGraphPageRoute', [
             'pregnant' => $pregnant,
-            'growth' => $growth
+            'growth' => $growth,
+            'allPregnant' => $allPregnant,
         ]);
     }
     public function pregnancyCheckupHistory()
@@ -37,7 +39,17 @@ class KehamilanController extends Controller
                 $query->where('user_id', $user->id);
             })
             ->latest('tanggal_checkup')
-            ->get(); // ✅ Ambil SEMUA data sekaligus
+            ->get();
+
+        $checkupHistory = $checkupHistory->map(function ($record) {
+            return array_merge($record->toArray(), [
+                'hasilLab' => $record->hasilLab,
+                'dataJanin' => $record->dataJanin,
+                'media' => $record->media,
+                'imunisasi' => $record->imunisasi,
+                'resep' => $record->resep,
+            ]);
+        });
 
         return Inertia::render('Pasien/Riwayat/PregnancyCheckupHistoryPageRoute', [
             'checkupHistory' => $checkupHistory,

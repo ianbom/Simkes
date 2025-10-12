@@ -135,8 +135,9 @@ export default function FormPemeriksaanRutinKehamilan({
         post(route('petugas.store.pemeriksaanAnc'), {
             preserveScroll: true,
             onSuccess: () => {
-                console.log('Data berhasil disimpan');
-            },
+            alert('✅ Data pemeriksaan berhasil disimpan!');
+            reset();
+        },
             onError: (errors) => {
                 console.error('Error:', errors);
             },
