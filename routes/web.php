@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminFaskes\DashboardController as AdmDashboardController;
+use App\Http\Controllers\AdminFaskes\JadwalKetersediaanController;
 use App\Http\Controllers\AdminFaskes\PetugasController as AdmPetugasController;
 use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\Pasien\AnakController as PsnAnakController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Petugas\PemeriksaanAnakController as PtgPemeriksaanAnak
 use App\Http\Controllers\Petugas\PemeriksaanAncController as PtgPemeriksaanAncController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\DashboardController as SpmDashboardController;
+use App\Http\Controllers\Superadmin\DataStuntingController;
 use App\Http\Controllers\Superadmin\FaskesController as SpmFaskesController;
 use App\Http\Controllers\Superadmin\FaskesUserController as SpmFaskesUserController;
 use App\Http\Controllers\Superadmin\ProvinsiController as SpmProvinsiController;
@@ -149,6 +151,7 @@ Route::prefix('petugas')->as('petugas.')->group(function () {
 Route::prefix('admin-faskes')->as('admin.')->group(function () {
     Route::get('dashboard', [AdmDashboardController::class, 'index'])->name('dashboard.index');
     Route::resource('petugas', AdmPetugasController::class);
+    Route::resource('jadwal-ketersediaan', JadwalKetersediaanController::class);
 });
 
 Route::prefix('superadmin')->as('superadmin.')->group(function () {
@@ -158,6 +161,8 @@ Route::prefix('superadmin')->as('superadmin.')->group(function () {
     Route::resource('/kecamatan', SpmProvinsiController::class);
     Route::resource('/faskes', SpmFaskesController::class);
     Route::resource('/faskes-user', SpmFaskesUserController::class);
+    Route::get('/data-stunting/anak', [DataStuntingController::class, 'dataStuntingAnak'])->name('data.stuntingAnak');
+    Route::get('/data-stunting/janin', [DataStuntingController::class, 'dataStuntingJanin'])->name('data.stuntingJanin');
 });
 
 // Route::view('/', 'index');
