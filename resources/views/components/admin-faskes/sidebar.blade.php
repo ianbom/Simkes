@@ -26,7 +26,7 @@
 
                 <!-- Dashboard -->
                 <li class="menu nav-item">
-                    <a href="/" class="nav-link group">
+                    <a href="/admin-faskes/dashboard" class="nav-link group">
                         <div class="flex items-center">
                             <!-- Icon Dashboard -->
                             <svg class="group-hover:!text-primary shrink-0" width="20" height="20"
@@ -55,7 +55,7 @@
                 <li class="nav-item">
                     <ul>
                         <li class="nav-item">
-                            <a href="/petugas" class="group">
+                            <a href="/admin-faskes/petugas" class="group">
                                 <div class="flex items-center">
                                     <!-- Icon Petugas -->
                                     <svg class="group-hover:!text-primary shrink-0" width="20" height="20"
@@ -68,7 +68,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/jadwal-ketersediaan" class="group">
+                            <a href="/admin-faskes/jadwal-ketersediaan" class="group">
                                 <div class="flex items-center">
                                     <!-- Icon Jadwal -->
                                     <svg class="group-hover:!text-primary shrink-0" width="20" height="20"
@@ -82,7 +82,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="/pengaturan" class="group">
                                 <div class="flex items-center">
                                     <!-- Icon Pengaturan -->
@@ -95,12 +95,12 @@
                                     <span class="ltr:pl-3 rtl:pr-3">Pengaturan</span>
                                 </div>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </li>
 
                 <!-- Pasien -->
-                <h2
+                {{-- <h2
                     class="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                     <span>Pasien</span>
                 </h2>
@@ -133,7 +133,7 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
 
             </ul>
         </div>
