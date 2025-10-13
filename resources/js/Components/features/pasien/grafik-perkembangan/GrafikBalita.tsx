@@ -11,47 +11,423 @@ import {
 } from 'recharts';
 
 // Generate data untuk Berat Badan (Weight) - Data WHO/CDC
-const generateWeightPercentileData = () => {
-    const months = Array.from({ length: 61 }, (_, i) => i);
-    return months.map((month) => ({
-        month,
-        p3: 2 + month * 0.15 + Math.log(month + 1) * 0.3,
-        p15: 2.5 + month * 0.17 + Math.log(month + 1) * 0.35,
-        p50: 3.2 + month * 0.19 + Math.log(month + 1) * 0.4,
-        p85: 3.8 + month * 0.21 + Math.log(month + 1) * 0.45,
-        p97: 4.5 + month * 0.23 + Math.log(month + 1) * 0.5,
-    }));
+export const generateBoyWeightPercentileData = () => {
+  return [
+    { month: 0, p3: 2.5, p15: 2.9, p50: 3.3, p85: 3.9, p97: 4.3 },
+    { month: 1, p3: 3.4, p15: 3.9, p50: 4.5, p85: 5.1, p97: 5.7 },
+    { month: 2, p3: 4.4, p15: 4.9, p50: 5.6, p85: 6.3, p97: 7.0 },
+    { month: 3, p3: 5.1, p15: 5.6, p50: 6.4, p85: 7.2, p97: 7.9 },
+    { month: 4, p3: 5.6, p15: 6.2, p50: 7.0, p85: 7.9, p97: 8.6 },
+    { month: 5, p3: 6.1, p15: 6.7, p50: 7.5, p85: 8.4, p97: 9.2 },
+    { month: 6, p3: 6.4, p15: 7.1, p50: 7.9, p85: 8.9, p97: 9.7 },
+    { month: 7, p3: 6.7, p15: 7.4, p50: 8.3, p85: 9.3, p97: 10.2 },
+    { month: 8, p3: 7.0, p15: 7.7, p50: 8.6, p85: 9.6, p97: 10.5 },
+    { month: 9, p3: 7.2, p15: 7.9, p50: 8.9, p85: 10.0, p97: 10.9 },
+    { month: 10, p3: 7.5, p15: 8.2, p50: 9.2, p85: 10.3, p97: 11.2 },
+    { month: 11, p3: 7.7, p15: 8.4, p50: 9.4, p85: 10.5, p97: 11.5 },
+    { month: 12, p3: 7.8, p15: 8.6, p50: 9.6, p85: 10.8, p97: 11.8 },
+    { month: 13, p3: 8.0, p15: 8.8, p50: 9.9, p85: 11.1, p97: 12.1 },
+    { month: 14, p3: 8.2, p15: 9.0, p50: 10.1, p85: 11.3, p97: 12.4 },
+    { month: 15, p3: 8.4, p15: 9.2, p50: 10.3, p85: 11.6, p97: 12.7 },
+    { month: 16, p3: 8.5, p15: 9.4, p50: 10.5, p85: 11.8, p97: 12.9 },
+    { month: 17, p3: 8.7, p15: 9.6, p50: 10.7, p85: 12.0, p97: 13.2 },
+    { month: 18, p3: 8.9, p15: 9.7, p50: 10.9, p85: 12.3, p97: 13.5 },
+    { month: 19, p3: 9.0, p15: 9.9, p50: 11.1, p85: 12.5, p97: 13.7 },
+    { month: 20, p3: 9.2, p15: 10.1, p50: 11.3, p85: 12.7, p97: 14.0 },
+    { month: 21, p3: 9.3, p15: 10.3, p50: 11.5, p85: 13.0, p97: 14.3 },
+    { month: 22, p3: 9.5, p15: 10.5, p50: 11.8, p85: 13.2, p97: 14.5 },
+    { month: 23, p3: 9.7, p15: 10.6, p50: 12.0, p85: 13.4, p97: 14.8 },
+    { month: 24, p3: 9.8, p15: 10.8, p50: 12.2, p85: 13.7, p97: 15.1 },
+    { month: 25, p3: 10.0, p15: 11.0, p50: 12.4, p85: 13.9, p97: 15.3 },
+    { month: 26, p3: 10.1, p15: 11.1, p50: 12.5, p85: 14.1, p97: 15.6 },
+    { month: 27, p3: 10.2, p15: 11.3, p50: 12.7, p85: 14.4, p97: 15.9 },
+    { month: 28, p3: 10.4, p15: 11.5, p50: 12.9, p85: 14.6, p97: 16.1 },
+    { month: 29, p3: 10.5, p15: 11.6, p50: 13.1, p85: 14.8, p97: 16.4 },
+    { month: 30, p3: 10.7, p15: 11.8, p50: 13.3, p85: 15.0, p97: 16.6 },
+    { month: 31, p3: 10.8, p15: 11.9, p50: 13.5, p85: 15.2, p97: 16.9 },
+    { month: 32, p3: 10.9, p15: 12.1, p50: 13.7, p85: 15.5, p97: 17.1 },
+    { month: 33, p3: 11.1, p15: 12.2, p50: 13.8, p85: 15.7, p97: 17.3 },
+    { month: 34, p3: 11.2, p15: 12.4, p50: 14.0, p85: 15.9, p97: 17.6 },
+    { month: 35, p3: 11.3, p15: 12.5, p50: 14.2, p85: 16.1, p97: 17.8 },
+    { month: 36, p3: 11.4, p15: 12.7, p50: 14.3, p85: 16.3, p97: 18.0 },
+    { month: 37, p3: 11.6, p15: 12.8, p50: 14.5, p85: 16.5, p97: 18.3 },
+    { month: 38, p3: 11.7, p15: 12.9, p50: 14.7, p85: 16.7, p97: 18.5 },
+    { month: 39, p3: 11.8, p15: 13.1, p50: 14.8, p85: 16.9, p97: 18.7 },
+    { month: 40, p3: 11.9, p15: 13.2, p50: 15.0, p85: 17.1, p97: 19.0 },
+    { month: 41, p3: 12.1, p15: 13.4, p50: 15.2, p85: 17.3, p97: 19.2 },
+    { month: 42, p3: 12.2, p15: 13.5, p50: 15.3, p85: 17.5, p97: 19.4 },
+    { month: 43, p3: 12.3, p15: 13.6, p50: 15.5, p85: 17.7, p97: 19.7 },
+    { month: 44, p3: 12.4, p15: 13.8, p50: 15.7, p85: 17.9, p97: 19.9 },
+    { month: 45, p3: 12.5, p15: 13.9, p50: 15.8, p85: 18.1, p97: 20.1 },
+    { month: 46, p3: 12.7, p15: 14.1, p50: 16.0, p85: 18.3, p97: 20.4 },
+    { month: 47, p3: 12.8, p15: 14.2, p50: 16.2, p85: 18.5, p97: 20.6 },
+    { month: 48, p3: 12.9, p15: 14.3, p50: 16.3, p85: 18.7, p97: 20.9 },
+    { month: 49, p3: 13.0, p15: 14.5, p50: 16.5, p85: 18.9, p97: 21.1 },
+    { month: 50, p3: 13.1, p15: 14.6, p50: 16.7, p85: 19.1, p97: 21.3 },
+    { month: 51, p3: 13.3, p15: 14.7, p50: 16.8, p85: 19.3, p97: 21.6 },
+    { month: 52, p3: 13.4, p15: 14.9, p50: 17.0, p85: 19.5, p97: 21.8 },
+    { month: 53, p3: 13.5, p15: 15.0, p50: 17.2, p85: 19.7, p97: 22.1 },
+    { month: 54, p3: 13.6, p15: 15.2, p50: 17.3, p85: 19.9, p97: 22.3 },
+    { month: 55, p3: 13.7, p15: 15.3, p50: 17.5, p85: 20.1, p97: 22.5 },
+    { month: 56, p3: 13.8, p15: 15.4, p50: 17.7, p85: 20.3, p97: 22.8 },
+    { month: 57, p3: 13.9, p15: 15.6, p50: 17.8, p85: 20.5, p97: 23.0 },
+    { month: 58, p3: 14.1, p15: 15.7, p50: 18.0, p85: 20.7, p97: 23.3 },
+    { month: 59, p3: 14.2, p15: 15.8, p50: 18.2, p85: 20.9, p97: 23.5 },
+    { month: 60, p3: 14.3, p15: 16.0, p50: 18.3, p85: 21.1, p97: 23.8 },
+  ];
+};
+
+export const generateGirlWeightPercentileData = () => {
+  return [
+    { month: 0, p3: 2.4, p15: 2.8, p50: 3.2, p85: 3.7, p97: 4.2 },
+    { month: 1, p3: 3.2, p15: 3.6, p50: 4.2, p85: 4.8, p97: 5.4 },
+    { month: 2, p3: 4.0, p15: 4.5, p50: 5.1, p85: 5.9, p97: 6.5 },
+    { month: 3, p3: 4.6, p15: 5.1, p50: 5.8, p85: 6.7, p97: 7.4 },
+    { month: 4, p3: 5.1, p15: 5.6, p50: 6.4, p85: 7.3, p97: 8.1 },
+    { month: 5, p3: 5.5, p15: 6.1, p50: 6.9, p85: 7.8, p97: 8.7 },
+    { month: 6, p3: 5.8, p15: 6.4, p50: 7.3, p85: 8.3, p97: 9.2 },
+    { month: 7, p3: 6.1, p15: 6.7, p50: 7.6, p85: 8.7, p97: 9.6 },
+    { month: 8, p3: 6.3, p15: 7.0, p50: 7.9, p85: 9.0, p97: 10.0 },
+    { month: 9, p3: 6.6, p15: 7.3, p50: 8.2, p85: 9.3, p97: 10.4 },
+    { month: 10, p3: 6.8, p15: 7.5, p50: 8.5, p85: 9.6, p97: 10.7 },
+    { month: 11, p3: 7.0, p15: 7.7, p50: 8.7, p85: 9.9, p97: 11.0 },
+    { month: 12, p3: 7.1, p15: 7.9, p50: 8.9, p85: 10.2, p97: 11.3 },
+    { month: 13, p3: 7.3, p15: 8.1, p50: 9.2, p85: 10.4, p97: 11.6 },
+    { month: 14, p3: 7.5, p15: 8.3, p50: 9.4, p85: 10.7, p97: 11.9 },
+    { month: 15, p3: 7.7, p15: 8.5, p50: 9.6, p85: 10.9, p97: 12.2 },
+    { month: 16, p3: 7.8, p15: 8.7, p50: 9.8, p85: 11.2, p97: 12.5 },
+    { month: 17, p3: 8.0, p15: 8.8, p50: 10.0, p85: 11.4, p97: 12.7 },
+    { month: 18, p3: 8.2, p15: 9.0, p50: 10.2, p85: 11.6, p97: 13.0 },
+    { month: 19, p3: 8.3, p15: 9.2, p50: 10.4, p85: 11.9, p97: 13.3 },
+    { month: 20, p3: 8.5, p15: 9.4, p50: 10.6, p85: 12.1, p97: 13.5 },
+    { month: 21, p3: 8.7, p15: 9.6, p50: 10.9, p85: 12.4, p97: 13.8 },
+    { month: 22, p3: 8.8, p15: 9.8, p50: 11.1, p85: 12.6, p97: 14.1 },
+    { month: 23, p3: 9.0, p15: 9.9, p50: 11.3, p85: 12.8, p97: 14.3 },
+    { month: 24, p3: 9.2, p15: 10.1, p50: 11.5, p85: 13.1, p97: 14.6 },
+    { month: 25, p3: 9.3, p15: 10.3, p50: 11.7, p85: 13.3, p97: 14.9 },
+    { month: 26, p3: 9.5, p15: 10.5, p50: 11.9, p85: 13.6, p97: 15.2 },
+    { month: 27, p3: 9.6, p15: 10.7, p50: 12.1, p85: 13.8, p97: 15.4 },
+    { month: 28, p3: 9.8, p15: 10.8, p50: 12.3, p85: 14.0, p97: 15.7 },
+    { month: 29, p3: 10.0, p15: 11.0, p50: 12.5, p85: 14.3, p97: 16.0 },
+    { month: 30, p3: 10.1, p15: 11.2, p50: 12.7, p85: 14.5, p97: 16.2 },
+    { month: 31, p3: 10.3, p15: 11.3, p50: 12.9, p85: 14.7, p97: 16.5 },
+    { month: 32, p3: 10.4, p15: 11.5, p50: 13.1, p85: 15.0, p97: 16.8 },
+    { month: 33, p3: 10.5, p15: 11.7, p50: 13.3, p85: 15.2, p97: 17.0 },
+    { month: 34, p3: 10.7, p15: 11.8, p50: 13.5, p85: 15.4, p97: 17.3 },
+    { month: 35, p3: 10.8, p15: 12.0, p50: 13.7, p85: 15.7, p97: 17.6 },
+    { month: 36, p3: 11.0, p15: 12.1, p50: 13.9, p85: 15.9, p97: 17.8 },
+    { month: 37, p3: 11.1, p15: 12.3, p50: 14.0, p85: 16.1, p97: 18.1 },
+    { month: 38, p3: 11.2, p15: 12.5, p50: 14.2, p85: 16.3, p97: 18.4 },
+    { month: 39, p3: 11.4, p15: 12.6, p50: 14.4, p85: 16.6, p97: 18.6 },
+    { month: 40, p3: 11.5, p15: 12.8, p50: 14.6, p85: 16.8, p97: 18.9 },
+    { month: 41, p3: 11.6, p15: 12.9, p50: 14.8, p85: 17.0, p97: 19.2 },
+    { month: 42, p3: 11.8, p15: 13.1, p50: 15.0, p85: 17.3, p97: 19.5 },
+    { month: 43, p3: 11.9, p15: 13.2, p50: 15.2, p85: 17.5, p97: 19.7 },
+    { month: 44, p3: 12.0, p15: 13.4, p50: 15.3, p85: 17.7, p97: 20.0 },
+    { month: 45, p3: 12.1, p15: 13.5, p50: 15.5, p85: 17.9, p97: 20.3 },
+    { month: 46, p3: 12.3, p15: 13.7, p50: 15.7, p85: 18.2, p97: 20.6 },
+    { month: 47, p3: 12.4, p15: 13.8, p50: 15.9, p85: 18.4, p97: 20.8 },
+    { month: 48, p3: 12.5, p15: 14.0, p50: 16.1, p85: 18.6, p97: 21.1 },
+    { month: 49, p3: 12.6, p15: 14.1, p50: 16.3, p85: 18.9, p97: 21.4 },
+    { month: 50, p3: 12.8, p15: 14.3, p50: 16.4, p85: 19.1, p97: 21.7 },
+    { month: 51, p3: 12.9, p15: 14.4, p50: 16.6, p85: 19.3, p97: 22.0 },
+    { month: 52, p3: 13.0, p15: 14.5, p50: 16.8, p85: 19.5, p97: 22.2 },
+    { month: 53, p3: 13.1, p15: 14.7, p50: 17.0, p85: 19.8, p97: 22.5 },
+    { month: 54, p3: 13.2, p15: 14.8, p50: 17.2, p85: 20.0, p97: 22.8 },
+    { month: 55, p3: 13.4, p15: 15.0, p50: 17.3, p85: 20.2, p97: 23.1 },
+    { month: 56, p3: 13.5, p15: 15.1, p50: 17.5, p85: 20.4, p97: 23.3 },
+    { month: 57, p3: 13.6, p15: 15.3, p50: 17.7, p85: 20.7, p97: 23.6 },
+    { month: 58, p3: 13.7, p15: 15.4, p50: 17.9, p85: 20.9, p97: 23.9 },
+    { month: 59, p3: 13.8, p15: 15.5, p50: 18.0, p85: 21.1, p97: 24.2 },
+    { month: 60, p3: 14.0, p15: 15.7, p50: 18.2, p85: 21.3, p97: 24.4 },
+  ];
 };
 
 // Generate data untuk Tinggi Badan (Height)
-const generateHeightPercentileData = () => {
-    const months = Array.from({ length: 61 }, (_, i) => i);
-    return months.map((month) => ({
-        month,
-        p3: 45 + month * 0.8 + Math.log(month + 1) * 1.2,
-        p15: 47 + month * 0.85 + Math.log(month + 1) * 1.3,
-        p50: 50 + month * 0.9 + Math.log(month + 1) * 1.4,
-        p85: 52 + month * 0.95 + Math.log(month + 1) * 1.5,
-        p97: 54 + month * 1.0 + Math.log(month + 1) * 1.6,
-    }));
+export const generateBoyHeightPercentileData = () => {
+    return [
+        { month: 0, p3: 46.3, p15: 47.9, p50: 49.9, p85: 51.8, p97: 53.4 },
+        { month: 1, p3: 51.1, p15: 52.7, p50: 54.7, p85: 56.7, p97: 58.4 },
+        { month: 2, p3: 54.7, p15: 56.4, p50: 58.4, p85: 60.5, p97: 62.2 },
+        { month: 3, p3: 57.6, p15: 59.3, p50: 61.4, p85: 63.5, p97: 65.3 },
+        { month: 4, p3: 60.0, p15: 61.7, p50: 63.9, p85: 66.0, p97: 67.8 },
+        { month: 5, p3: 61.9, p15: 63.7, p50: 65.9, p85: 68.1, p97: 69.9 },
+        { month: 6, p3: 63.6, p15: 65.4, p50: 67.6, p85: 69.8, p97: 71.6 },
+        { month: 7, p3: 65.1, p15: 66.9, p50: 69.2, p85: 71.4, p97: 73.2 },
+        { month: 8, p3: 66.5, p15: 68.3, p50: 70.6, p85: 72.9, p97: 74.7 },
+        { month: 9, p3: 67.7, p15: 69.6, p50: 72.0, p85: 74.3, p97: 76.2 },
+        { month: 10, p3: 69.0, p15: 70.9, p50: 73.3, p85: 75.6, p97: 77.6 },
+        { month: 11, p3: 70.2, p15: 72.1, p50: 74.5, p85: 77.0, p97: 78.9 },
+        { month: 12, p3: 71.3, p15: 73.3, p50: 75.7, p85: 78.2, p97: 80.2 },
+        { month: 13, p3: 72.4, p15: 74.4, p50: 76.9, p85: 79.4, p97: 81.5 },
+        { month: 14, p3: 73.4, p15: 75.5, p50: 78.0, p85: 80.6, p97: 82.7 },
+        { month: 15, p3: 74.4, p15: 76.5, p50: 79.1, p85: 81.8, p97: 83.9 },
+        { month: 16, p3: 75.4, p15: 77.5, p50: 80.2, p85: 82.9, p97: 85.1 },
+        { month: 17, p3: 76.3, p15: 78.5, p50: 81.2, p85: 84.0, p97: 86.2 },
+        { month: 18, p3: 77.2, p15: 79.5, p50: 82.3, p85: 85.1, p97: 87.3 },
+        { month: 19, p3: 78.1, p15: 80.4, p50: 83.2, p85: 86.1, p97: 88.4 },
+        { month: 20, p3: 78.9, p15: 81.3, p50: 84.2, p85: 87.1, p97: 89.5 },
+        { month: 21, p3: 79.7, p15: 82.2, p50: 85.1, p85: 88.1, p97: 90.5 },
+        { month: 22, p3: 80.5, p15: 83.0, p50: 86.0, p85: 89.1, p97: 91.6 },
+        { month: 23, p3: 81.3, p15: 83.8, p50: 86.9, p85: 90.0, p97: 92.6 },
+        { month: 24, p3: 81.4, p15: 83.9, p50: 87.1, p85: 90.3, p97: 92.9 },
+        { month: 25, p3: 82.1, p15: 84.7, p50: 88.0, p85: 91.2, p97: 93.8 },
+        { month: 26, p3: 82.8, p15: 85.5, p50: 88.8, p85: 92.1, p97: 94.8 },
+        { month: 27, p3: 83.5, p15: 86.3, p50: 89.6, p85: 93.0, p97: 95.7 },
+        { month: 28, p3: 84.2, p15: 87.0, p50: 90.4, p85: 93.8, p97: 96.6 },
+        { month: 29, p3: 84.9, p15: 87.7, p50: 91.2, p85: 94.7, p97: 97.5 },
+        { month: 30, p3: 85.5, p15: 88.4, p50: 91.9, p85: 95.5, p97: 98.3 },
+        { month: 31, p3: 86.2, p15: 89.1, p50: 92.7, p85: 96.2, p97: 99.2 },
+        { month: 32, p3: 86.8, p15: 89.7, p50: 93.4, p85: 97.0, p97: 100.0 },
+        { month: 33, p3: 87.4, p15: 90.4, p50: 94.1, p85: 97.8, p97: 100.8 },
+        { month: 34, p3: 88.0, p15: 91.0, p50: 94.8, p85: 98.5, p97: 101.5 },
+        { month: 35, p3: 88.5, p15: 91.6, p50: 95.4, p85: 99.2, p97: 102.3 },
+        { month: 36, p3: 89.1, p15: 92.2, p50: 96.1, p85: 99.9, p97: 103.1 },
+        { month: 37, p3: 89.7, p15: 92.8, p50: 96.7, p85: 100.6, p97: 103.8 },
+        { month: 38, p3: 90.2, p15: 93.4, p50: 97.4, p85: 101.3, p97: 104.5 },
+        { month: 39, p3: 90.8, p15: 94.0, p50: 98.0, p85: 102.0, p97: 105.2 },
+        { month: 40, p3: 91.3, p15: 94.6, p50: 98.6, p85: 102.7, p97: 105.9 },
+        { month: 41, p3: 91.9, p15: 95.2, p50: 99.2, p85: 103.3, p97: 106.6 },
+        { month: 42, p3: 92.4, p15: 95.7, p50: 99.9, p85: 104.0, p97: 107.3 },
+        { month: 43, p3: 92.9, p15: 96.3, p50: 100.4, p85: 104.6, p97: 108.0 },
+        { month: 44, p3: 93.4, p15: 96.8, p50: 101.0, p85: 105.2, p97: 108.6 },
+        { month: 45, p3: 93.9, p15: 97.4, p50: 101.6, p85: 105.8, p97: 109.3 },
+        { month: 46, p3: 94.4, p15: 97.9, p50: 102.2, p85: 106.5, p97: 109.9 },
+        { month: 47, p3: 94.9, p15: 98.5, p50: 102.8, p85: 107.1, p97: 110.6 },
+        { month: 48, p3: 95.4, p15: 99.0, p50: 103.3, p85: 107.7, p97: 111.2 },
+        { month: 49, p3: 95.9, p15: 99.5, p50: 103.9, p85: 108.3, p97: 111.8 },
+        { month: 50, p3: 96.4, p15: 100.0, p50: 104.4, p85: 108.9, p97: 112.5 },
+        { month: 51, p3: 96.9, p15: 100.5, p50: 105.0, p85: 109.5, p97: 113.1 },
+        { month: 52, p3: 97.4, p15: 101.1, p50: 105.6, p85: 110.1, p97: 113.7 },
+        { month: 53, p3: 97.9, p15: 101.6, p50: 106.1, p85: 110.7, p97: 114.3 },
+        { month: 54, p3: 98.4, p15: 102.1, p50: 106.7, p85: 111.2, p97: 115.0 },
+        { month: 55, p3: 98.8, p15: 102.6, p50: 107.2, p85: 111.8, p97: 115.6 },
+        { month: 56, p3: 99.3, p15: 103.1, p50: 107.8, p85: 112.4, p97: 116.2 },
+        { month: 57, p3: 99.8, p15: 103.6, p50: 108.3, p85: 113.0, p97: 116.8 },
+        { month: 58, p3: 100.3, p15: 104.1, p50: 108.9, p85: 113.6, p97: 117.4 },
+        { month: 59, p3: 100.8, p15: 104.7, p50: 109.4, p85: 114.2, p97: 118.1 },
+        { month: 60, p3: 101.2, p15: 105.2, p50: 110.0, p85: 114.8, p97: 118.7 },
+    ];
+};
+
+export const generateGirlHeightPercentileData = () => {
+    return [
+        { month: 0, p3: 45.6, p15: 47.2, p50: 49.1, p85: 51.1, p97: 52.7 },
+        { month: 1, p3: 50.0, p15: 51.7, p50: 53.7, p85: 55.7, p97: 57.4 },
+        { month: 2, p3: 53.2, p15: 55.0, p50: 57.1, p85: 59.2, p97: 60.9 },
+        { month: 3, p3: 55.8, p15: 57.6, p50: 59.8, p85: 62.0, p97: 63.8 },
+        { month: 4, p3: 58.0, p15: 59.8, p50: 62.1, p85: 64.3, p97: 66.2 },
+        { month: 5, p3: 59.9, p15: 61.7, p50: 64.0, p85: 66.3, p97: 68.2 },
+        { month: 6, p3: 61.5, p15: 63.4, p50: 65.7, p85: 68.1, p97: 70.0 },
+        { month: 7, p3: 62.9, p15: 64.9, p50: 67.3, p85: 69.7, p97: 71.6 },
+        { month: 8, p3: 64.3, p15: 66.3, p50: 68.7, p85: 71.2, p97: 73.2 },
+        { month: 9, p3: 65.6, p15: 67.6, p50: 70.1, p85: 72.6, p97: 74.7 },
+        { month: 10, p3: 66.8, p15: 68.9, p50: 71.5, p85: 74.0, p97: 76.1 },
+        { month: 11, p3: 68.0, p15: 70.2, p50: 72.8, p85: 75.4, p97: 77.5 },
+        { month: 12, p3: 69.2, p15: 71.3, p50: 74.0, p85: 76.7, p97: 78.9 },
+        { month: 13, p3: 70.3, p15: 72.5, p50: 75.2, p85: 77.9, p97: 80.2 },
+        { month: 14, p3: 71.3, p15: 73.6, p50: 76.4, p85: 79.2, p97: 81.4 },
+        { month: 15, p3: 72.4, p15: 74.7, p50: 77.5, p85: 80.3, p97: 82.7 },
+        { month: 16, p3: 73.3, p15: 75.7, p50: 78.6, p85: 81.5, p97: 83.9 },
+        { month: 17, p3: 74.3, p15: 76.7, p50: 79.7, p85: 82.6, p97: 85.0 },
+        { month: 18, p3: 75.2, p15: 77.7, p50: 80.7, p85: 83.7, p97: 86.2 },
+        { month: 19, p3: 76.2, p15: 78.7, p50: 81.7, p85: 84.8, p97: 87.3 },
+        { month: 20, p3: 77.0, p15: 79.6, p50: 82.7, p85: 85.8, p97: 88.4 },
+        { month: 21, p3: 77.9, p15: 80.5, p50: 83.7, p85: 86.8, p97: 89.4 },
+        { month: 22, p3: 78.7, p15: 81.4, p50: 84.6, p85: 87.8, p97: 90.5 },
+        { month: 23, p3: 79.6, p15: 82.2, p50: 85.5, p85: 88.8, p97: 91.5 },
+        { month: 24, p3: 80.3, p15: 83.1, p50: 86.4, p85: 89.8, p97: 92.5 },
+        { month: 25, p3: 80.4, p15: 83.2, p50: 86.6, p85: 90.0, p97: 92.8 },
+        { month: 26, p3: 81.2, p15: 84.0, p50: 87.4, p85: 90.9, p97: 93.7 },
+        { month: 27, p3: 81.9, p15: 84.8, p50: 88.3, p85: 91.8, p97: 94.6 },
+        { month: 28, p3: 82.6, p15: 85.5, p50: 89.1, p85: 92.7, p97: 95.6 },
+        { month: 29, p3: 83.4, p15: 86.3, p50: 89.9, p85: 93.5, p97: 96.4 },
+        { month: 30, p3: 84.0, p15: 87.0, p50: 90.7, p85: 94.3, p97: 97.3 },
+        { month: 31, p3: 84.7, p15: 87.7, p50: 91.4, p85: 95.2, p97: 98.2 },
+        { month: 32, p3: 85.4, p15: 88.4, p50: 92.2, p85: 95.9, p97: 99.0 },
+        { month: 33, p3: 86.0, p15: 89.1, p50: 92.9, p85: 96.7, p97: 99.8 },
+        { month: 34, p3: 86.7, p15: 89.8, p50: 93.6, p85: 97.5, p97: 100.6 },
+        { month: 35, p3: 87.3, p15: 90.5, p50: 94.4, p85: 98.3, p97: 101.4 },
+        { month: 36, p3: 87.9, p15: 91.1, p50: 95.1, p85: 99.0, p97: 102.2 },
+        { month: 37, p3: 88.5, p15: 91.7, p50: 95.7, p85: 99.7, p97: 103.0 },
+        { month: 38, p3: 89.1, p15: 92.4, p50: 96.4, p85: 100.5, p97: 103.7 },
+        { month: 39, p3: 89.7, p15: 93.0, p50: 97.1, p85: 101.2, p97: 104.5 },
+        { month: 40, p3: 90.3, p15: 93.6, p50: 97.7, p85: 101.9, p97: 105.2 },
+        { month: 41, p3: 90.8, p15: 94.2, p50: 98.4, p85: 102.6, p97: 106.0 },
+        { month: 42, p3: 91.4, p15: 94.8, p50: 99.0, p85: 103.3, p97: 106.7 },
+        { month: 43, p3: 92.0, p15: 95.4, p50: 99.7, p85: 103.9, p97: 107.4 },
+        { month: 44, p3: 92.5, p15: 96.0, p50: 100.3, p85: 104.6, p97: 108.1 },
+        { month: 45, p3: 93.0, p15: 96.6, p50: 100.9, p85: 105.3, p97: 108.8 },
+        { month: 46, p3: 93.6, p15: 97.2, p50: 101.5, p85: 105.9, p97: 109.5 },
+        { month: 47, p3: 94.1, p15: 97.7, p50: 102.1, p85: 106.6, p97: 110.2 },
+        { month: 48, p3: 94.6, p15: 98.3, p50: 102.7, p85: 107.2, p97: 110.8 },
+        { month: 49, p3: 95.1, p15: 98.8, p50: 103.3, p85: 107.8, p97: 111.5 },
+        { month: 50, p3: 95.7, p15: 99.4, p50: 103.9, p85: 108.4, p97: 112.1 },
+        { month: 51, p3: 96.2, p15: 99.9, p50: 104.5, p85: 109.1, p97: 112.8 },
+        { month: 52, p3: 96.7, p15: 100.4, p50: 105.0, p85: 109.7, p97: 113.4 },
+        { month: 53, p3: 97.2, p15: 101.0, p50: 105.6, p85: 110.3, p97: 114.1 },
+        { month: 54, p3: 97.6, p15: 101.5, p50: 106.2, p85: 110.9, p97: 114.7 },
+        { month: 55, p3: 98.1, p15: 102.0, p50: 106.7, p85: 111.5, p97: 115.3 },
+        { month: 56, p3: 98.6, p15: 102.5, p50: 107.3, p85: 112.1, p97: 116.0 },
+        { month: 57, p3: 99.1, p15: 103.0, p50: 107.8, p85: 112.6, p97: 116.6 },
+        { month: 58, p3: 99.6, p15: 103.5, p50: 108.4, p85: 113.2, p97: 117.2 },
+        { month: 59, p3: 100.0, p15: 104.0, p50: 108.9, p85: 113.8, p97: 117.8 },
+        { month: 60, p3: 100.5, p15: 104.5, p50: 109.4, p85: 114.4, p97: 118.4 },
+    ];
 };
 
 // Generate data untuk Lingkar Kepala (Head Circumference)
-const generateHeadCircumferenceData = () => {
-    const months = Array.from({ length: 61 }, (_, i) => i);
-    return months.map((month) => ({
-        month,
-        p3: 32 + month * 0.12 + Math.log(month + 1) * 0.4,
-        p15: 33 + month * 0.13 + Math.log(month + 1) * 0.45,
-        p50: 34.5 + month * 0.14 + Math.log(month + 1) * 0.5,
-        p85: 35.5 + month * 0.15 + Math.log(month + 1) * 0.55,
-        p97: 36.5 + month * 0.16 + Math.log(month + 1) * 0.6,
-    }));
+export const generateBoyHeadCircumferenceData = () => {
+    return [
+        { month: 0, p3: 32.1, p15: 33.1, p50: 34.5, p85: 35.8, p97: 36.9 },
+        { month: 1, p3: 35.1, p15: 36.1, p50: 37.3, p85: 38.5, p97: 39.5 },
+        { month: 2, p3: 36.9, p15: 37.9, p50: 39.1, p85: 40.3, p97: 41.3 },
+        { month: 3, p3: 38.3, p15: 39.3, p50: 40.5, p85: 41.7, p97: 42.7 },
+        { month: 4, p3: 39.4, p15: 40.4, p50: 41.6, p85: 42.9, p97: 43.9 },
+        { month: 5, p3: 40.3, p15: 41.3, p50: 42.6, p85: 43.8, p97: 44.8 },
+        { month: 6, p3: 41.0, p15: 42.1, p50: 43.3, p85: 44.6, p97: 45.6 },
+        { month: 7, p3: 41.7, p15: 42.7, p50: 44.0, p85: 45.3, p97: 46.3 },
+        { month: 8, p3: 42.2, p15: 43.2, p50: 44.5, p85: 45.8, p97: 46.9 },
+        { month: 9, p3: 42.6, p15: 43.7, p50: 45.0, p85: 46.3, p97: 47.4 },
+        { month: 10, p3: 43.0, p15: 44.1, p50: 45.4, p85: 46.7, p97: 47.8 },
+        { month: 11, p3: 43.4, p15: 44.4, p50: 45.8, p85: 47.1, p97: 48.2 },
+        { month: 12, p3: 43.6, p15: 44.7, p50: 46.1, p85: 47.4, p97: 48.5 },
+        { month: 13, p3: 43.9, p15: 45.0, p50: 46.3, p85: 47.7, p97: 48.8 },
+        { month: 14, p3: 44.1, p15: 45.2, p50: 46.6, p85: 47.9, p97: 49.0 },
+        { month: 15, p3: 44.3, p15: 45.5, p50: 46.8, p85: 48.2, p97: 49.3 },
+        { month: 16, p3: 44.5, p15: 45.6, p50: 47.0, p85: 48.4, p97: 49.5 },
+        { month: 17, p3: 44.7, p15: 45.8, p50: 47.2, p85: 48.6, p97: 49.7 },
+        { month: 18, p3: 44.9, p15: 46.0, p50: 47.4, p85: 48.7, p97: 49.9 },
+        { month: 19, p3: 45.0, p15: 46.2, p50: 47.5, p85: 48.9, p97: 50.0 },
+        { month: 20, p3: 45.2, p15: 46.3, p50: 47.7, p85: 49.1, p97: 50.2 },
+        { month: 21, p3: 45.3, p15: 46.4, p50: 47.8, p85: 49.2, p97: 50.4 },
+        { month: 22, p3: 45.4, p15: 46.6, p50: 48.0, p85: 49.4, p97: 50.5 },
+        { month: 23, p3: 45.6, p15: 46.7, p50: 48.1, p85: 49.5, p97: 50.7 },
+        { month: 24, p3: 45.7, p15: 46.8, p50: 48.3, p85: 49.7, p97: 50.8 },
+        { month: 25, p3: 45.8, p15: 47.0, p50: 48.4, p85: 49.8, p97: 50.9 },
+        { month: 26, p3: 45.9, p15: 47.1, p50: 48.5, p85: 49.9, p97: 51.1 },
+        { month: 27, p3: 46.0, p15: 47.2, p50: 48.6, p85: 50.0, p97: 51.2 },
+        { month: 28, p3: 46.1, p15: 47.3, p50: 48.7, p85: 50.2, p97: 51.3 },
+        { month: 29, p3: 46.2, p15: 47.4, p50: 48.8, p85: 50.3, p97: 51.4 },
+        { month: 30, p3: 46.3, p15: 47.5, p50: 48.9, p85: 50.4, p97: 51.6 },
+        { month: 31, p3: 46.4, p15: 47.6, p50: 49.0, p85: 50.5, p97: 51.7 },
+        { month: 32, p3: 46.5, p15: 47.7, p50: 49.1, p85: 50.6, p97: 51.8 },
+        { month: 33, p3: 46.6, p15: 47.8, p50: 49.2, p85: 50.7, p97: 51.9 },
+        { month: 34, p3: 46.6, p15: 47.8, p50: 49.3, p85: 50.8, p97: 52.0 },
+        { month: 35, p3: 46.7, p15: 47.9, p50: 49.4, p85: 50.8, p97: 52.0 },
+        { month: 36, p3: 46.8, p15: 48.0, p50: 49.5, p85: 50.9, p97: 52.1 },
+        { month: 37, p3: 46.9, p15: 48.1, p50: 49.5, p85: 51.0, p97: 52.2 },
+        { month: 38, p3: 46.9, p15: 48.1, p50: 49.6, p85: 51.1, p97: 52.3 },
+        { month: 39, p3: 47.0, p15: 48.2, p50: 49.7, p85: 51.2, p97: 52.4 },
+        { month: 40, p3: 47.0, p15: 48.3, p50: 49.7, p85: 51.2, p97: 52.4 },
+        { month: 41, p3: 47.1, p15: 48.3, p50: 49.8, p85: 51.3, p97: 52.5 },
+        { month: 42, p3: 47.2, p15: 48.4, p50: 49.9, p85: 51.4, p97: 52.6 },
+        { month: 43, p3: 47.2, p15: 48.4, p50: 49.9, p85: 51.4, p97: 52.7 },
+        { month: 44, p3: 47.3, p15: 48.5, p50: 50.0, p85: 51.5, p97: 52.7 },
+        { month: 45, p3: 47.3, p15: 48.5, p50: 50.1, p85: 51.6, p97: 52.8 },
+        { month: 46, p3: 47.4, p15: 48.6, p50: 50.1, p85: 51.6, p97: 52.8 },
+        { month: 47, p3: 47.4, p15: 48.6, p50: 50.2, p85: 51.7, p97: 52.9 },
+        { month: 48, p3: 47.5, p15: 48.7, p50: 50.2, p85: 51.7, p97: 53.0 },
+        { month: 49, p3: 47.5, p15: 48.7, p50: 50.3, p85: 51.8, p97: 53.0 },
+        { month: 50, p3: 47.5, p15: 48.8, p50: 50.3, p85: 51.8, p97: 53.1 },
+        { month: 51, p3: 47.6, p15: 48.8, p50: 50.4, p85: 51.9, p97: 53.1 },
+        { month: 52, p3: 47.6, p15: 48.9, p50: 50.4, p85: 51.9, p97: 53.2 },
+        { month: 53, p3: 47.7, p15: 49.0, p50: 50.4, p85: 52.0, p97: 53.2 },
+        { month: 54, p3: 47.7, p15: 49.0, p50: 50.5, p85: 52.0, p97: 53.3 },
+        { month: 55, p3: 47.7, p15: 49.0, p50: 50.5, p85: 52.1, p97: 53.3 },
+        { month: 56, p3: 47.8, p15: 49.0, p50: 50.6, p85: 52.1, p97: 53.4 },
+        { month: 57, p3: 47.8, p15: 49.1, p50: 50.6, p85: 52.2, p97: 53.4 },
+        { month: 58, p3: 47.9, p15: 49.1, p50: 50.7, p85: 52.2, p97: 53.5 },
+        { month: 59, p3: 47.9, p15: 49.2, p50: 50.7, p85: 52.2, p97: 53.5 },
+        { month: 60, p3: 47.9, p15: 49.2, p50: 50.7, p85: 52.3, p97: 53.5 },
+    ];
+};
+
+export const generateGirlHeadCircumferenceData = () => {
+    return [
+        { month: 0, p3: 31.7, p15: 32.7, p50: 33.9, p85: 35.1, p97: 36.1 },
+        { month: 1, p3: 34.3, p15: 35.3, p50: 36.5, p85: 37.8, p97: 38.8 },
+        { month: 2, p3: 36.0, p15: 37.0, p50: 38.3, p85: 39.5, p97: 40.5 },
+        { month: 3, p3: 37.2, p15: 38.2, p50: 39.5, p85: 40.8, p97: 41.9 },
+        { month: 4, p3: 38.2, p15: 39.3, p50: 40.6, p85: 41.9, p97: 43.0 },
+        { month: 5, p3: 39.0, p15: 40.1, p50: 41.5, p85: 42.8, p97: 43.9 },
+        { month: 6, p3: 39.7, p15: 40.8, p50: 42.2, p85: 43.5, p97: 44.6 },
+        { month: 7, p3: 40.4, p15: 41.5, p50: 42.8, p85: 44.2, p97: 45.3 },
+        { month: 8, p3: 40.9, p15: 42.0, p50: 43.4, p85: 44.7, p97: 45.9 },
+        { month: 9, p3: 41.3, p15: 42.4, p50: 43.8, p85: 45.2, p97: 46.3 },
+        { month: 10, p3: 41.7, p15: 42.8, p50: 44.2, p85: 45.6, p97: 46.8 },
+        { month: 11, p3: 42.0, p15: 43.2, p50: 44.6, p85: 46.0, p97: 47.1 },
+        { month: 12, p3: 42.3, p15: 43.5, p50: 44.9, p85: 46.3, p97: 47.5 },
+        { month: 13, p3: 42.6, p15: 43.8, p50: 45.2, p85: 46.6, p97: 47.7 },
+        { month: 14, p3: 42.9, p15: 44.0, p50: 45.4, p85: 46.8, p97: 48.0 },
+        { month: 15, p3: 43.1, p15: 44.2, p50: 45.7, p85: 47.1, p97: 48.2 },
+        { month: 16, p3: 43.3, p15: 44.4, p50: 45.9, p85: 47.3, p97: 48.5 },
+        { month: 17, p3: 43.5, p15: 44.6, p50: 46.1, p85: 47.5, p97: 48.7 },
+        { month: 18, p3: 43.6, p15: 44.8, p50: 46.2, p85: 47.7, p97: 48.8 },
+        { month: 19, p3: 43.8, p15: 45.0, p50: 46.4, p85: 47.8, p97: 49.0 },
+        { month: 20, p3: 44.0, p15: 45.1, p50: 46.6, p85: 48.0, p97: 49.2 },
+        { month: 21, p3: 44.1, p15: 45.3, p50: 46.7, p85: 48.2, p97: 49.4 },
+        { month: 22, p3: 44.3, p15: 45.4, p50: 46.9, p85: 48.3, p97: 49.5 },
+        { month: 23, p3: 44.4, p15: 45.6, p50: 47.0, p85: 48.5, p97: 49.7 },
+        { month: 24, p3: 44.6, p15: 45.7, p50: 47.2, p85: 48.6, p97: 49.8 },
+        { month: 25, p3: 44.7, p15: 45.9, p50: 47.3, p85: 48.8, p97: 49.9 },
+        { month: 26, p3: 44.8, p15: 46.0, p50: 47.5, p85: 48.9, p97: 50.1 },
+        { month: 27, p3: 44.9, p15: 46.1, p50: 47.6, p85: 49.0, p97: 50.2 },
+        { month: 28, p3: 45.1, p15: 46.3, p50: 47.7, p85: 49.2, p97: 50.3 },
+        { month: 29, p3: 45.2, p15: 46.4, p50: 47.8, p85: 49.3, p97: 50.5 },
+        { month: 30, p3: 45.3, p15: 46.5, p50: 47.9, p85: 49.4, p97: 50.6 },
+        { month: 31, p3: 45.4, p15: 46.6, p50: 48.0, p85: 49.5, p97: 50.7 },
+        { month: 32, p3: 45.5, p15: 46.7, p50: 48.1, p85: 49.6, p97: 50.8 },
+        { month: 33, p3: 45.6, p15: 46.8, p50: 48.2, p85: 49.7, p97: 50.9 },
+        { month: 34, p3: 45.7, p15: 46.9, p50: 48.3, p85: 49.8, p97: 51.0 },
+        { month: 35, p3: 45.8, p15: 47.0, p50: 48.4, p85: 49.9, p97: 51.1 },
+        { month: 36, p3: 45.9, p15: 47.0, p50: 48.5, p85: 50.0, p97: 51.2 },
+        { month: 37, p3: 45.9, p15: 47.1, p50: 48.6, p85: 50.1, p97: 51.3 },
+        { month: 38, p3: 46.0, p15: 47.2, p50: 48.7, p85: 50.1, p97: 51.3 },
+        { month: 39, p3: 46.1, p15: 47.3, p50: 48.7, p85: 50.2, p97: 51.4 },
+        { month: 40, p3: 46.2, p15: 47.4, p50: 48.8, p85: 50.3, p97: 51.5 },
+        { month: 41, p3: 46.2, p15: 47.4, p50: 48.9, p85: 50.4, p97: 51.6 },
+        { month: 42, p3: 46.3, p15: 47.5, p50: 49.0, p85: 50.4, p97: 51.6 },
+        { month: 43, p3: 46.4, p15: 47.6, p50: 49.0, p85: 50.5, p97: 51.7 },
+        { month: 44, p3: 46.4, p15: 47.6, p50: 49.1, p85: 50.6, p97: 51.8 },
+        { month: 45, p3: 46.5, p15: 47.7, p50: 49.2, p85: 50.6, p97: 51.8 },
+        { month: 46, p3: 46.5, p15: 47.7, p50: 49.2, p85: 50.7, p97: 51.9 },
+        { month: 47, p3: 46.6, p15: 47.8, p50: 49.3, p85: 50.7, p97: 51.9 },
+        { month: 48, p3: 46.7, p15: 47.9, p50: 49.3, p85: 50.8, p97: 52.0 },
+        { month: 49, p3: 46.7, p15: 47.9, p50: 49.4, p85: 50.9, p97: 52.1 },
+        { month: 50, p3: 46.8, p15: 48.0, p50: 49.4, p85: 50.9, p97: 52.1 },
+        { month: 51, p3: 46.8, p15: 48.0, p50: 49.5, p85: 51.0, p97: 52.2 },
+        { month: 52, p3: 46.9, p15: 48.1, p50: 49.5, p85: 51.0, p97: 52.2 },
+        { month: 53, p3: 46.9, p15: 48.1, p50: 49.6, p85: 51.1, p97: 52.3 },
+        { month: 54, p3: 47.0, p15: 48.2, p50: 49.6, p85: 51.1, p97: 52.3 },
+        { month: 55, p3: 47.0, p15: 48.2, p50: 49.7, p85: 51.2, p97: 52.4 },
+        { month: 56, p3: 47.1, p15: 48.3, p50: 49.7, p85: 51.2, p97: 52.4 },
+        { month: 57, p3: 47.1, p15: 48.3, p50: 49.8, p85: 51.3, p97: 52.5 },
+        { month: 58, p3: 47.2, p15: 48.4, p50: 49.8, p85: 51.3, p97: 52.5 },
+        { month: 59, p3: 47.2, p15: 48.4, p50: 49.9, p85: 51.4, p97: 52.6 },
+        { month: 60, p3: 47.2, p15: 48.4, p50: 49.9, p85: 51.4, p97: 52.6 },
+    ];
 };
 
 export default function GrafikBalita({ growth, child, activeTab }: any) {
-    // State untuk tracking row yang terbuka - PINDAHKAN KE ATAS
+
+    // State untuk tracking row yang terbuka
     const [openRows, setOpenRows] = useState<number[]>([]);
+
+    // Tentukan jenis kelamin anak (asumsi field: child.jenis_kelamin atau child.gender)
+    // Sesuaikan dengan struktur data Anda: 'L' untuk laki-laki, 'P' untuk perempuan
+    const isMale = child?.kelamin === 'L' || child?.gender === 'male' || child?.gender === 'L';
+
+    // Fungsi untuk mendapatkan data percentile berdasarkan gender
+    const getPercentileData = (type: 'weight' | 'height' | 'headCircumference') => {
+        if (type === 'weight') {
+            return isMale ? generateBoyWeightPercentileData() : generateGirlWeightPercentileData();
+        } else if (type === 'height') {
+            return isMale ? generateBoyHeightPercentileData() : generateGirlHeightPercentileData();
+        } else {
+            return isMale ? generateBoyHeadCircumferenceData() : generateGirlHeadCircumferenceData();
+        }
+    };
 
     const childMeasurements = useMemo(() => {
         if (!growth || growth.length === 0) {
@@ -144,9 +520,10 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                 childMeasurements.headCircumference.length - 1
             ];
 
-        const weightPercentile = generateWeightPercentileData();
-        const heightPercentile = generateHeightPercentileData();
-        const headPercentile = generateHeadCircumferenceData();
+        // Gunakan data percentile sesuai gender
+        const weightPercentile = getPercentileData('weight');
+        const heightPercentile = getPercentileData('height');
+        const headPercentile = getPercentileData('headCircumference');
 
         const weightZScore = latestWeight
             ? calculateZScore(
@@ -172,7 +549,7 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
 
         return {
             weight: {
-                title: 'Grafik Berat Badan per Usia',
+                title: `Grafik Berat Badan per Usia (${isMale ? 'Laki-laki' : 'Perempuan'})`,
                 yAxisLabel: 'Berat Badan (Kg)',
                 unit: 'Kg',
                 yDomain: [2, 28],
@@ -186,7 +563,7 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                 },
             },
             height: {
-                title: 'Grafik Tinggi Badan per Usia',
+                title: `Grafik Tinggi Badan per Usia (${isMale ? 'Laki-laki' : 'Perempuan'})`,
                 yAxisLabel: 'Tinggi Badan (cm)',
                 unit: 'cm',
                 yDomain: [40, 120],
@@ -200,7 +577,7 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                 },
             },
             headCircumference: {
-                title: 'Grafik Lingkar Kepala per Usia',
+                title: `Grafik Lingkar Kepala per Usia (${isMale ? 'Laki-laki' : 'Perempuan'})`,
                 yAxisLabel: 'Lingkar Kepala (cm)',
                 unit: 'cm',
                 yDomain: [30, 55],
@@ -214,7 +591,7 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                 },
             },
         };
-    }, [childMeasurements]);
+    }, [childMeasurements, isMale]);
 
     const currentConfig = chartConfigs[activeTab as keyof typeof chartConfigs];
 
@@ -289,7 +666,7 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                 </h2>
             </div>
 
-            <ResponsiveContainer width="100%" height={450}>
+          <ResponsiveContainer width="100%" height={450}>
                 <AreaChart
                     data={currentConfig.data}
                     margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
@@ -340,12 +717,12 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                         >
                             <stop
                                 offset="5%"
-                                stopColor="#eab308"
+                                stopColor="#84cc16"
                                 stopOpacity={0.3}
                             />
                             <stop
                                 offset="95%"
-                                stopColor="#eab308"
+                                stopColor="#84cc16"
                                 stopOpacity={0.1}
                             />
                         </linearGradient>
@@ -358,12 +735,12 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                         >
                             <stop
                                 offset="5%"
-                                stopColor="#84cc16"
+                                stopColor="#fbbf24"
                                 stopOpacity={0.3}
                             />
                             <stop
                                 offset="95%"
-                                stopColor="#84cc16"
+                                stopColor="#fbbf24"
                                 stopOpacity={0.1}
                             />
                         </linearGradient>
@@ -376,12 +753,12 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                         >
                             <stop
                                 offset="5%"
-                                stopColor="#fbbf24"
+                                stopColor="#eab308"
                                 stopOpacity={0.3}
                             />
                             <stop
                                 offset="95%"
-                                stopColor="#fbbf24"
+                                stopColor="#eab308"
                                 stopOpacity={0.1}
                             />
                         </linearGradient>
@@ -414,23 +791,9 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
 
                     <Area
                         type="monotone"
-                        dataKey="p97"
-                        stroke="#fbbf24"
-                        fill="url(#colorP97)"
-                        strokeWidth={2}
-                    />
-                    <Area
-                        type="monotone"
-                        dataKey="p85"
-                        stroke="#84cc16"
-                        fill="url(#colorP85)"
-                        strokeWidth={2}
-                    />
-                    <Area
-                        type="monotone"
-                        dataKey="p50"
-                        stroke="#eab308"
-                        fill="url(#colorP50)"
+                        dataKey="p3"
+                        stroke="#ef4444"
+                        fill="url(#colorP3)"
                         strokeWidth={2}
                     />
                     <Area
@@ -442,9 +805,23 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                     />
                     <Area
                         type="monotone"
-                        dataKey="p3"
-                        stroke="#ef4444"
-                        fill="url(#colorP3)"
+                        dataKey="p50"
+                        stroke="#84cc16"
+                        fill="url(#colorP50)"
+                        strokeWidth={2}
+                    />
+                    <Area
+                        type="monotone"
+                        dataKey="p85"
+                        stroke="#fbbf24"
+                        fill="url(#colorP85)"
+                        strokeWidth={2}
+                    />
+                    <Area
+                        type="monotone"
+                        dataKey="p97"
+                        stroke="#eab308"
+                        fill="url(#colorP97)"
                         strokeWidth={2}
                     />
 
@@ -483,21 +860,21 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                 <div className="flex items-center gap-2">
                     <div
                         className="h-4 w-4 rounded"
-                        style={{ backgroundColor: '#eab308' }}
+                        style={{ backgroundColor: '#84cc16' }}
                     ></div>
                     <span className="text-gray-600">P50</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <div
                         className="h-4 w-4 rounded"
-                        style={{ backgroundColor: '#84cc16' }}
+                        style={{ backgroundColor: '#fbbf24' }}
                     ></div>
                     <span className="text-gray-600">P85</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <div
                         className="h-4 w-4 rounded"
-                        style={{ backgroundColor: '#fbbf24' }}
+                        style={{ backgroundColor: '#eab308' }}
                     ></div>
                     <span className="text-gray-600">P97</span>
                 </div>
@@ -558,7 +935,7 @@ export default function GrafikBalita({ growth, child, activeTab }: any) {
                 </div>
             )}
 
-            {growth.length > 0 && (
+             {growth.length > 0 && (
                 <div className="mt-6">
                     <h3 className="mb-3 text-lg font-semibold text-gray-800">
                         Riwayat Pemeriksaan Anak

@@ -1,9 +1,9 @@
 import ChildCheckupHistoryPage from '@/Components/features/petugas/riwayat-pasien/ChildCheckupHistoryPage';
 import PetugasLayout from '@/Layouts/PetugasLayout';
 import { PageProps } from '@/types';
-
+import { PemeriksaanAnak } from '@/types/interface';
 interface Props extends PageProps {
-    checkupHistory: any; // Tambahkan ini
+    checkupHistory: PemeriksaanAnak[]; // Tambahkan ini
 }
 export default function ChildCheckupHistoryPageRoute({
     user,

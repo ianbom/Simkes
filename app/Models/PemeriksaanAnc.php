@@ -23,6 +23,10 @@ class PemeriksaanAnc extends Model
     {
         return $this->hasMany(DataJanin::class);
     }
+    public function mediaPemeriksaan()
+    {
+        return $this->hasMany(MediaPemeriksaan::class);
+    }
     public function media()
     {
         return $this->hasMany(MediaPemeriksaan::class);

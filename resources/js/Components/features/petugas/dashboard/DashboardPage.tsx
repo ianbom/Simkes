@@ -18,6 +18,7 @@ import { useState } from 'react';
 
 // ✅ Import komponen modal
 import CreateAnakForm from '@/Components/Pasien/CreateAnakForm';
+import CreateKehamilanForm from '@/Components/Pasien/CreateKehamilanForm';
 import {
     Dialog,
     DialogContent,
@@ -25,7 +26,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/Components/ui/dialog';
-import CreateKehamilanForm from '@/Components/Pasien/CreateKehamilanForm';
 
 interface PregnantCheckup {
     id: number;
@@ -62,8 +62,7 @@ export default function DashboardPetugasPage({
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateAnakOpen, setIsCreateAnakOpen] = useState(false);
-     const [isCreateKehamilanOpen, setIsCreateKehamilanOpen] = useState(false);
-
+    const [isCreateKehamilanOpen, setIsCreateKehamilanOpen] = useState(false);
 
     const handleSearch = () => {
         if (!searchQuery.trim()) return;
@@ -197,206 +196,230 @@ export default function DashboardPetugasPage({
 
             {/* 🔹 Modal hasil pencarian pasien */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="w-[90vw] max-w-6xl max-h-[85vh] rounded-2xl border border-gray-200 bg-white text-black shadow-xl flex flex-col">
-                        <DialogHeader className="flex-shrink-0">
-                            <DialogTitle className="text-2xl font-bold text-black">
-                                Hasil Pencarian Pasien
-                            </DialogTitle>
-                            <DialogDescription className="text-base text-gray-600">
-                                {patient ? (
-                                    <>
-                                        Nama: <span className="font-semibold text-black">{patient.name}</span>
-                                        <br />
-                                        NIK: <span className="font-semibold text-black">{patient.nik}</span>
-                                    </>
-                                ) : (
-                                    <span className="text-red-600">
-                                        Pasien dengan NIK <span className="font-semibold">{searchQuery}</span> tidak ditemukan
+                <DialogContent className="flex max-h-[85vh] w-[90vw] max-w-6xl flex-col rounded-2xl border border-gray-200 bg-white text-black shadow-xl">
+                    <DialogHeader className="flex-shrink-0">
+                        <DialogTitle className="text-2xl font-bold text-black">
+                            Hasil Pencarian Pasien
+                        </DialogTitle>
+                        <DialogDescription className="text-base text-gray-600">
+                            {patient ? (
+                                <>
+                                    Nama:{' '}
+                                    <span className="font-semibold text-black">
+                                        {patient.name}
                                     </span>
-                                )}
-                            </DialogDescription>
-                        </DialogHeader>
+                                    <br />
+                                    NIK:{' '}
+                                    <span className="font-semibold text-black">
+                                        {patient.nik}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="text-red-600">
+                                    Pasien dengan NIK{' '}
+                                    <span className="font-semibold">
+                                        {searchQuery}
+                                    </span>{' '}
+                                    tidak ditemukan
+                                </span>
+                            )}
+                        </DialogDescription>
+                    </DialogHeader>
 
                     <div className="mt-4 flex-1 overflow-y-auto px-1">
                         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                        {/* === Kolom Kehamilan === */}
-                        <div className="border-r border-gray-200 pr-4">
-                            <div className="mb-4 flex items-center justify-between border-b pb-2">
-                                <h3 className="flex items-center gap-2 text-lg font-semibold">
-                                    Kehamilan
-                                </h3>
-                                <Button
-                                    size="sm"
-                                    className="bg-green-500 text-white hover:bg-green-600"
-                                    onClick={() => {
-                                        setIsModalOpen(false);
-                                        setIsCreateKehamilanOpen(true);
-                                    }}
-                                >
-                                    + Kehamilan
-                                </Button>
+                            {/* === Kolom Kehamilan === */}
+                            <div className="border-r border-gray-200 pr-4">
+                                <div className="mb-4 flex items-center justify-between border-b pb-2">
+                                    <h3 className="flex items-center gap-2 text-lg font-semibold">
+                                        Kehamilan
+                                    </h3>
+                                    <Button
+                                        size="sm"
+                                        className="bg-green-500 text-white hover:bg-green-600"
+                                        onClick={() => {
+                                            setIsModalOpen(false);
+                                            setIsCreateKehamilanOpen(true);
+                                        }}
+                                    >
+                                        + Kehamilan
+                                    </Button>
+                                </div>
+
+                                {patientPregnant &&
+                                patientPregnant.length > 0 ? (
+                                    patientPregnant.map((p) => {
+                                        const hpht = parseISO(p.hpht); // ✅ Parse HPHT dari data kehamilan
+                                        const usiaHari = differenceInDays(
+                                            new Date(),
+                                            hpht, // ✅ Hitung dari HPHT, bukan created_at
+                                        );
+
+                                        // ✅ Konversi ke minggu dan hari untuk format yang lebih readable
+                                        const usiaMinggu = Math.floor(
+                                            usiaHari / 7,
+                                        );
+                                        const sisaHari = usiaHari % 7;
+
+                                        return (
+                                            <div
+                                                onClick={() =>
+                                                    router.get(
+                                                        route(
+                                                            'petugas.create.pemeriksaanAnc',
+                                                            { id: p.id },
+                                                        ),
+                                                    )
+                                                }
+                                                key={p.id}
+                                                className="mb-4 cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-5 transition hover:bg-gray-100"
+                                            >
+                                                <p>
+                                                    <span className="font-medium">
+                                                        ID:{' '}
+                                                    </span>
+                                                    {p.id}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">
+                                                        Kehamilan ke:{' '}
+                                                    </span>
+                                                    {p.kehamilan_ke ?? '-'}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">
+                                                        Jumlah Janin:{' '}
+                                                    </span>
+                                                    {p.jumlah_janin ?? '-'}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">
+                                                        Status:{' '}
+                                                    </span>
+                                                    {p.status ??
+                                                        'Tidak diketahui'}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">
+                                                        Usia Kehamilan:{' '}
+                                                    </span>
+                                                    {usiaMinggu} minggu{' '}
+                                                    {sisaHari} hari ({usiaHari}{' '}
+                                                    hari)
+                                                </p>
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <p className="mt-2 text-sm text-gray-500">
+                                        Tidak ada data kehamilan.
+                                    </p>
+                                )}
                             </div>
 
-                            {patientPregnant && patientPregnant.length > 0 ? (
-                                patientPregnant.map((p) => {
-                                    const hpht = parseISO(p.hpht); // ✅ Parse HPHT dari data kehamilan
-                                    const usiaHari = differenceInDays(
-                                        new Date(),
-                                        hpht, // ✅ Hitung dari HPHT, bukan created_at
-                                    );
+                            {/* === Kolom Anak === */}
+                            <div className="pl-4">
+                                <div className="mb-4 flex items-center justify-between border-b pb-2">
+                                    <h3 className="flex items-center gap-2 text-lg font-semibold">
+                                        Anak
+                                    </h3>
+                                    <Button
+                                        size="sm"
+                                        className="bg-blue-500 text-white hover:bg-blue-600"
+                                        onClick={() => {
+                                            setIsModalOpen(false);
+                                            setIsCreateAnakOpen(true);
+                                        }}
+                                    >
+                                        + Anak
+                                    </Button>
+                                </div>
 
-                                    // ✅ Konversi ke minggu dan hari untuk format yang lebih readable
-                                    const usiaMinggu = Math.floor(usiaHari / 7);
-                                    const sisaHari = usiaHari % 7;
+                                {childPatient && childPatient.length > 0 ? (
+                                    childPatient.map((c) => {
+                                        const tanggalLahir = parseISO(
+                                            c.tanggal_lahir,
+                                        ); // ✅ Parse tanggal lahir anak
+                                        const usiaHari = differenceInDays(
+                                            new Date(),
+                                            tanggalLahir, // ✅ Hitung dari tanggal lahir
+                                        );
 
-                                    return (
-                                        <div
-                                            onClick={() =>
-                                                router.get(
-                                                    route(
-                                                        'petugas.create.pemeriksaanAnc',
-                                                        { id: p.id },
-                                                    ),
-                                                )
-                                            }
-                                            key={p.id}
-                                            className="mb-4 cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-5 transition hover:bg-gray-100"
-                                        >
-                                            <p>
-                                                <span className="font-medium">
-                                                    ID:{' '}
-                                                </span>
-                                                {p.id}
-                                            </p>
-                                            <p>
-                                                <span className="font-medium">
-                                                    Kehamilan ke:{' '}
-                                                </span>
-                                                {p.kehamilan_ke ?? '-'}
-                                            </p>
-                                            <p>
-                                                <span className="font-medium">
-                                                    Jumlah Janin:{' '}
-                                                </span>
-                                                {p.jumlah_janin ?? '-'}
-                                            </p>
-                                            <p>
-                                                <span className="font-medium">
-                                                    Status:{' '}
-                                                </span>
-                                                {p.status ?? 'Tidak diketahui'}
-                                            </p>
-                                            <p>
-                                                <span className="font-medium">
-                                                    Usia Kehamilan:{' '}
-                                                </span>
-                                                {usiaMinggu} minggu {sisaHari} hari ({usiaHari} hari)
-                                            </p>
-                                        </div>
-                                    );
-                                })
-                            ) : (
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Tidak ada data kehamilan.
-                                </p>
-                            )}
-                        </div>
+                                        // ✅ Konversi ke tahun, bulan, dan hari
+                                        const usiaTahun = Math.floor(
+                                            usiaHari / 365,
+                                        );
+                                        const sisaHariSetelahTahun =
+                                            usiaHari % 365;
+                                        const usiaBulan = Math.floor(
+                                            sisaHariSetelahTahun / 30,
+                                        );
+                                        const sisaHari =
+                                            sisaHariSetelahTahun % 30;
 
-                        {/* === Kolom Anak === */}
-                        <div className="pl-4">
-                            <div className="mb-4 flex items-center justify-between border-b pb-2">
-                                <h3 className="flex items-center gap-2 text-lg font-semibold">
-                                    Anak
-                                </h3>
-                                <Button
-                                    size="sm"
-                                    className="bg-blue-500 text-white hover:bg-blue-600"
-                                    onClick={() => {
-                                        setIsModalOpen(false);
-                                        setIsCreateAnakOpen(true);
-                                    }}
-                                >
-                                    + Anak
-                                </Button>
-                            </div>
+                                        // ✅ Format usia yang lebih readable
+                                        let usiaText = '';
+                                        if (usiaTahun > 0) {
+                                            usiaText = `${usiaTahun} tahun ${usiaBulan} bulan`;
+                                        } else if (usiaBulan > 0) {
+                                            usiaText = `${usiaBulan} bulan ${sisaHari} hari`;
+                                        } else {
+                                            usiaText = `${usiaHari} hari`;
+                                        }
 
-                           {childPatient && childPatient.length > 0 ? (
-                                childPatient.map((c) => {
-                                    const tanggalLahir = parseISO(c.tanggal_lahir); // ✅ Parse tanggal lahir anak
-                                    const usiaHari = differenceInDays(
-                                        new Date(),
-                                        tanggalLahir, // ✅ Hitung dari tanggal lahir
-                                    );
-
-                                    // ✅ Konversi ke tahun, bulan, dan hari
-                                    const usiaTahun = Math.floor(usiaHari / 365);
-                                    const sisaHariSetelahTahun = usiaHari % 365;
-                                    const usiaBulan = Math.floor(sisaHariSetelahTahun / 30);
-                                    const sisaHari = sisaHariSetelahTahun % 30;
-
-                                    // ✅ Format usia yang lebih readable
-                                    let usiaText = '';
-                                    if (usiaTahun > 0) {
-                                        usiaText = `${usiaTahun} tahun ${usiaBulan} bulan`;
-                                    } else if (usiaBulan > 0) {
-                                        usiaText = `${usiaBulan} bulan ${sisaHari} hari`;
-                                    } else {
-                                        usiaText = `${usiaHari} hari`;
-                                    }
-
-                                    return (
-                                        <div
-                                            key={c.id}
-                                            onClick={() =>
-                                                router.get(
-                                                    route(
-                                                        'petugas.create.pemeriksaanAnak',
-                                                        { id: c.id },
-                                                    ),
-                                                )
-                                            }
-                                            className="mb-4 cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-5 transition-all duration-200 hover:border-blue-400 hover:bg-blue-50"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p>
-                                                        <span className="font-medium">
-                                                            Nama:{' '}
-                                                        </span>
-                                                        {c.nama}
-                                                    </p>
-                                                    <p>
-                                                        <span className="font-medium">
-                                                            Kelamin:{' '}
-                                                        </span>
-                                                        {c.kelamin === 'L'
-                                                            ? 'Laki-laki'
-                                                            : c.kelamin === 'P'
-                                                              ? 'Perempuan'
-                                                              : '-'}
-                                                    </p>
-                                                    <p>
-                                                        <span className="font-medium">
-                                                            Usia:{' '}
-                                                        </span>
-                                                        {usiaText}
-                                                    </p>
+                                        return (
+                                            <div
+                                                key={c.id}
+                                                onClick={() =>
+                                                    router.get(
+                                                        route(
+                                                            'petugas.create.pemeriksaanAnak',
+                                                            { id: c.id },
+                                                        ),
+                                                    )
+                                                }
+                                                className="mb-4 cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-5 transition-all duration-200 hover:border-blue-400 hover:bg-blue-50"
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <div>
+                                                        <p>
+                                                            <span className="font-medium">
+                                                                Nama:{' '}
+                                                            </span>
+                                                            {c.nama}
+                                                        </p>
+                                                        <p>
+                                                            <span className="font-medium">
+                                                                Kelamin:{' '}
+                                                            </span>
+                                                            {c.kelamin === 'L'
+                                                                ? 'Laki-laki'
+                                                                : c.kelamin ===
+                                                                    'P'
+                                                                  ? 'Perempuan'
+                                                                  : '-'}
+                                                        </p>
+                                                        <p>
+                                                            <span className="font-medium">
+                                                                Usia:{' '}
+                                                            </span>
+                                                            {usiaText}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
-                                })
-                            ) : (
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Tidak ada data anak.
-                                </p>
-                            )}
+                                        );
+                                    })
+                                ) : (
+                                    <p className="mt-2 text-sm text-gray-500">
+                                        Tidak ada data anak.
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     </div>
 
-                    </div>
-
-                    <div className="mt-6 flex justify-end border-t pt-4 flex-shrink-0">
+                    <div className="mt-6 flex flex-shrink-0 justify-end border-t pt-4">
                         <Button
                             variant="outline"
                             className="rounded-lg border-gray-400 px-6 py-2 text-black hover:bg-gray-200"
@@ -409,7 +432,10 @@ export default function DashboardPetugasPage({
             </Dialog>
 
             {/* 🔹 Modal Create Kehamilan */}
-            <Dialog open={isCreateKehamilanOpen} onOpenChange={setIsCreateKehamilanOpen}>
+            <Dialog
+                open={isCreateKehamilanOpen}
+                onOpenChange={setIsCreateKehamilanOpen}
+            >
                 <DialogContent className="max-w-2xl rounded-xl border border-gray-200 bg-white text-black shadow-lg">
                     <DialogHeader>
                         <DialogTitle className="text-xl font-bold text-black">
@@ -421,7 +447,10 @@ export default function DashboardPetugasPage({
                     </DialogHeader>
 
                     <div className="mt-4">
-                        <CreateKehamilanForm patient={patient}  onClose={() => setIsCreateKehamilanOpen(false)} />
+                        <CreateKehamilanForm
+                            patient={patient}
+                            onClose={() => setIsCreateKehamilanOpen(false)}
+                        />
                     </div>
 
                     <div className="mt-6 flex justify-end">
@@ -449,7 +478,10 @@ export default function DashboardPetugasPage({
                     </DialogHeader>
 
                     <div className="mt-4">
-                        <CreateAnakForm patient={patient} onClose={() => setIsCreateAnakOpen(false)} />
+                        <CreateAnakForm
+                            patient={patient}
+                            onClose={() => setIsCreateAnakOpen(false)}
+                        />
                     </div>
 
                     <div className="mt-6 flex justify-end">

@@ -1,7 +1,3 @@
-import { useState } from 'react';
-import { router } from '@inertiajs/react';
-import GrafikJanin from './GrafikJanin';
-import GrafikIbuHamil from './GrafikIbuHamil';
 import {
     Select,
     SelectContent,
@@ -9,6 +5,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/Components/ui/select';
+import { router } from '@inertiajs/react';
+import { useState } from 'react';
+import GrafikIbuHamil from './GrafikIbuHamil';
+import GrafikJanin from './GrafikJanin';
 
 // TypeScript interfaces
 interface Kehamilan {
@@ -73,7 +73,7 @@ const PregnancyGraphPage = ({ pregnant, growth, allPregnant }: Props) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 py-8">
             <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 {/* Header Section */}
                 <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
@@ -84,23 +84,26 @@ const PregnancyGraphPage = ({ pregnant, growth, allPregnant }: Props) => {
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                         {/* Info Ibu */}
                         <div className="rounded-xl border border-purple-100 bg-white p-4 shadow-sm">
-                            <div className="flex h-full items-center gap-4 justify-between">
+                            {/* <div className="flex items-center justify-between h-full gap-4"> */}
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-200">
                                         <span className="text-2xl">👤</span>
                                     </div>
                                     <div className="flex flex-col justify-center">
                                         <h3 className="font-semibold text-gray-800">
-                                            {pregnant.user?.name || 'Nama Pasien'}
+                                            {pregnant.user?.name ||
+                                                'Nama Pasien'}
                                         </h3>
                                         <p className="text-sm text-blue-500">
                                             {pregnant.user?.tanggal_lahir
                                                 ? formatDate(
-                                                      pregnant.user.tanggal_lahir
+                                                      pregnant.user
+                                                          .tanggal_lahir,
                                                   )
                                                 : '-'}
                                         </p>
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="mt-1 text-xs text-gray-500">
                                             HPHT: {formatDate(pregnant.hpht)}
                                         </p>
                                         <p className="text-xs text-gray-500">
@@ -110,15 +113,15 @@ const PregnancyGraphPage = ({ pregnant, growth, allPregnant }: Props) => {
                                 </div>
 
                                 {/* ✅ Dropdown Pilih Kehamilan */}
-                                <div className="w-44 mr-2">
+                                <div className="mr-2 w-44">
                                     <Select
                                         onValueChange={handlePregnancyChange}
                                         defaultValue={String(pregnant.id)}
                                     >
-                                        <SelectTrigger className="bg-white border">
+                                        <SelectTrigger className="border bg-white">
                                             <SelectValue placeholder="Pilih Kehamilan" />
                                         </SelectTrigger>
-                                        <SelectContent className='bg-white'>
+                                        <SelectContent className="bg-white">
                                             {allPregnant.map((p) => (
                                                 <SelectItem
                                                     key={p.id}
@@ -126,7 +129,8 @@ const PregnancyGraphPage = ({ pregnant, growth, allPregnant }: Props) => {
                                                 >
                                                     <div className="flex flex-col">
                                                         <span className="font-semibold">
-                                                            Kehamilan ke-{p.kehamilan_ke}
+                                                            Kehamilan ke-
+                                                            {p.kehamilan_ke}
                                                         </span>
                                                         <span className="text-xs text-gray-500">
                                                             HPHT:{' '}
@@ -151,7 +155,9 @@ const PregnancyGraphPage = ({ pregnant, growth, allPregnant }: Props) => {
                                             ? 'bg-sky-700'
                                             : 'border-2 border-sky-200 bg-sky-50 hover:bg-sky-100'
                                     }`}
-                                    onClick={() => setActiveTrimester(trimester)}
+                                    onClick={() =>
+                                        setActiveTrimester(trimester)
+                                    }
                                 >
                                     <div className="flex flex-col items-center">
                                         <div
@@ -163,7 +169,8 @@ const PregnancyGraphPage = ({ pregnant, growth, allPregnant }: Props) => {
                                         >
                                             <span
                                                 className={`text-2xl ${
-                                                    activeTrimester === trimester
+                                                    activeTrimester ===
+                                                    trimester
                                                         ? 'text-blue-500'
                                                         : 'text-blue-400'
                                                 }`}

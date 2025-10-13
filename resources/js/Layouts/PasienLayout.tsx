@@ -14,14 +14,15 @@ interface Props {
     user: User;
 }
 export default function PasienLayout({ children }: Props) {
-
-     const { flash = {}, auth, child, pregnant } = usePage<PageProps>().props as any;
+    const {
+        flash = {},
+        auth,
+        child,
+        pregnant,
+    } = usePage<PageProps>().props as any;
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     // const { auth } = usePage<PageProps>().props;
     const user = auth?.user;
-
-
-
 
     const navItems = [
         {
@@ -115,16 +116,14 @@ export default function PasienLayout({ children }: Props) {
     return (
         <div className="bg-background min-h-screen">
             <Navbar
-
                 user={user}
                 navItems={navItems}
                 onNavigate={handleNavigate}
                 currentPage={currentPage}
                 onNotificationClick={() => setIsNotificationOpen(true)}
-
                 profileMenuContent={getProfileMenuContent({
-                pregnant,
-                child,
+                    pregnant,
+                    child,
                     user,
                     onProfileClick: handleProfileClick,
                     onLogoutClick: handleLogoutClick,
