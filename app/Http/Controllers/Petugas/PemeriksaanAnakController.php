@@ -69,6 +69,25 @@ class PemeriksaanAnakController extends Controller
             'child' => $child
         ]);
     }
+    // public function childCheckupHistory()
+    // {
+    //     $user = Auth::user();
+
+    //     $checkupHistory = PemeriksaanAnak::with([
+    //         'anak.kelahiran',
+    //         'anak.orangTua',
+    //         'petugas.faskes',
+    //         'skrining',
+    //     ])
+    //         ->where('petugas_faskes_id', $user->id)
+    //         ->latest('tanggal_pemeriksaan')
+    //         ->get();
+    //     dd($checkupHistory->first()->anak);
+
+    //     return Inertia::render('Petugas/Riwayat/ChildCheckupHistoryPageRoute', [
+    //         'checkupHistory' => $checkupHistory,
+    //     ]);
+    // }
     public function childCheckupHistory()
     {
         $user = Auth::user();
@@ -81,7 +100,18 @@ class PemeriksaanAnakController extends Controller
         ])
             ->where('petugas_faskes_id', $user->id)
             ->latest('tanggal_pemeriksaan')
-            ->get();
+            ->get()
+            ->map(function ($record) {
+                return [
+                    ...$record->toArray(),
+                    'anak' => [
+                        ...$record->anak->toArray(),
+                        'orangTua' => $record->anak->orangTua
+                            ? $record->anak->orangTua->only(['id', 'name', 'email'])
+                            : null,
+                    ],
+                ];
+            });
 
         return Inertia::render('Petugas/Riwayat/ChildCheckupHistoryPageRoute', [
             'checkupHistory' => $checkupHistory,

@@ -91,7 +91,7 @@ const PregnancyCheckupHistoryPage = ({ checkupHistory }: Props) => {
 
     if (!checkupHistory || checkupHistory.length === 0) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 py-8">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-8">
                         <h1 className="mb-1 text-2xl font-bold text-gray-900 sm:text-3xl">
@@ -155,7 +155,7 @@ const PregnancyCheckupHistoryPage = ({ checkupHistory }: Props) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 py-8">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>

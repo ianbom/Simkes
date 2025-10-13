@@ -7,11 +7,11 @@ const CardHero = () => {
                 <div className="mb-4 flex items-center">
                     <div className="">
                         <p className="text-3xl font-bold text-white">
-                            Selamat datang, Petugas Faskes Argya Dwi
+                            Selamat datang, Petugas
                         </p>
                         <p className="text-md mt-1 font-extralight text-gray-200">
-                            Anda punya 8 appointments hari ini dan 3 pesan
-                            penting untuk segera ditindaklanjuti.{' '}
+                            Anda punya appointments hari ini untuk segera
+                            ditindaklanjuti.{' '}
                         </p>
                     </div>
                 </div>

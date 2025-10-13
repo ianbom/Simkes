@@ -86,7 +86,7 @@ export function Header({ onMenuClick, user }) {
                                     {user?.name || 'Argya Dwi'}
                                 </p>
                                 <p className="text-xs text-gray-500">
-                                    {user?.role || 'Dokter'}
+                                    {user?.role || 'Petugas Faskes'}
                                 </p>
                             </div>
                             <ChevronDown

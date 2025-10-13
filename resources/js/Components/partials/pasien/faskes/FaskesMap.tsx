@@ -28,7 +28,7 @@ const FaskesMap: React.FC<Props> = ({ faskes }) => {
     const defaultCenter: [number, number] = [-7.3, 112.7];
     const zoom = 9;
     return (
-        <div className="h-[75vh] w-full rounded-xl border border-gray-200 shadow-lg">
+        <div className="relative z-0 h-[75vh] w-full rounded-xl border border-gray-200 shadow-lg">
             <MapContainer
                 center={defaultCenter}
                 zoom={zoom}

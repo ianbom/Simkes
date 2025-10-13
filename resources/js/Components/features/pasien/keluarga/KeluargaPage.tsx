@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Head, useForm, router } from '@inertiajs/react';
-import { Card } from '@/Components/ui/card';
-import { Baby, HeartPulse } from 'lucide-react';
 import { Button } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
+import { Head, router, useForm } from '@inertiajs/react';
+import { Baby, HeartPulse } from 'lucide-react';
+import { useState } from 'react';
 
 interface User {
     id: number;
@@ -11,18 +11,18 @@ interface User {
 }
 
 interface Anak {
-  id: number;
-  nama: string;
-  tanggal_lahir: string;
-  kondisi: string;
+    id: number;
+    nama: string;
+    tanggal_lahir: string;
+    kondisi: string;
 }
 
 interface Kehamilan {
-  id: number;
-  kehamilan_ke: number;
-  hpht: string;
-  hpl: string;
-  status: string;
+    id: number;
+    kehamilan_ke: number;
+    hpht: string;
+    hpl: string;
+    status: string;
 }
 
 interface Keluarga {
@@ -87,23 +87,24 @@ export default function KeluargaPage({ keluarga, allAnggota }: PageProps) {
             router.post(route('keluarga.leave'));
         }
     };
-const goToGrafikKehamilan = (id: number) => {
-  router.visit(route('pasien.view.perkembanganKehamilan', { id }));
-};
+    const goToGrafikKehamilan = (id: number) => {
+        router.visit(route('pasien.view.perkembanganKehamilan', { id }));
+    };
 
-const goToGrafikAnak = (id: number) => {
-  router.visit(route('pasien.view.perkembanganAnak', { id }));
-};
+    const goToGrafikAnak = (id: number) => {
+        router.visit(route('pasien.view.perkembanganAnak', { id }));
+    };
 
     return (
         <>
             <Head title="Keluarga" />
-
             <div className="min-h-screen bg-gray-50 py-8">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* Header */}
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900">Keluarga Saya</h1>
+                        <h1 className="text-3xl font-bold text-gray-900">
+                            Keluarga Saya
+                        </h1>
                         <p className="mt-2 text-gray-600">
                             Kelola informasi keluarga Anda
                         </p>
@@ -113,136 +114,222 @@ const goToGrafikAnak = (id: number) => {
                     {keluarga ? (
                         <div className="space-y-6">
                             {/* Keluarga Info Card */}
-                            <div className="bg-white rounded-lg shadow-md p-6">
-                                <div className="flex items-center justify-between mb-4">
+                            <div className="rounded-lg bg-white p-6 shadow-md">
+                                <div className="mb-4 flex items-center justify-between">
                                     <h2 className="text-2xl font-semibold text-gray-800">
                                         {keluarga.family_name}
                                     </h2>
-                                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                    <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
                                         {keluarga.family_code}
                                     </span>
                                 </div>
-                                <p className="text-gray-600 mb-4">
-                                    Kode keluarga: <span className="font-mono font-semibold">{keluarga.family_code}</span>
+                                <p className="mb-4 text-gray-600">
+                                    Kode keluarga:{' '}
+                                    <span className="font-mono font-semibold">
+                                        {keluarga.family_code}
+                                    </span>
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                    Dibuat pada: {new Date(keluarga.created_at).toLocaleDateString('id-ID', {
+                                    Dibuat pada:{' '}
+                                    {new Date(
+                                        keluarga.created_at,
+                                    ).toLocaleDateString('id-ID', {
                                         day: 'numeric',
                                         month: 'long',
-                                        year: 'numeric'
+                                        year: 'numeric',
                                     })}
                                 </p>
                             </div>
 
                             {/* Anggota Keluarga */}
-                            <div className="bg-white rounded-lg shadow-md p-6">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                            <div className="rounded-lg bg-white p-6 shadow-md">
+                                <h3 className="mb-4 text-xl font-semibold text-gray-800">
                                     Anggota Keluarga ({allAnggota?.length || 0})
                                 </h3>
                                 <div className="space-y-3">
-                                  {allAnggota && allAnggota.length > 0 ? (
-                allAnggota.map((anggota) => (
-                  <Card
-                    key={anggota.id}
-                    className="p-5 border border-gray-100 hover:border-blue-200 hover:shadow-md transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center text-lg font-semibold">
-                          {anggota.user?.name?.charAt(0).toUpperCase() || 'U'}
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 text-lg">
-                            {anggota.user?.name}
-                          </p>
-                          <p className="text-sm text-gray-600">{anggota.user?.email}</p>
-                        </div>
-                      </div>
+                                    {allAnggota && allAnggota.length > 0 ? (
+                                        allAnggota.map((anggota) => (
+                                            <Card
+                                                key={anggota.id}
+                                                className="border border-gray-100 p-5 transition hover:border-blue-200 hover:shadow-md"
+                                            >
+                                                <div className="flex items-start justify-between">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-lg font-semibold text-white">
+                                                            {anggota.user?.name
+                                                                ?.charAt(0)
+                                                                .toUpperCase() ||
+                                                                'U'}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-lg font-semibold text-gray-900">
+                                                                {
+                                                                    anggota.user
+                                                                        ?.name
+                                                                }
+                                                            </p>
+                                                            <p className="text-sm text-gray-600">
+                                                                {
+                                                                    anggota.user
+                                                                        ?.email
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </div>
 
-                      {anggota.user_id === keluarga.created_by && (
-                        <span className="px-3 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
-                          Pembuat
-                        </span>
-                      )}
-                    </div>
+                                                    {anggota.user_id ===
+                                                        keluarga.created_by && (
+                                                        <span className="rounded bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                                                            Pembuat
+                                                        </span>
+                                                    )}
+                                                </div>
 
-                    {/* --- Data Kehamilan --- */}
-                    {anggota.user?.kehamilan && anggota.user.kehamilan.length > 0 && (
-                      <div className="mt-4 p-4 bg-pink-50 border border-pink-100 rounded-lg">
-                        <div className="flex items-center gap-2 mb-2">
-                          <HeartPulse className="w-4 h-4 text-pink-700" />
-                          <h4 className="text-sm font-semibold text-pink-800">
-                            Data Kehamilan ({anggota.user.kehamilan.length})
-                          </h4>
-                        </div>
-                        {anggota.user.kehamilan.map((k) => (
-                          <div key={k.id} className="flex justify-between items-center py-1">
-                            <p className="text-sm text-gray-700">
-                              Kehamilan ke-{k.kehamilan_ke} • Status:{' '}
-                              <span className="font-medium">{k.status}</span>
-                            </p>
-                            <Button
-                              size="sm"
-                              onClick={() => goToGrafikKehamilan(k.id)}
-                              className="bg-pink-600 hover:bg-pink-700 text-white text-xs bg-blue-600 hover:bg-blue-700 text-white text-xs"
-                            >
-                              Lihat Grafik Kehamilan
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                                                {/* --- Data Kehamilan --- */}
+                                                {anggota.user?.kehamilan &&
+                                                    anggota.user.kehamilan
+                                                        .length > 0 && (
+                                                        <div className="mt-4 rounded-lg border border-pink-100 bg-pink-50 p-4">
+                                                            <div className="mb-2 flex items-center gap-2">
+                                                                <HeartPulse className="h-4 w-4 text-pink-700" />
+                                                                <h4 className="text-sm font-semibold text-pink-800">
+                                                                    Data
+                                                                    Kehamilan (
+                                                                    {
+                                                                        anggota
+                                                                            .user
+                                                                            .kehamilan
+                                                                            .length
+                                                                    }
+                                                                    )
+                                                                </h4>
+                                                            </div>
+                                                            {anggota.user.kehamilan.map(
+                                                                (k) => (
+                                                                    <div
+                                                                        key={
+                                                                            k.id
+                                                                        }
+                                                                        className="flex items-center justify-between py-1"
+                                                                    >
+                                                                        <p className="text-sm text-gray-700">
+                                                                            Kehamilan
+                                                                            ke-
+                                                                            {
+                                                                                k.kehamilan_ke
+                                                                            }{' '}
+                                                                            •
+                                                                            Status:{' '}
+                                                                            <span className="font-medium">
+                                                                                {
+                                                                                    k.status
+                                                                                }
+                                                                            </span>
+                                                                        </p>
+                                                                        <Button
+                                                                            size="sm"
+                                                                            onClick={() =>
+                                                                                goToGrafikKehamilan(
+                                                                                    k.id,
+                                                                                )
+                                                                            }
+                                                                            className="bg-blue-600 bg-pink-600 text-xs text-white hover:bg-blue-700 hover:bg-pink-700"
+                                                                        >
+                                                                            Lihat
+                                                                            Grafik
+                                                                            Kehamilan
+                                                                        </Button>
+                                                                    </div>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    )}
 
-                    {/* --- Data Anak --- */}
-                    {anggota.user?.anak && anggota.user.anak.length > 0 && (
-                      <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-lg">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Baby className="w-4 h-4 text-blue-700" />
-                          <h4 className="text-sm font-semibold text-blue-800">
-                            Data Anak ({anggota.user.anak.length})
-                          </h4>
-                        </div>
-                        {anggota.user.anak.map((anak) => (
-                          <div key={anak.id} className="flex justify-between items-center py-1">
-                            <p className="text-sm text-gray-700">
-                              {anak.nama} • Lahir: {anak.tanggal_lahir} (
-                              <span className="text-gray-500">{anak.kondisi}</span>)
-                            </p>
-                            <Button
-                              size="sm"
-                              onClick={() => goToGrafikAnak(anak.id)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white text-xs"
-                            >
-                              Lihat Grafik Anak
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </Card>
-                ))
-              ) : (
-                <p className="text-gray-500 text-center py-4">
-                  Belum ada anggota keluarga yang terdaftar.
-                </p>
-              )}
+                                                {/* --- Data Anak --- */}
+                                                {anggota.user?.anak &&
+                                                    anggota.user.anak.length >
+                                                        0 && (
+                                                        <div className="mt-4 rounded-lg border border-blue-100 bg-blue-50 p-4">
+                                                            <div className="mb-2 flex items-center gap-2">
+                                                                <Baby className="h-4 w-4 text-blue-700" />
+                                                                <h4 className="text-sm font-semibold text-blue-800">
+                                                                    Data Anak (
+                                                                    {
+                                                                        anggota
+                                                                            .user
+                                                                            .anak
+                                                                            .length
+                                                                    }
+                                                                    )
+                                                                </h4>
+                                                            </div>
+                                                            {anggota.user.anak.map(
+                                                                (anak) => (
+                                                                    <div
+                                                                        key={
+                                                                            anak.id
+                                                                        }
+                                                                        className="flex items-center justify-between py-1"
+                                                                    >
+                                                                        <p className="text-sm text-gray-700">
+                                                                            {
+                                                                                anak.nama
+                                                                            }{' '}
+                                                                            •
+                                                                            Lahir:{' '}
+                                                                            {
+                                                                                anak.tanggal_lahir
+                                                                            }{' '}
+                                                                            (
+                                                                            <span className="text-gray-500">
+                                                                                {
+                                                                                    anak.kondisi
+                                                                                }
+                                                                            </span>
+                                                                            )
+                                                                        </p>
+                                                                        <Button
+                                                                            size="sm"
+                                                                            onClick={() =>
+                                                                                goToGrafikAnak(
+                                                                                    anak.id,
+                                                                                )
+                                                                            }
+                                                                            className="bg-blue-600 text-xs text-white hover:bg-blue-700"
+                                                                        >
+                                                                            Lihat
+                                                                            Grafik
+                                                                            Anak
+                                                                        </Button>
+                                                                    </div>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    )}
+                                            </Card>
+                                        ))
+                                    ) : (
+                                        <p className="py-4 text-center text-gray-500">
+                                            Belum ada anggota keluarga yang
+                                            terdaftar.
+                                        </p>
+                                    )}
                                 </div>
                             </div>
-
 
                             {/* Action Button */}
                             <div className="flex justify-end">
                                 <button
                                     onClick={handleLeaveKeluarga}
-                                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                                    className="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
                                 >
                                     Keluar dari Keluarga
                                 </button>
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-                            <p className="text-gray-600 mb-6">
+                        <div className="rounded-lg bg-white p-8 text-center shadow-md">
+                            <p className="mb-6 text-gray-600">
                                 Anda belum tergabung dalam keluarga manapun
                             </p>
                             <div className="flex justify-center space-x-4">
@@ -251,7 +338,7 @@ const goToGrafikAnak = (id: number) => {
                                         setModalType('create');
                                         setShowModal(true);
                                     }}
-                                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                    className="rounded-lg bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700"
                                 >
                                     Buat Keluarga
                                 </button>
@@ -260,7 +347,7 @@ const goToGrafikAnak = (id: number) => {
                                         setModalType('join');
                                         setShowModal(true);
                                     }}
-                                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                                    className="rounded-lg bg-green-600 px-6 py-3 text-white transition-colors hover:bg-green-700"
                                 >
                                     Gabung Keluarga
                                 </button>
@@ -272,18 +359,30 @@ const goToGrafikAnak = (id: number) => {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-                        <div className="flex items-center justify-between mb-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                    <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+                        <div className="mb-4 flex items-center justify-between">
                             <h2 className="text-2xl font-bold text-gray-900">
-                                {modalType === 'create' ? 'Buat Keluarga' : 'Gabung Keluarga'}
+                                {modalType === 'create'
+                                    ? 'Buat Keluarga'
+                                    : 'Gabung Keluarga'}
                             </h2>
                             <button
                                 onClick={() => setShowModal(false)}
                                 className="text-gray-400 hover:text-gray-600"
                             >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                <svg
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
                                 </svg>
                             </button>
                         </div>
@@ -291,70 +390,88 @@ const goToGrafikAnak = (id: number) => {
                         {modalType === 'create' ? (
                             <form onSubmit={handleCreateKeluarga}>
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-medium mb-2">
+                                    <label className="mb-2 block font-medium text-gray-700">
                                         Nama Keluarga
                                     </label>
                                     <input
                                         type="text"
                                         value={createForm.data.family_name}
-                                        onChange={(e) => createForm.setData('family_name', e.target.value)}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'family_name',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                         placeholder="Contoh: Keluarga Budi"
                                         required
                                     />
                                     {createForm.errors.family_name && (
-                                        <p className="text-red-500 text-sm mt-1">{createForm.errors.family_name}</p>
+                                        <p className="mt-1 text-sm text-red-500">
+                                            {createForm.errors.family_name}
+                                        </p>
                                     )}
                                 </div>
                                 <div className="flex space-x-3">
                                     <button
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                        className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
                                     >
                                         Batal
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={createForm.processing}
-                                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                                        className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
                                     >
-                                        {createForm.processing ? 'Memproses...' : 'Buat'}
+                                        {createForm.processing
+                                            ? 'Memproses...'
+                                            : 'Buat'}
                                     </button>
                                 </div>
                             </form>
                         ) : (
                             <form onSubmit={handleJoinKeluarga}>
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-medium mb-2">
+                                    <label className="mb-2 block font-medium text-gray-700">
                                         Kode Keluarga
                                     </label>
                                     <input
                                         type="text"
                                         value={joinForm.data.family_code}
-                                        onChange={(e) => joinForm.setData('family_code', e.target.value.toUpperCase())}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg font-mono focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                        onChange={(e) =>
+                                            joinForm.setData(
+                                                'family_code',
+                                                e.target.value.toUpperCase(),
+                                            )
+                                        }
+                                        className="w-full rounded-lg border border-gray-300 px-4 py-2 font-mono focus:border-transparent focus:ring-2 focus:ring-green-500"
                                         placeholder="FAM-XXXXXX"
                                         required
                                     />
                                     {joinForm.errors.family_code && (
-                                        <p className="text-red-500 text-sm mt-1">{joinForm.errors.family_code}</p>
+                                        <p className="mt-1 text-sm text-red-500">
+                                            {joinForm.errors.family_code}
+                                        </p>
                                     )}
                                 </div>
                                 <div className="flex space-x-3">
                                     <button
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                        className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
                                     >
                                         Batal
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={joinForm.processing}
-                                        className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                                        className="flex-1 rounded-lg bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700 disabled:opacity-50"
                                     >
-                                        {joinForm.processing ? 'Memproses...' : 'Gabung'}
+                                        {joinForm.processing
+                                            ? 'Memproses...'
+                                            : 'Gabung'}
                                     </button>
                                 </div>
                             </form>
@@ -363,7 +480,13 @@ const goToGrafikAnak = (id: number) => {
                         {!keluarga && (
                             <div className="mt-4 text-center">
                                 <button
-                                    onClick={() => setModalType(modalType === 'create' ? 'join' : 'create')}
+                                    onClick={() =>
+                                        setModalType(
+                                            modalType === 'create'
+                                                ? 'join'
+                                                : 'create',
+                                        )
+                                    }
                                     className="text-sm text-blue-600 hover:text-blue-700"
                                 >
                                     {modalType === 'create'

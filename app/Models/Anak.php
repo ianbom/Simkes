@@ -45,6 +45,6 @@ class Anak extends Model
     // }
     public function orangTua()
     {
-        return $this->belongsTo(User::class, 'orang_tua_id', 'id');
+        return $this->belongsTo(User::class, 'orang_tua_id');
     }
 }

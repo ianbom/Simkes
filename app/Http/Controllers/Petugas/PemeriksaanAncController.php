@@ -94,7 +94,6 @@ class PemeriksaanAncController extends Controller
     public function pregnancyCheckupHistory()
     {
         $user = Auth::user();
-
         $checkupHistory = PemeriksaanAnc::with([
             'kehamilan',
             'petugas.faskes',
@@ -105,7 +104,7 @@ class PemeriksaanAncController extends Controller
             'resep',
         ])
             ->whereHas('kehamilan', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
+                $query->where('petugas_faskes_id', $user->id);
             })
             ->latest('tanggal_checkup')
             ->get()

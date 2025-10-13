@@ -36,19 +36,19 @@ const OnlinePatientQueueCard = ({
         switch (status) {
             case 'in-progress':
                 return (
-                    <Badge className="border-yellow-200 bg-yellow-100 text-yellow-800">
+                    <Badge className="text-yellow-800 bg-yellow-100 border-yellow-200">
                         Proses...
                     </Badge>
                 );
             case 'completed':
                 return (
-                    <Badge className="border-green-200 bg-green-100 text-green-800">
+                    <Badge className="text-green-800 bg-green-100 border-green-200">
                         Selesai
                     </Badge>
                 );
             default:
                 return (
-                    <Badge className="border-gray-200 bg-gray-100 text-gray-800">
+                    <Badge className="text-gray-800 bg-gray-100 border-gray-200">
                         Menunggu..
                     </Badge>
                 );
@@ -59,7 +59,7 @@ const OnlinePatientQueueCard = ({
         <Card className="bg-white">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
+                    <Calendar className="w-5 h-5" />
                     Antrian Konsultasi Online
                 </CardTitle>
                 <CardDescription>
@@ -71,19 +71,19 @@ const OnlinePatientQueueCard = ({
                     {patients.map((patient) => (
                         <div
                             key={patient.id}
-                            className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"
+                            className="flex flex-col gap-3 p-4 border rounded-lg sm:flex-row sm:items-center sm:justify-between"
                         >
                             {/* Bagian kiri */}
                             <div className="flex items-start gap-4 sm:items-center">
                                 {/* Foto pasien */}
-                                {patient.avatar ? (
+                                {/* {patient.avatar ? (
                                     <img
                                         src={patient.avatar}
                                         alt={patient.name}
-                                        className="h-12 w-12 rounded-full object-cover"
+                                        className="object-cover w-12 h-12 rounded-full"
                                     />
                                 ) : (
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10">
                                         <span className="text-sm font-medium text-primary">
                                             {patient.name
                                                 .split(' ')
@@ -91,37 +91,37 @@ const OnlinePatientQueueCard = ({
                                                 .join('')}
                                         </span>
                                     </div>
-                                )}
+                                )} */}
 
                                 {/* Data pasien */}
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <p className="text-foreground font-semibold">
+                                        <p className="font-semibold text-foreground">
                                             {patient.name}
                                         </p>
                                         {patient.isPregnant && (
-                                            <Badge className="bg-blue-500 text-xs text-white">
+                                            <Badge className="text-xs text-white bg-blue-500">
                                                 Hamil
                                             </Badge>
                                         )}
                                     </div>
 
-                                    <div className="text-muted-foreground mt-1 flex flex-wrap items-center gap-3 text-sm">
+                                    <div className="flex flex-wrap items-center gap-3 mt-1 text-sm text-muted-foreground">
                                         <span className="flex items-center gap-1">
-                                            <Clock className="h-3 w-3" />
+                                            <Clock className="w-3 h-3" />
                                             {patient.time}
                                         </span>
                                         <span>{patient.type}</span>
                                         {patient.phone && (
                                             <span className="flex items-center gap-1">
-                                                <Phone className="h-3 w-3" />
+                                                <Phone className="w-3 h-3" />
                                                 {patient.phone}
                                             </span>
                                         )}
                                     </div>
 
                                     {patient.notes && (
-                                        <p className="mt-1 cursor-pointer text-sm text-blue-600 hover:underline">
+                                        <p className="mt-1 text-sm text-blue-600 cursor-pointer hover:underline">
                                             {patient.notes}
                                         </p>
                                     )}
@@ -137,7 +137,7 @@ const OnlinePatientQueueCard = ({
                                         onClick={() =>
                                             onStartExamination(patient.id)
                                         }
-                                        className="bg-blue-500 text-white hover:bg-blue-600"
+                                        className="text-white bg-blue-500 hover:bg-blue-600"
                                     >
                                         Periksa →
                                     </Button>
@@ -146,7 +146,7 @@ const OnlinePatientQueueCard = ({
                                     <Button
                                         size="sm"
                                         disabled
-                                        className="bg-gray-100 text-gray-400"
+                                        className="text-gray-400 bg-gray-100"
                                     >
                                         Periksa
                                     </Button>
@@ -155,7 +155,7 @@ const OnlinePatientQueueCard = ({
                                     <Button
                                         size="sm"
                                         disabled
-                                        className="bg-gray-100 text-gray-400"
+                                        className="text-gray-400 bg-gray-100"
                                     >
                                         Selesai
                                     </Button>

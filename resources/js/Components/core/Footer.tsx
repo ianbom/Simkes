@@ -53,36 +53,24 @@ const Footer = () => {
                         <h4 className="mb-6 text-lg font-semibold">Navigasi</h4>
                         <ul className="space-y-3">
                             <li>
-                                <a
-                                    href="/report"
-                                    className="text-slate-300 transition-colors hover:text-white"
-                                >
+                                <p className="text-slate-300 transition-colors hover:text-white">
                                     Beranda
-                                </a>
+                                </p>
                             </li>
                             <li>
-                                <a
-                                    href="/mission"
-                                    className="text-slate-300 transition-colors hover:text-white"
-                                >
+                                <p className="text-slate-300 transition-colors hover:text-white">
                                     Faskes
-                                </a>
+                                </p>
                             </li>
                             <li>
-                                <a
-                                    href="/map"
-                                    className="text-slate-300 transition-colors hover:text-white"
-                                >
+                                <p className="text-slate-300 transition-colors hover:text-white">
                                     Maps Faskes
-                                </a>
+                                </p>
                             </li>
                             <li>
-                                <a
-                                    href="/education"
-                                    className="text-slate-300 transition-colors hover:text-white"
-                                >
+                                <p className="text-slate-300 transition-colors hover:text-white">
                                     Feed Faskes{' '}
-                                </a>
+                                </p>
                             </li>
                         </ul>
                     </div>
