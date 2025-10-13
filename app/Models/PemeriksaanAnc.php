@@ -27,6 +27,10 @@ class PemeriksaanAnc extends Model
     {
         return $this->hasMany(MediaPemeriksaan::class);
     }
+    public function media()
+    {
+        return $this->hasMany(MediaPemeriksaan::class);
+    }
     public function hasilLab()
     {
         return $this->hasMany(HasilLab::class);
